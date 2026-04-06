@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -175,59 +176,9 @@
   .empty-state .icon { font-size:48px; margin-bottom:12px; }
 
   .gradient-line { height:3px; background:linear-gradient(90deg,var(--blue),var(--accent),var(--blue-light)); }
-
-  /* ── ÉCRAN DE CONNEXION ── */
-  #login-screen { display:flex; position:fixed; inset:0; z-index:9999; background:var(--navy); align-items:center; justify-content:center; }
-  .login-box { background:var(--blue-dark); border:1px solid var(--border); border-radius:20px; width:420px; max-width:95vw; padding:40px 36px; box-shadow:0 24px 64px rgba(0,0,0,0.5); }
-  .login-logo { text-align:center; margin-bottom:28px; }
-  .login-logo .org { font-family:'Syne',sans-serif; font-weight:800; font-size:12px; color:var(--accent); letter-spacing:3px; text-transform:uppercase; }
-  .login-logo .title { font-family:'Syne',sans-serif; font-weight:800; font-size:22px; color:var(--white); margin-top:4px; line-height:1.2; }
-  .login-logo .sub { font-size:12px; color:var(--gray2); margin-top:6px; }
-  .login-field { margin-bottom:16px; }
-  .login-field label { display:block; font-size:12px; color:var(--gray2); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
-  .login-field input { width:100%; background:var(--surface); border:1px solid var(--border); color:var(--white); padding:11px 14px; border-radius:8px; font-size:14px; font-family:'Outfit',sans-serif; outline:none; transition:border-color 0.2s; }
-  .login-field input:focus { border-color:var(--accent); }
-  .login-btn { width:100%; padding:12px; background:var(--accent); color:var(--navy); border:none; border-radius:8px; font-family:'Syne',sans-serif; font-weight:700; font-size:15px; cursor:pointer; transition:all 0.2s; margin-top:8px; }
-  .login-btn:hover { background:#00b896; transform:translateY(-1px); }
-  .login-error { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px 14px; font-size:13px; color:#ef4444; margin-top:12px; display:none; }
-
-  /* ── RÔLES ── */
-  .role-admin     { background:rgba(239,68,68,0.15);   color:#ef4444;       border:1px solid rgba(239,68,68,0.3); }
-  .role-operateur { background:rgba(245,158,11,0.15);  color:var(--accent2); border:1px solid rgba(245,158,11,0.3); }
-  .role-lecteur   { background:rgba(148,163,184,0.15); color:var(--gray2);  border:1px solid rgba(148,163,184,0.3); }
-
-  /* ── PAGE COMPTES ── */
-  .user-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
-  .user-avatar { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:700; font-size:15px; flex-shrink:0; }
-  .avatar-admin     { background:rgba(239,68,68,0.2);   color:#ef4444; }
-  .avatar-operateur { background:rgba(245,158,11,0.2);  color:var(--accent2); }
-  .avatar-lecteur   { background:rgba(148,163,184,0.2); color:var(--gray2); }
 </style>
 </head>
 <body>
-
-<!-- ===== ÉCRAN DE CONNEXION ===== -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="org">MENAET · DESPS</div>
-      <div class="title">Parc Informatique</div>
-      <div class="sub">Connectez-vous pour accéder à la base</div>
-    </div>
-    <div style="height:2px;background:linear-gradient(90deg,var(--blue),var(--accent),var(--blue-light));border-radius:2px;margin-bottom:28px;"></div>
-    <div class="login-field">
-      <label>Identifiant</label>
-      <input type="text" id="login-user" placeholder="Votre identifiant" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
-    </div>
-    <div class="login-field">
-      <label>Mot de passe</label>
-      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <button class="login-btn" onclick="doLogin()">Connexion →</button>
-    <div class="login-error" id="login-error">Identifiant ou mot de passe incorrect.</div>
-    <p style="text-align:center;font-size:11px;color:var(--gray3);margin-top:20px;">Accès réservé au personnel autorisé · DESPS</p>
-  </div>
-</div>
 
 <!-- SIDEBAR -->
 <aside class="sidebar">
@@ -264,20 +215,16 @@
   </div>
 
   <div class="nav-section">Outils</div>
-  <div class="nav-item" onclick="showPage('import')" id="nav-import">
+  <div class="nav-item" onclick="showPage('import')">
     <span class="nav-icon">📥</span> Import / Export
-  </div>
-  <div class="nav-item" onclick="showPage('comptes')" id="nav-comptes" style="display:none;">
-    <span class="nav-icon">👥</span> Gestion des comptes
   </div>
 
   <div class="sidebar-bottom">
-    <div class="sidebar-user" id="sidebar-user-info">
-      <strong id="sidebar-username">—</strong>
-      <span id="sidebar-role-badge" class="badge" style="margin-top:4px;display:inline-block;">—</span><br>
-      <span style="font-size:11px;line-height:1.4;display:block;margin-top:4px;">DESPS · MENAET</span>
+    <div class="sidebar-user">
+      <strong>DIOMANDE YAYA</strong>
+      Chargé d'Étude<br>
+      <span style="font-size:11px;line-height:1.4;display:block;margin-top:2px;">SERVICE DIGITALISATION, EXPLOITATION DES PLATEFORMES ET MAINTENANCE INFORMATIQUE</span>
     </div>
-    <button class="btn btn-danger btn-sm" onclick="doLogout()" style="width:100%;justify-content:center;margin-top:12px;">🚪 Déconnexion</button>
   </div>
 </aside>
 
@@ -289,7 +236,7 @@
       <span>🔍</span>
       <input type="text" id="global-search" placeholder="Rechercher N° série, nom, projet..." oninput="onGlobalSearch(this.value)">
     </div>
-    <button class="btn btn-primary" id="btn-topbar-add" onclick="openAddModal()">＋ Ajouter</button>
+    <button class="btn btn-primary" onclick="openAddModal()">＋ Ajouter</button>
   </div>
 
   <div class="content">
@@ -579,68 +526,6 @@
       </div>
     </div>
 
-    <!-- ===== GESTION DES COMPTES (admin only) ===== -->
-    <div id="page-comptes" class="page">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-        <div class="table-wrapper">
-          <div class="table-header"><h3>👥 Comptes utilisateurs</h3></div>
-          <div style="padding:20px;"><div id="users-list"></div></div>
-        </div>
-        <div class="table-wrapper">
-          <div class="table-header"><h3 id="form-compte-title">➕ Nouveau compte</h3></div>
-          <div style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-            <input type="hidden" id="edit-login-original">
-            <div class="form-group">
-              <label>Identifiant (login)</label>
-              <input type="text" id="new-login" placeholder="ex: diomande.yaya" autocomplete="off">
-            </div>
-            <div class="form-group">
-              <label>Nom complet</label>
-              <input type="text" id="new-nom" placeholder="ex: DIOMANDE YAYA">
-            </div>
-            <div class="form-group">
-              <label>Mot de passe <span id="pass-hint" style="color:var(--gray2);font-weight:400;">(laisser vide = inchangé)</span></label>
-              <input type="password" id="new-pass" placeholder="••••••••" autocomplete="new-password">
-            </div>
-            <div class="form-group">
-              <label>Confirmer le mot de passe</label>
-              <input type="password" id="new-pass2" placeholder="••••••••">
-            </div>
-            <div class="form-group">
-              <label>Rôle</label>
-              <select class="filter-select" id="new-role" style="width:100%;padding:10px;font-size:14px;">
-                <option value="admin">🔴 Administrateur — accès complet</option>
-                <option value="operateur">🟡 Opérateur — ajout / modification</option>
-                <option value="lecteur">⚪ Lecteur — consultation uniquement</option>
-              </select>
-            </div>
-            <div id="form-compte-error" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px;font-size:13px;color:#ef4444;"></div>
-            <div style="display:flex;gap:10px;">
-              <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveCompte()">💾 Enregistrer</button>
-              <button class="btn btn-secondary" onclick="resetFormCompte()">✕ Annuler</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;">
-        <h3 style="font-family:'Syne',sans-serif;font-size:14px;margin-bottom:14px;">📋 Droits par rôle</h3>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-          <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:14px;">
-            <p style="font-weight:600;color:#ef4444;margin-bottom:8px;">🔴 Administrateur</p>
-            <p style="font-size:12px;color:var(--gray2);line-height:1.9;">✅ Consulter<br>✅ Ajouter<br>✅ Modifier<br>✅ Supprimer<br>✅ Importer / Exporter<br>✅ Gérer les comptes</p>
-          </div>
-          <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:8px;padding:14px;">
-            <p style="font-weight:600;color:var(--accent2);margin-bottom:8px;">🟡 Opérateur</p>
-            <p style="font-size:12px;color:var(--gray2);line-height:1.9;">✅ Consulter<br>✅ Ajouter<br>✅ Modifier<br>❌ Supprimer<br>❌ Importer / Exporter<br>❌ Gérer les comptes</p>
-          </div>
-          <div style="background:rgba(148,163,184,0.06);border:1px solid rgba(148,163,184,0.2);border-radius:8px;padding:14px;">
-            <p style="font-weight:600;color:var(--gray2);margin-bottom:8px;">⚪ Lecteur</p>
-            <p style="font-size:12px;color:var(--gray2);line-height:1.9;">✅ Consulter<br>❌ Ajouter<br>❌ Modifier<br>❌ Supprimer<br>❌ Importer / Exporter<br>❌ Gérer les comptes</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </main>
 
@@ -756,161 +641,6 @@ function saveDB(key) {
   localStorage.setItem('desps_v4_' + key, JSON.stringify(DB[key]));
 }
 
-// ===================== AUTH & COMPTES =====================
-
-const _enc = s => btoa(unescape(encodeURIComponent(s)));
-
-const DEFAULT_USERS = [
-  { login:'admin',     nom:'Administrateur',  pass:_enc('Admin@2026'),  role:'admin' },
-  { login:'diomande',  nom:'DIOMANDE YAYA',   pass:_enc('Desps@2026'),  role:'admin' },
-  { login:'operateur', nom:'Opérateur DESPS', pass:_enc('Oper@2026'),   role:'operateur' },
-  { login:'lecteur',   nom:'Lecteur DESPS',   pass:_enc('Lect@2026'),   role:'lecteur' },
-];
-
-function loadUsers()        { const s = localStorage.getItem('desps_users'); return s ? JSON.parse(s) : [...DEFAULT_USERS]; }
-function saveUsers(u)       { localStorage.setItem('desps_users', JSON.stringify(u)); }
-
-let currentUser = null;
-
-function doLogin() {
-  const login = document.getElementById('login-user').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
-  errEl.style.display = 'none';
-  if (!login || !pass) { errEl.textContent='Veuillez remplir tous les champs.'; errEl.style.display='block'; return; }
-  const user  = loadUsers().find(u => u.login === login && u.pass === _enc(pass));
-  if (!user) { errEl.textContent='Identifiant ou mot de passe incorrect.'; errEl.style.display='block'; document.getElementById('login-pass').value=''; return; }
-  currentUser = { login:user.login, nom:user.nom, role:user.role };
-  document.getElementById('login-screen').style.display = 'none';
-  applyRoleUI();
-  showNotif(`👋 Bienvenue, ${user.nom}`, 'success');
-}
-
-function doLogout() {
-  if (!confirm('Déconnexion ?')) return;
-  currentUser = null;
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-error').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-}
-
-const ROLE_LABELS = {
-  admin:     { label:'Administrateur', cls:'role-admin',     badge:'🔴 Admin' },
-  operateur: { label:'Opérateur',      cls:'role-operateur', badge:'🟡 Opérateur' },
-  lecteur:   { label:'Lecteur',        cls:'role-lecteur',   badge:'⚪ Lecteur' },
-};
-
-function applyRoleUI() {
-  const r  = currentUser.role;
-  const rl = ROLE_LABELS[r] || ROLE_LABELS.lecteur;
-  document.getElementById('sidebar-username').textContent = currentUser.nom;
-  const rb = document.getElementById('sidebar-role-badge');
-  rb.textContent = rl.badge; rb.className = 'badge ' + rl.cls;
-  document.getElementById('btn-topbar-add').style.display  = (r === 'lecteur') ? 'none' : 'flex';
-  document.getElementById('nav-import').style.display      = (r === 'admin')   ? 'flex' : 'none';
-  document.getElementById('nav-comptes').style.display     = (r === 'admin')   ? 'flex' : 'none';
-  PAGE_LABELS.comptes = 'Gestion des comptes';
-}
-
-function canEdit()   { return currentUser && currentUser.role !== 'lecteur'; }
-function canDelete() { return currentUser && currentUser.role === 'admin'; }
-
-// ── Gestion des comptes ──────────────────────────────────────
-function renderUsersList() {
-  const users = loadUsers();
-  document.getElementById('users-list').innerHTML = users.map(u => {
-    const rl = ROLE_LABELS[u.role] || ROLE_LABELS.lecteur;
-    const me = u.login === currentUser?.login;
-    return `<div class="user-card">
-      <div class="user-avatar avatar-${u.role}">${u.nom.charAt(0).toUpperCase()}</div>
-      <div style="flex:1;min-width:0;">
-        <p style="font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${u.nom}</p>
-        <p style="font-size:12px;color:var(--gray2);">@${u.login}</p>
-      </div>
-      <span class="badge ${rl.cls}" style="flex-shrink:0;">${rl.label}</span>
-      <div style="display:flex;gap:4px;flex-shrink:0;">
-        <button class="icon-btn" onclick="editCompte('${u.login}')">✏️</button>
-        ${me ? '<button class="icon-btn" style="opacity:0.3;cursor:default;" title="Votre compte">🔒</button>'
-             : `<button class="icon-btn" onclick="deleteCompte('${u.login}')">🗑</button>`}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function resetFormCompte() {
-  document.getElementById('form-compte-title').textContent = '➕ Nouveau compte';
-  document.getElementById('edit-login-original').value = '';
-  ['new-login','new-nom','new-pass','new-pass2'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('new-role').value = 'operateur';
-  document.getElementById('form-compte-error').style.display = 'none';
-  document.getElementById('pass-hint').style.display = 'none';
-  document.getElementById('new-login').removeAttribute('readonly');
-}
-
-function editCompte(login) {
-  const u = loadUsers().find(x => x.login === login);
-  if (!u) return;
-  document.getElementById('form-compte-title').textContent = '✏️ Modifier le compte';
-  document.getElementById('edit-login-original').value = u.login;
-  document.getElementById('new-login').value = u.login;
-  document.getElementById('new-login').setAttribute('readonly', true);
-  document.getElementById('new-nom').value = u.nom;
-  document.getElementById('new-pass').value = '';
-  document.getElementById('new-pass2').value = '';
-  document.getElementById('new-role').value = u.role;
-  document.getElementById('pass-hint').style.display = 'inline';
-  document.getElementById('form-compte-error').style.display = 'none';
-}
-
-function saveCompte() {
-  const errEl = document.getElementById('form-compte-error');
-  errEl.style.display = 'none';
-  const orig  = document.getElementById('edit-login-original').value;
-  const login = document.getElementById('new-login').value.trim().toLowerCase();
-  const nom   = document.getElementById('new-nom').value.trim();
-  const pass  = document.getElementById('new-pass').value;
-  const pass2 = document.getElementById('new-pass2').value;
-  const role  = document.getElementById('new-role').value;
-  const err   = msg => { errEl.textContent=msg; errEl.style.display='block'; };
-
-  if (!login || !nom)                              { err('Identifiant et nom obligatoires.'); return; }
-  if (!/^[a-z0-9._\-]{3,32}$/.test(login))        { err('Identifiant : 3-32 car., lettres/chiffres/points/tirets.'); return; }
-  if (!orig && !pass)                              { err('Mot de passe obligatoire pour un nouveau compte.'); return; }
-  if (pass && pass.length < 6)                     { err('Mot de passe : 6 caractères minimum.'); return; }
-  if (pass && pass !== pass2)                      { err('Les mots de passe ne correspondent pas.'); return; }
-
-  const users = loadUsers();
-  if (!orig) {
-    if (users.find(u => u.login === login)) { err('Identifiant déjà utilisé.'); return; }
-    users.push({ login, nom, pass:_enc(pass), role });
-    showNotif(`✅ Compte "${login}" créé`, 'success');
-  } else {
-    const idx = users.findIndex(u => u.login === orig);
-    if (idx < 0) { err('Compte introuvable.'); return; }
-    users[idx].nom = nom; users[idx].role = role;
-    if (pass) users[idx].pass = _enc(pass);
-    if (orig === currentUser?.login) { currentUser.nom = nom; currentUser.role = role; applyRoleUI(); }
-    showNotif(`✅ Compte "${login}" modifié`, 'success');
-  }
-  saveUsers(users);
-  renderUsersList();
-  resetFormCompte();
-}
-
-function deleteCompte(login) {
-  if (login === currentUser?.login) { showNotif('⚠️ Impossible de supprimer votre propre compte', 'error'); return; }
-  const users = loadUsers();
-  const u = users.find(x => x.login === login);
-  if (u?.role === 'admin' && users.filter(x => x.role === 'admin').length === 1) {
-    showNotif('⚠️ Impossible de supprimer le dernier administrateur', 'error'); return;
-  }
-  if (!confirm(`Supprimer le compte "${login}" ?`)) return;
-  saveUsers(users.filter(x => x.login !== login));
-  renderUsersList();
-  showNotif(`🗑 Compte supprimé`, 'info');
-}
-
 // ===================== STATE =====================
 const PAGE_SIZE = 15;
 let currentPage = {};
@@ -951,8 +681,6 @@ window.onload = function() {
   renderTable('imprimantes');
   renderTable('tablettes');
   renderKobo();
-  // Mettre le focus sur le champ login
-  setTimeout(() => document.getElementById('login-user').focus(), 100);
 };
 
 function updateBadges() {
@@ -982,7 +710,6 @@ function showPage(name) {
   });
   document.getElementById('topbar-title').textContent = PAGE_LABELS[name] || name;
   currentView = name;
-  if (name === 'comptes') { renderUsersList(); resetFormCompte(); }
 }
 
 // ===================== RECHERCHE GLOBALE =====================
