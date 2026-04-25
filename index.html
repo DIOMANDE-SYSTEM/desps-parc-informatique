@@ -4,6 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>DESPS · Parc Informatique MENAET</title>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script>
+(function(){
+  try {
+    var cfg={apiKey:"AIzaSyAAPXXF-_s3rR3stkJYRUt-1GPfblXMthQ",authDomain:"desps-gestioninformatique-id.firebaseapp.com",projectId:"desps-gestioninformatique-id",storageBucket:"desps-gestioninformatique-id.firebasestorage.app",messagingSenderId:"496783160844",appId:"1:496783160844:web:aed6ad0d4178ecfc38a029"};
+    if(!firebase.apps.length) firebase.initializeApp(cfg);
+    window._db=firebase.firestore();
+    window._auth=firebase.auth();
+    window._fbReady=true;
+    console.log('🔥 Firebase compat ready');
+  } catch(e){ window._fbReady=false; console.warn('Firebase offline:',e); }
+})();
+window.fbSave=function(col,records){
+  if(!window._db)return Promise.resolve();
+  var b=window._db.batch();
+  return window._db.collection(col).get().then(function(s){
+    s.forEach(function(d){b.delete(d.ref);});
+    records.forEach(function(r,i){var id=String(r.num_serie||r.id||i).replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,100)||'r'+i;b.set(window._db.collection(col).doc(id),Object.assign({},r,{_i:i}));});
+    return b.commit();
+  }).catch(function(e){console.warn('fbSave err:',col,e.message);});
+};
+window.fbLoad=function(col){
+  if(!window._db)return Promise.resolve(null);
+  return window._db.collection(col).get().then(function(s){
+    var r=[];s.forEach(function(d){r.push(d.data());});r.sort(function(a,b){return(a._i||0)-(b._i||0);});return r.length?r:null;
+  }).catch(function(){return null;});
+};
+window.fbSaveUsers=function(acc){
+  if(!window._db)return;
+  var b=window._db.batch();
+  Object.keys(acc).forEach(function(id){b.set(window._db.collection('users_config').doc(id),acc[id]);});
+  b.commit().catch(function(){});
+};
+window.fbLoadUsers=function(){
+  if(!window._db)return Promise.resolve(null);
+  return window._db.collection('users_config').get().then(function(s){var a={};s.forEach(function(d){a[d.id]=d.data();});return Object.keys(a).length?a:null;}).catch(function(){return null;});
+};
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -471,6 +511,34 @@ body.role-user .user-nav-only{display:flex!important;}
 }
 .print-header{display:none;text-align:center;margin-bottom:18px;}
 
+/* Loading overlay */
+#fb-loading{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#040E24,#071428);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.5s;
+}
+#fb-loading.hidden{opacity:0;pointer-events:none;}
+.fb-spinner{
+  width:50px;height:50px;border-radius:50%;
+  border:4px solid rgba(0,201,167,0.15);
+  border-top-color:var(--accent);
+  animation:spin 0.9s linear infinite;
+  margin-bottom:20px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.fb-loading-txt{font-family:'Syne',sans-serif;font-size:14px;color:var(--txt2);}
+.fb-loading-sub{font-size:11px;color:var(--txt3);margin-top:6px;}
+.fb-status{
+  position:fixed;bottom:14px;right:14px;z-index:200;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;font-size:11px;
+  display:flex;align-items:center;gap:6px;color:var(--txt2);
+  transition:opacity 0.3s;
+}
+.fb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.fb-dot.online{background:var(--accent);}
+.fb-dot.offline{background:var(--red);}
 /* ====== SCROLLBAR ====== */
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--navy);}
@@ -1505,10 +1573,12 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
               </div>
             </div>
 
-            <div style="background:rgba(230,57,70,0.06);border:1px solid rgba(230,57,70,0.2);border-radius:10px;padding:14px 18px;font-size:12px;color:var(--txt2);">
-              <span style="color:var(--red);font-weight:700;">⚠️ Important :</span>
-              Les donn&eacute;es sont sauvegard&eacute;es localement dans votre navigateur (localStorage).
-              Pour sauvegarder de mani&egrave;re permanente, utilisez l'export CSV r&eacute;guli&egrave;rement.
+            <div style="background:rgba(0,201,167,0.07);border:1px solid rgba(0,201,167,0.25);border-radius:10px;padding:14px 18px;font-size:12px;color:var(--txt2);">
+              <span style="color:var(--accent);font-weight:700;">🔥 Firebase actif :</span>
+              Les donn&eacute;es sont synchronis&eacute;es en temps r&eacute;el avec <strong style="color:var(--txt)">Firebase Firestore</strong>.
+              Toute modification est sauvegard&eacute;e automatiquement dans le cloud.
+              Une copie locale est aussi conserv&eacute;e pour le mode hors ligne.
+              <div style="margin-top:6px;"><strong style="color:var(--txt);">Projet Firebase :</strong> desps-gestioninformatique-id</div>
             </div>
           </div>
         </div>
@@ -1692,9 +1762,18 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
   <hr style="margin:8px 0;">
 </div>
 
+
+
 <script>
-// ==================== CREDENTIALS ====================
-// ── Système d'authentification dynamique ──────────────────────────
+
+// RÈGLES FIRESTORE — à copier dans console Firebase → Firestore → Rules
+// rules_version = '2';
+// service cloud.firestore {
+//   match /databases/{database}/documents {
+//     match /{document=**} { allow read, write: if request.auth != null; }
+//   }
+// }
+
 var DEFAULT_ACCOUNTS = {
   admin: { password:'desps@2026', role:'admin', name:'DIOMANDE YAYA',
            service:'SERVICE DIGITALISATION', createdAt:'2026-01-01', active:true, locked:false, attempts:0 },
@@ -1704,25 +1783,7 @@ var DEFAULT_ACCOUNTS = {
 var MAX_ATTEMPTS = 5;  // verrouillage après 5 tentatives
 var SESSION_TIMEOUT = 60; // minutes
 
-function loadUsers() {
-  var stored = localStorage.getItem('desps_accounts');
-  if (stored) {
-    try { return JSON.parse(stored); } catch(e){}
-  }
-  localStorage.setItem('desps_accounts', JSON.stringify(DEFAULT_ACCOUNTS));
-  return JSON.parse(JSON.stringify(DEFAULT_ACCOUNTS));
-}
-function saveUsers(accounts) {
-  localStorage.setItem('desps_accounts', JSON.stringify(accounts));
-}
-function hashPw(pw) {
-  // Simple XOR obfuscation (not crypto, but hides plaintext)
-  var k='DESPS2026MENAET';var r='';
-  for(var i=0;i<pw.length;i++) r+=String.fromCharCode(pw.charCodeAt(i)^k.charCodeAt(i%k.length));
-  return btoa(r);
-}
 
-// ==================== DATA ====================
 var INIT = {
   bureau: [{"id":"00001","date_obtention":"2025-04-20","num_serie":"5CD337DG4V","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDESP","etat":"Nouvel PC","date_remise":"2025-04-20","date_restitution":null,"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":""},{"id":"00002","date_obtention":"2025-04-28","num_serie":"5CD337DFJX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDEPMI","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","email":""},{"id":"00003","date_obtention":"2025-04-28","num_serie":"5CD337DGQX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","email":"blangomail@gmail.com"},{"id":"00004","date_obtention":"2025-04-28","num_serie":"5CD337DF8T","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","email":"heurtache@yahoo.fr"},{"id":"00005","date_obtention":"2025-04-28","num_serie":"5CD336C52Q","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","email":"marietteaudreyca6@gmail.com"},{"id":"00006","date_obtention":"2025-04-28","num_serie":"5CD3359FBK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SICRE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","email":""},{"id":"00007","date_obtention":"2025-04-28","num_serie":"5CD337DFKX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","email":"sekabricecocobeu@gmail.com"},{"id":"00008","date_obtention":"2025-04-28","num_serie":"5CD32394MS","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","email":"traoreadama@gmail.com"},{"id":"00009","date_obtention":"2025-04-28","num_serie":"5CD337DFFQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KONAN KOUAME JEAN BOSCO","bureau":"23\u00e8me porte 34","telephone":"707074553","email":"jboscokonan@gmail.com"},{"id":"00010","date_obtention":"2025-04-28","num_serie":"5CD3368V75","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"AKA KOFFI CHRISTIAN FABRICE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00011","date_obtention":"2025-04-28","num_serie":"5CD336C59R","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY YOUSSOUF","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00012","date_obtention":"2025-04-28","num_serie":"5CD336C3XF","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"YAO KOFFI JEAN DESIRE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00013","date_obtention":"2025-04-28","num_serie":"5CD337DFQK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KOUADIO KONAN PARFAIT","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00014","date_obtention":"2025-04-28","num_serie":"5CD337DG7G","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"DIALLO NOUHOUN","bureau":"23\u00e8me porte 28","telephone":"","email":""},{"id":"00015","date_obtention":"2025-04-28","num_serie":"5CD336CKVK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00016","date_obtention":"2025-04-28","num_serie":"5CD337DG09","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SOUMAHORO LOSSENI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00017","date_obtention":"2025-05-06","num_serie":"5CD337DFR1","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"LOBA BI JEAN CLAUDE","bureau":"23\u00e8me porte 25","telephone":"0748597416","email":""},{"id":"00018","date_obtention":"2025-05-06","num_serie":"5CD3359FH7","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"DIOMANDE MARIAMA","bureau":"23\u00e8me porte 25","telephone":"0757350977","email":""},{"id":"00019","date_obtention":"2025-05-06","num_serie":"5CD337DFWQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"BOKA SOUMAHORO CHRISTIAN","bureau":"23\u00e8me porte 25","telephone":"0777501960","email":""},{"id":"00020","date_obtention":"2025-05-06","num_serie":"5CD337DFF3","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"GBAMAN KOUAME INNOCENT","bureau":"23\u00e8me porte 25","telephone":"0707700285","email":"gbamankouame@gmail.com"},{"num_ordre":"46","nom":"BOHOUSSOU AYA ISABELLE","bureau":"23\u00e8me Porte 42","telephone":"07 47 42 14 07","email":"","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00046"},{"num_ordre":"47","nom":"ANO CLAUDE FRANCOIS DE SALES","bureau":"23 \u00e8me Porte 40","telephone":"01 73 94 48 29","email":"claudeano@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00047"},{"num_ordre":"48","nom":"YOBOU JACOB WILLIAM","bureau":"23 \u00e8me Porte 40","telephone":"07 59 59 16 98","email":"yobouwilliamjacob@yahoo.fr","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00048"},{"num_ordre":"49","nom":"ZAOUI GUIE","bureau":"23 \u00e8me Porte 24","telephone":"07 07 00 87 99","email":"heurtache@yahoo,fr","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00049"},{"num_ordre":"50","nom":"DIOMANDE YAYA","bureau":"23 \u00e8me Porte 18","telephone":"01 40 99 58 77","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SDEPMI","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00050"},{"num_ordre":"51","nom":"BOMI FOUELOU","bureau":"23 \u00e8me Porte 35","telephone":"07 07 81 29 67","email":"Non renseigner","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00051"},{"num_ordre":"52","nom":"Mme AMANY AGATHE","bureau":"18 \u00e8me Porte  25","telephone":"07 07 44 48 67","email":"konan_amanyagathe@yahoo,fr","projet":"DESPS","service":"SDESP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00052"},{"num_ordre":"53","nom":"SILUE SALIFOU","bureau":"23\u00e8me Porte 35","telephone":"01 52 62 20 64","email":"saifeulis223@gmail.com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00053"},{"num_ordre":"54","nom":"M. YOBOUET SIMPLICE","bureau":"23 \u00e8me Porte 35","telephone":"07 08 21 31 33","email":"","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00054"},{"num_ordre":"55","nom":"ENOC KEFFA","bureau":"23 \u00e8me Porte 34","telephone":"07 79 36 70 79","email":"","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00055"},{"num_ordre":"56","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  Porte 19","telephone":"0505 39 08 62","email":"blangomail@gmail.com","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"DELL core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00056"},{"num_ordre":"57","nom":"BEUGRE Reine Felix","bureau":"23 \u00e8me  Porte 42","telephone":"07 47 14 62 52","email":"lobroreinefeliciebe@gmail.com","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00057"},{"num_ordre":"58","nom":"TRAORE ADAMA","bureau":"23 \u00e8me Porte 35","telephone":"07 47 47 20 11","email":"traoreadama@gmail,com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00058"}],
   portables: [{"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","projet":"CLEF","email":"","date_obtention":"2025-04-20","service":"SDESP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DG4V","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SDEPMI","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFJX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","projet":"CLEF","email":"blangomail@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DGQX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","projet":"CLEF","email":"heurtache@yahoo.fr","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DF8T","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","projet":"CLEF","email":"marietteaudreyca6@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD336C52Q","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SICRE","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD3359FBK","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","projet":"CLEF","email":"sekabricecocobeu@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFKX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","projet":"CLEF","email":"traoreadama@gmail.com","date_obtention":"2025-04-28","service":"SDPSEPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD32394MS","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"DIOMANDE YAYA","bureau":"23\u00e8 \u00c9tage porte 18","telephone":"0140995877","projet":"PATEB","email":"diomyaya28@gmail.com","date_obtention":"2025-08-26","service":"SERVICE DIGITALISATION","marque":"HP Probook","num_serie":"1H85100ZZVC","cpu":"Intel Ultra 7 155U","stockage":"1 To","ram":"16 Go","etat":"Nouveau","date_restitution":null},{"nom":"BEUGRE JOSEPH DIMITRI","bureau":"23EME ETAGE","telephone":"0707160929","projet":"PATEB","email":"dimitrijbeugre@gmail.com","date_obtention":"2025-11-06","service":"GESTION FNE SECONDAIRE","marque":"HP","num_serie":"1H84331W7Z","cpu":"INTEL","stockage":"1 TERRA","ram":"16G","etat":"Nouveau","date_restitution":null},{"num_ordre":"9","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"0707722000","email":"armandgbocli@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DH2J","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"10","nom":"KONE DASSE EMILIENNE","bureau":"23\u00e8me porte 25","telephone":"0707648904","email":"kdeg2010@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFLI","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"11","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52366","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"12","nom":"Mme GABOU Elisabeth","bureau":"23 \u00e8me  porte 19","telephone":"01O1298519","email":"Elloelisabeth@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52367","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"13","nom":"BOMI FOUEULO","bureau":"23 \u00e8me  porte 35","telephone":"707812967","email":"foueulobomi@gmail.com","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85101001C","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"14","nom":"LIGBET JEAN LEVIS","bureau":"18\u00e8me porte 24","telephone":"778746126","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7 PROBOOK 460 G11","num_serie":"1H85100ZZZC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"15","nom":"SILUE FONNIBEGUE SALIFOU","bureau":"23 \u00e8me  porte 35","telephone":"0152622064","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H8510100ZZY","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"16","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"PATEB","service":"SDPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZWC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"17","nom":"Mme KAMAGATE Matagar\u00e9 Epse OUATTARA","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZXC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"19","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831K7P","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"20","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831KRQ","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"21","nom":"S/D M, ALLODJI  Aymar","bureau":"23  \u00e8me Porte :  27","telephone":"747731154","email":"allodjiaymar@yahoo,fr","projet":"PIP","service":"SDGFNE","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC37","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"23","nom":"TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC61","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"24","nom":"Mr TRAORE ZAHANON","bureau":"18 \u00e8me \u00e9tage Porte : 34","telephone":"708480784","email":"zahabd2011@hotmail.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD45273ZX","cpu":"3,8 Ghz","stockage":"1 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"25","nom":"Mr ZENA BI","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"506790240","email":"biflazan@yahoo.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD452740H","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"27","nom":"Mr ZENA BI","bureau":"19 \u00e8me \u00e9tage Porte : 35","telephone":"506790241","email":"biflazan@yahoo.fr","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG81622SN","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Non Restitu\u00e9)","date_obtention":"26/08/2025","date_restitution":"05/09/2025","statut":"\u2713 Restitue"},{"num_ordre":"28","nom":"Mr KOFFI STEPHANE","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"747625950","email":"","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8364099","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"30","nom":"Mme KAMAGATE Matagar\u00e9","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"DESPS-KPD","service":"SDPSEP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8360M82","cpu":"2,4 Ghz","stockage":"256 Go","ram":"16 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"31","nom":"Mr TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5GCICC84981","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"33","nom":"M. TOURE SIE PECROWELE CHRISTOPHE","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"758559503","email":"","projet":"DESPS-FASFE","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core i7","num_serie":"CND3512477","cpu":"1,7 GHz","stockage":"500 Go","ram":"8 Go","etat":"Nouvel PC","date_obtention":"24/07/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"35","nom":"M. COULIBALY SIRIKI","bureau":"24\u00e8me - Porte 24","telephone":"0778129534","email":"sircoul@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VYJ","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"36","nom":"M. Traore Yacouba","bureau":"23\u00e8me \u00e9tage porte 26","telephone":"0748820043","email":"traoreyacoub@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331W49","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"37","nom":"M. KAN\u00c9 ADAMA","bureau":"23eme - Porte 41","telephone":"0575213280","email":"Kaneadama72@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQPC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"38","nom":"M. KONE POGBAN KATANGUI","bureau":"23\u00e8me - Porte 41","telephone":"0585893137","email":"rahimkatangui@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQXC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"39","nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":"","projet":"UNICEF","service":"SDESP","type_machine":"PC Portable","marque":"HUAWEI AMD RYZEN","num_serie":"M5EPM21106000418","cpu":"2,8 Ghz","stockage":"250 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"12/08/2024","date_restitution":"17/11/2025","statut":"\u2713 Restitue"},{"num_ordre":"40","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"1H85100ZZZ","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"20/10/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"41","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"42","nom":"M. MIAN","bureau":"23 \u00e8me porte","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"43","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"44","nom":"KOFFI AMENAN FLAVIE","bureau":"23 \u00e8me  porte 40","telephone":"708393996","email":"","projet":"UNICEF","service":"SCOURRIER","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"}],
@@ -1731,30 +1792,26 @@ var INIT = {
 };
 
 // DRENAET filter: services containing DRENA or specific keywords
+
+
+
 var DRENA_KEYWORDS = ['DRENA','DRENAET','REGIONAL','REGION'];
 
-function isDrena(r) {
-  var svc = (r.service||'').toUpperCase();
-  return DRENA_KEYWORDS.some(function(k){ return svc.includes(k); });
-}
+var DB={};
+var PGSZ=15;
+var PG={};
+var editIdx=null,editType=null,gSearch='',currentView='dashboard';
+var currentUser=null;
+var LABELS={id:'N Ordre',num_ordre:'N Ordre',nom:'Nom & Prénoms',bureau:'Bureau/Étage/Porte',telephone:'Téléphone',email:'Email',projet:'Projet',service:'Service/Sous-Direction',marque:'Marque & Modèle',num_serie:'N de Série',cpu:'Processeur CPU',stockage:'Stockage',ram:'Mémoire RAM',etat:'Etat',date_obtention:'Date obtention',date_restitution:'Date restitution',date_remise:'Date de remise',caracteristiques:'Caractéristiques',type_machine:'Type machine',statut:'Statut'};
 
-var DB = {};
-var PGSZ = 15;
-var PG = {};
-var editIdx = null, editType = null, gSearch = '';
-var currentUser = null;
 
-var LABELS = {
-  id:'N° Ordre', num_ordre:'N° Ordre', nom:'Nom & Prénoms', bureau:'Bureau/Étage/Porte',
-  telephone:'Téléphone', email:'Email', projet:'Projet', service:'Service/Sous-Direction',
-  marque:'Marque & Modèle', num_serie:'N° de Série', cpu:'Processeur (CPU)',
-  stockage:'Stockage', ram:'Mémoire RAM', etat:'État',
-  date_obtention:'Date obtention', date_restitution:'Date de restitution',
-  date_remise:'Date de remise', caracteristiques:'Caractéristiques',
-  type_machine:'Type machine', statut:'Statut',
-};
+// Chart.js instances
+var _chartProjets=null,_chartEtats=null,_chartGenre=null,_chartServices=null,_projetsIsBar=true;
+var CHART_COLORS=['#00C9A7','#5ba3f0','#F5841F','#f4b942','#e63946','#a64ccc','#94a3b8','#3dccc1','#ff8c69','#6ec6ff'];
+var ETAT_COLORS={'Nouvel PC':'#00C9A7','Nouveau':'#3dccc1','N/S':'#5ba3f0','Ancien PC':'#F5841F','Ancien PC (Restitué)':'#f4b942','Ancien PC (Non Restitué)':'#e63946','En Maintenance':'#a64ccc'};
 
-// ==================== GENDER DETECTION ====================
+
+
 function detectGenre(nom) {
   if (!nom) return '';
   var n = nom.toLowerCase();
@@ -1769,115 +1826,24 @@ function detectGenre(nom) {
   return 'M';
 }
 
-// ==================== INIT ====================
-window.onload = function() {
-  // Check saved session
-  var saved = sessionStorage.getItem('desps_user');
-  if (saved) {
-    var u = JSON.parse(saved);
-    setUser(u.login, u.role, u.name);
-  }
-  // Enter key for login
-  document.getElementById('login-pw').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-  document.getElementById('login-id').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
-};
 
-function initApp() {
-  for (var k of Object.keys(INIT)) {
-    var stored = localStorage.getItem('desps26_'+k);
-    DB[k] = stored ? JSON.parse(stored) : INIT[k].map(function(r){ return Object.assign({}, r); });
-    // Add genre if missing
-    DB[k].forEach(function(r){ if(!r.genre) r.genre = detectGenre(r.nom||''); });
-  }
-  updateBadges(); updateStats(); buildCharts(); buildDashTable();
-  populateFilters('bureau'); populateFilters('portables');
-  populateFilters('imprimantes'); populateFilters('tablettes');
-  populatePrintServices();
-  renderTbl('bureau'); renderTbl('portables');
-  renderTbl('imprimantes'); renderTbl('tablettes');
-  renderDrenaTbls();
-  buildRapport();
-  previewPrint();
-  startClock();
-  buildStatsPage();
-  refreshTrash();
+function isDrena(r) {
+  var svc = (r.service||'').toUpperCase();
+  return DRENA_KEYWORDS.some(function(k){ return svc.includes(k); });
 }
+
 
 function save(k){ localStorage.setItem('desps26_'+k, JSON.stringify(DB[k])); }
 
-// ==================== AUTH ====================
-function doLogin() {
-  var id = document.getElementById('login-id').value.trim().toLowerCase();
-  var pw = document.getElementById('login-pw').value;
-  var role = document.getElementById('login-role').value;
-  var errEl = document.getElementById('login-error');
 
-  if (!id || !pw) {
-    errEl.style.display='block';
-    errEl.textContent='Veuillez renseigner votre identifiant et mot de passe.';
-    return;
-  }
-
-  var accounts = loadUsers();
-  var acc = accounts[id];
-
-  if (!acc) {
-    errEl.style.display='block';
-    errEl.textContent='Identifiant inconnu. Contactez votre administrateur.';
-    return;
-  }
-  if (!acc.active) {
-    errEl.style.display='block';
-    errEl.textContent='Ce compte est désactivé. Contactez l\'administrateur.';
-    return;
-  }
-  if (acc.locked) {
-    errEl.style.display='block';
-    errEl.textContent='Compte verrouillé après '+MAX_ATTEMPTS+' tentatives. Contactez l\'administrateur.';
-    return;
-  }
-  if (acc.role !== role) {
-    errEl.style.display='block';
-    errEl.textContent='Ce compte n\'a pas le rôle sélectionné. Choisissez : '+acc.role+'.';
-    return;
-  }
-
-  // Check password
-  var pwOk = (acc.password === pw) || (acc.passwordHash && acc.passwordHash === hashPw(pw));
-  if (!pwOk) {
-    acc.attempts = (acc.attempts||0) + 1;
-    if (acc.attempts >= MAX_ATTEMPTS) {
-      acc.locked = true;
-      notifLogin('Compte verrouillé après '+MAX_ATTEMPTS+' échecs. Contactez l\'administrateur.');
-    } else {
-      notifLogin('Mot de passe incorrect. '+(MAX_ATTEMPTS-acc.attempts)+' tentative(s) restante(s).');
-    }
-    accounts[id] = acc;
-    saveUsers(accounts);
-    errEl.style.display='block';
-    errEl.textContent = acc.locked
-      ? 'Compte verrouillé. Contactez l\'administrateur.'
-      : 'Mot de passe incorrect. '+(MAX_ATTEMPTS-acc.attempts)+' tentative(s) restante(s).';
-    return;
-  }
-
-  // SUCCESS
-  acc.attempts = 0;
-  acc.lastLogin = new Date().toISOString();
-  accounts[id] = acc;
-  saveUsers(accounts);
-  errEl.style.display='none';
-
-  var name = acc.name || id;
-  var userData = {login:id, role:acc.role, name:name, loginTime: Date.now(), service: acc.service||'DESPS'};
-  sessionStorage.setItem('desps_user', JSON.stringify(userData));
-  addLog('Connexion : '+id+' ('+acc.role+') depuis '+navigator.userAgent.slice(0,40));
-  setUser(id, acc.role, name);
-}
-
-function notifLogin(msg) {
-  var el=document.getElementById('login-error');
-  el.style.display='block'; el.textContent=msg;
+function doLogout() {
+  sessionStorage.removeItem('desps_user');
+  document.body.className = '';
+  document.getElementById('login-page').style.display = 'flex';
+  document.getElementById('app').classList.remove('on');
+  document.getElementById('login-id').value = '';
+  document.getElementById('login-pw').value = '';
+  currentUser = null;
 }
 
 
@@ -1885,9 +1851,6 @@ function setUser(login, role, name) {
   currentUser = {login:login, role:role, name:name};
   // Set role class on body
   document.body.className = 'role-' + role;
-  // Update admin nav visibility
-  document.querySelectorAll('.admin-nav-only').forEach(function(el){ el.style.display = role==='admin' ? '' : 'none'; });
-  document.querySelectorAll('.user-nav-only').forEach(function(el){ el.style.display = role==='user' ? 'flex' : 'none'; });
   // Update UI
   document.getElementById('sb-avatar').textContent = name.charAt(0).toUpperCase();
   document.getElementById('sb-avatar').className = 'sb-avatar ' + role;
@@ -1905,242 +1868,31 @@ function setUser(login, role, name) {
   initApp();
 }
 
-function doLogout() {
-  sessionStorage.removeItem('desps_user');
-  document.body.className = '';
-  document.getElementById('login-page').style.display = 'flex';
-  document.getElementById('app').classList.remove('on');
-  document.getElementById('login-id').value = '';
-  document.getElementById('login-pw').value = '';
-  currentUser = null;
-}
 
-// ══════════════════════════════════════════════════════
-// USERS MANAGEMENT
-// ══════════════════════════════════════════════════════
-function showUsersTab(tab) {
-  ['list','create','security','log'].forEach(function(t){
-    var c=document.getElementById('utab-content-'+t);
-    var b=document.getElementById('utab-'+t);
-    if(c){c.style.display=(t===tab?'block':'none'); c.className='users-tab'+(t===tab?' active':'');}
-    if(b){b.className='btn btn-sm '+(t===tab?'btn-primary':'btn-sec');}
-  });
-  if(tab==='list') refreshUsersList();
-  if(tab==='log')  refreshLog();
-}
-
-function refreshUsersList() {
-  var el = document.getElementById('users-list-area'); if(!el) return;
-  var accounts = loadUsers();
-  var html2 = '';
-  Object.keys(accounts).forEach(function(id) {
-    var a = accounts[id];
-    var roleColor = a.role==='admin' ? 'var(--gold)' : 'var(--blue-light)';
-    var roleBg    = a.role==='admin' ? 'rgba(244,185,66,0.15)' : 'rgba(91,163,240,0.15)';
-    var lockBadge = a.locked
-      ? '<span class="badge b-red" style="margin-left:6px;">🔒 Verrouillé</span>' : '';
-    var activeBadge = !a.active
-      ? '<span class="badge b-gray" style="margin-left:6px;">Désactivé</span>' : '';
-    html2 += '<div class="user-card">'
-      + '<div class="uc-avatar" style="background:'+roleBg+';color:'+roleColor+';">'+a.name.charAt(0)+'</div>'
-      + '<div class="uc-info">'
-        + '<div class="uc-name">'+a.name+' <span class="badge" style="background:'+roleBg+';color:'+roleColor+';font-size:10px;">'+( a.role==='admin'?'👑 Admin':'👤 Utilisateur')+'</span>'+lockBadge+activeBadge+'</div>'
-        + '<div class="uc-meta">ID : <strong>'+id+'</strong> &nbsp;|&nbsp; Service : '+(a.service||'—')
-          +'&nbsp;|&nbsp; Créé : '+(a.createdAt||'—')
-          +(a.lastLogin?' &nbsp;|&nbsp; Dernière connexion : '+new Date(a.lastLogin).toLocaleString('fr-FR'):'')
-          +'&nbsp;|&nbsp; Tentatives : '+(a.attempts||0)+'/5'+'</div>'
-      + '</div>'
-      + '<div class="uc-actions">'
-        + (id!=='admin'?'<button class="btn btn-sec btn-sm" onclick="editUserModal(\''+id+'\')">✏️</button>':'')
-        + (a.locked?'<button class="btn btn-sec btn-sm" onclick="unlockUser(\''+id+'\')">🔓</button>':'')
-        + (a.active?'<button class="btn btn-danger btn-sm" onclick="toggleUserActive(\''+id+'\',false)">⛔</button>':'<button class="btn btn-sec btn-sm" onclick="toggleUserActive(\''+id+'\',true)">✅</button>')
-        + (id!=='admin'&&id!=='user'?'<button class="btn btn-danger btn-sm" onclick="deleteUser(\''+id+'\')">🗑</button>':'')
-      + '</div>'
-    + '</div>';
-  });
-  el.innerHTML = html2 || '<p style="color:var(--txt3)">Aucun compte trouvé.</p>';
-}
-
-function createUserAccount() {
-  var login   = (document.getElementById('new-login')||{}).value || '';
-  var name    = (document.getElementById('new-name')||{}).value || '';
-  var role    = (document.getElementById('new-role')||{}).value || 'user';
-  var service = (document.getElementById('new-service')||{}).value || '';
-  var pw      = (document.getElementById('new-pw')||{}).value || '';
-  var pw2     = (document.getElementById('new-pw2')||{}).value || '';
-  var msgEl   = document.getElementById('create-user-msg');
-
-  function showMsg(msg, ok) {
-    msgEl.style.display='block';
-    msgEl.style.background=ok?'rgba(0,201,167,0.1)':'rgba(230,57,70,0.1)';
-    msgEl.style.border='1px solid '+(ok?'rgba(0,201,167,0.3)':'rgba(230,57,70,0.3)');
-    msgEl.style.color=ok?'var(--accent)':'var(--red)';
-    msgEl.textContent=msg;
+function doLogin() {
+  var id = document.getElementById('login-id').value.trim();
+  var pw = document.getElementById('login-pw').value;
+  var role = document.getElementById('login-role').value;
+  var errEl = document.getElementById('login-error');
+  
+  // Check credentials
+  var creds = { admin:{id:'admin',pw:'desps@2026'}, user:{id:'user',pw:'desps2026'} };
+  var ok = false;
+  if (role === 'admin' && id === creds.admin.id && pw === creds.admin.pw) ok = true;
+  if (role === 'user'  && id === creds.user.id  && pw === creds.user.pw)  ok = true;
+  
+  if (!ok) {
+    errEl.style.display = 'block';
+    errEl.textContent = 'Identifiant ou mot de passe incorrect. Vérifiez vos accès.';
+    return;
   }
-
-  var minPw = parseInt((localStorage.getItem('desps_sec_minpw')||'8'));
-  if (!login) { showMsg('L\'identifiant est obligatoire.', false); return; }
-  if (!/^[a-z0-9._-]+$/.test(login)) { showMsg('Identifiant invalide (lettres, chiffres, . _ - uniquement).', false); return; }
-  if (!name)  { showMsg('Le nom complet est obligatoire.', false); return; }
-  if (!pw)    { showMsg('Le mot de passe est obligatoire.', false); return; }
-  if (pw.length < minPw) { showMsg('Le mot de passe doit contenir au moins '+minPw+' caractères.', false); return; }
-  if (pw !== pw2) { showMsg('Les mots de passe ne correspondent pas.', false); return; }
-
-  var accounts = loadUsers();
-  if (accounts[login]) { showMsg('Cet identifiant existe déjà.', false); return; }
-
-  accounts[login] = {
-    password:pw, role:role, name:name.toUpperCase(), service:service,
-    createdAt:new Date().toISOString().slice(0,10),
-    active:true, locked:false, attempts:0
-  };
-  saveUsers(accounts);
-  addLog('Compte créé : '+login+' ('+role+') par admin');
-  showMsg('✅ Compte "'+login+'" créé avec succès !', true);
-  ['new-login','new-name','new-service','new-pw','new-pw2'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.value='';
-  });
-  notif('✅ Compte '+login+' créé !','ok');
+  errEl.style.display = 'none';
+  var name = role === 'admin' ? 'DIOMANDE YAYA' : 'Utilisateur DESPS';
+  setUser(id, role, name);
+  sessionStorage.setItem('desps_user', JSON.stringify({login:id, role:role, name:name}));
 }
 
-function editUserModal(id) {
-  var accounts = loadUsers();
-  var a = accounts[id]; if(!a) return;
-  var newPw = prompt('Nouveau mot de passe pour "'+id+'" (laisser vide pour ne pas changer) :','');
-  if (newPw === null) return;
-  if (newPw && newPw.length < 4) { notif('Mot de passe trop court','err'); return; }
-  if (newPw) { a.password = newPw; a.passwordHash = hashPw(newPw); }
-  var newName = prompt('Nouveau nom complet :', a.name);
-  if (newName === null) return;
-  if (newName) a.name = newName.toUpperCase();
-  accounts[id] = a;
-  saveUsers(accounts);
-  addLog('Compte modifié : '+id+' par admin');
-  notif('✅ Compte '+id+' mis à jour','ok');
-  refreshUsersList();
-}
 
-function deleteUser(id) {
-  if (id==='admin') { notif('Impossible de supprimer le compte admin','err'); return; }
-  if (!confirm('Supprimer définitivement le compte "'+id+'" ?')) return;
-  var accounts = loadUsers();
-  delete accounts[id];
-  saveUsers(accounts);
-  addLog('Compte supprimé : '+id+' par admin');
-  notif('🗑 Compte '+id+' supprimé','info');
-  refreshUsersList();
-}
-
-function toggleUserActive(id, active) {
-  var accounts = loadUsers();
-  if (!accounts[id]) return;
-  accounts[id].active = active;
-  saveUsers(accounts);
-  addLog((active?'Compte activé':'Compte désactivé')+' : '+id+' par admin');
-  notif((active?'✅ Compte activé':'⛔ Compte désactivé'),'ok');
-  refreshUsersList();
-}
-
-function unlockUser(id) {
-  var accounts = loadUsers();
-  if (!accounts[id]) return;
-  accounts[id].locked = false;
-  accounts[id].attempts = 0;
-  saveUsers(accounts);
-  addLog('Compte déverrouillé : '+id+' par admin');
-  notif('🔓 Compte '+id+' déverrouillé','ok');
-  refreshUsersList();
-}
-
-function unlockAllAccounts() {
-  var accounts = loadUsers();
-  Object.keys(accounts).forEach(function(id){
-    accounts[id].locked = false;
-    accounts[id].attempts = 0;
-  });
-  saveUsers(accounts);
-  notif('🔓 Tous les comptes déverrouillés','ok');
-  refreshUsersList();
-}
-
-function resetUserAttempts() {
-  var accounts = loadUsers();
-  Object.keys(accounts).forEach(function(id){ accounts[id].attempts = 0; });
-  saveUsers(accounts);
-  notif('🔄 Tentatives réinitialisées','ok');
-  refreshUsersList();
-}
-
-function resetAllUsers() {
-  if (!confirm('⚠️ Réinitialiser TOUS les comptes ? Cette action est irréversible.')) return;
-  localStorage.setItem('desps_accounts', JSON.stringify(DEFAULT_ACCOUNTS));
-  notif('⚠️ Comptes réinitialisés','info');
-  refreshUsersList();
-}
-
-function saveSecuritySettings() {
-  var ma = document.getElementById('sec-max-attempts');
-  var mp = document.getElementById('sec-min-pw');
-  if(ma) localStorage.setItem('desps_sec_maxattempts', ma.value);
-  if(mp) localStorage.setItem('desps_sec_minpw', mp.value);
-  notif('💾 Politique de sécurité enregistrée','ok');
-}
-
-function togglePwVis(id) {
-  var el = document.getElementById(id); if(!el) return;
-  el.type = el.type==='password' ? 'text' : 'password';
-}
-
-// Password strength checker
-document.addEventListener('DOMContentLoaded', function(){
-  var pwEl = document.getElementById('new-pw');
-  if (pwEl) pwEl.addEventListener('input', function(){
-    var pw = this.value, score=0, txt='';
-    if(pw.length>=8)score++;if(pw.length>=12)score++;
-    if(/[A-Z]/.test(pw))score++;if(/[0-9]/.test(pw))score++;if(/[^A-Za-z0-9]/.test(pw))score++;
-    var colors=['#e63946','#e63946','#F5841F','#f4b942','#00C9A7','#00C9A7'];
-    var labels=['','Très faible','Faible','Moyen','Fort','Très fort'];
-    var bar=document.getElementById('pw-strength-bar');
-    var ltxt=document.getElementById('pw-strength-txt');
-    if(bar){bar.style.width=(pw?Math.max(score*20,10):0)+'%';bar.style.background=colors[score]||'#e63946';}
-    if(ltxt) ltxt.textContent = pw ? labels[score]||'' : '';
-  });
-});
-
-// Connexion log
-function addLog(msg) {
-  var logs = JSON.parse(localStorage.getItem('desps_log')||'[]');
-  logs.unshift({time:new Date().toISOString(), msg:msg});
-  if(logs.length>50) logs=logs.slice(0,50);
-  localStorage.setItem('desps_log', JSON.stringify(logs));
-}
-
-function refreshLog() {
-  var el=document.getElementById('users-log-area'); if(!el) return;
-  var logs = JSON.parse(localStorage.getItem('desps_log')||'[]');
-  if(!logs.length){el.innerHTML='<p style="color:var(--txt3)">Aucune activité enregistrée.</p>';return;}
-  el.innerHTML='<div style="display:flex;flex-direction:column;gap:6px;">'
-    +logs.map(function(l){
-      return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:7px;font-size:12px;">'
-        +'<span style="color:var(--txt3);flex-shrink:0;">'+new Date(l.time).toLocaleString('fr-FR')+'</span>'
-        +'<span style="color:var(--txt);">'+l.msg+'</span>'
-        +'</div>';
-    }).join('')+'</div>';
-}
-
-function clearLog() {
-  if(!confirm('Effacer le journal ?')) return;
-  localStorage.removeItem('desps_log');
-  notif('🗑 Journal effacé','info');
-  refreshLog();
-}
-
-// Override setUser to also log
-var _origSetUser = null;
-
-// ══════════════════════════════════════════════════════
-// NAV
-// ══════════════════════════════════════════════════════
 function nav(page) {
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
@@ -2156,187 +1908,50 @@ function nav(page) {
     tablettes:'📱 Tablettes & Autres', import:'📥 Import / Export',
     rapport:'📊 Rapport d\'activité', print:'🖨️ Impression listes',
     'drena-bureau':'💻 DRENAET — Bureaux', 'drena-portables':'🖥️ DRENAET — Portables',
-    'drena-impr':'🖨️ DRENAET — Imprimantes', 'drena-tab':'📱 DRENAET — Tablettes',
-    guide:"📖 Guide d'utilisation", users:'👥 Comptes utilisateurs',
-    stats:'📊 Statistiques', corbeille:'🗑️ Corbeille',
-    'stats-bureau':'🖥️ Statistiques — Ordinateurs Bureaux',
-    'stats-portables':'💻 Statistiques — Portables',
-    'stats-projets':'📂 Statistiques par Projet',
-    'stats-services':'🏢 Statistiques par Service',
-    'stats-genre':'👥 Statistiques par Genre',
-    'stats-drenaet':'🏫 Statistiques DRENAET',
-    'stats-etat':'⚙️ État du Parc'
+    'drena-impr':'🖨️ DRENAET — Imprimantes', 'drena-tab':'📱 DRENAET — Tablettes'
   };
   document.getElementById('page-title').textContent = titles[page]||page;
   if (page === 'rapport') buildRapport();
   if (page === 'print') previewPrint();
-  if (page === 'users') { refreshUsersList(); refreshLog(); }
-  if (page === 'stats') {
-    buildStatsPage();
-    // Ensure sub-menu is open
-    var sub=document.getElementById('stats-submenu');
-    var par=document.getElementById('nav-stats-parent');
-    if(sub){sub.classList.add('open');}
-    if(par){par.classList.add('sub-open');}
-  }
-  if (page === 'corbeille') { refreshTrash(); }
 }
 
-// ==================== STATS ====================
+
+function initApp() {
+  for (var k of Object.keys(INIT)) {
+    var stored = localStorage.getItem('desps26_'+k);
+    DB[k] = stored ? JSON.parse(stored) : INIT[k].map(function(r){ return Object.assign({}, r); });
+    // Add genre if missing
+    DB[k].forEach(function(r){ if(!r.genre) r.genre = detectGenre(r.nom||''); });
+  }
+  updateBadges(); updateStats(); buildCharts(); buildDashTable();
+  populateFilters('bureau'); populateFilters('portables');
+  populateFilters('imprimantes'); populateFilters('tablettes');
+  populatePrintServices();
+  renderTbl('bureau'); renderTbl('portables');
+  renderTbl('imprimantes'); renderTbl('tablettes');
+  renderDrenaTbls();
+  buildRapport();
+  previewPrint();
+
+  setTimeout(function(){if(window._fbReady)syncFromFirestore();},500);
+}
+
+
 function updateBadges() {
   document.getElementById('nb-bureau').textContent = DB.bureau.length;
   document.getElementById('nb-portables').textContent = DB.portables.length;
   document.getElementById('nb-impr').textContent = DB.imprimantes.length;
   document.getElementById('nb-tab').textContent = DB.tablettes.length;
 }
+
+
 function updateStats() {
-  var drenaB = DB.bureau.filter(isDrena).length;
-  var drenaP = DB.portables.filter(isDrena).length;
-  var drenaI = DB.imprimantes.filter(isDrena).length;
-  var drenaT = DB.tablettes.filter(isDrena).length;
-  document.getElementById('s-bureau').textContent = DB.bureau.length - drenaB;
-  document.getElementById('s-port').textContent = DB.portables.length - drenaP;
-  document.getElementById('s-impr').textContent = DB.imprimantes.length - drenaI;
-  document.getElementById('s-tab').textContent = DB.tablettes.length - drenaT;
-  document.getElementById('s-drena-bureau').textContent = drenaB;
-  document.getElementById('s-drena-port').textContent = drenaP;
-  document.getElementById('s-drena-impr').textContent = drenaI;
-  document.getElementById('s-drena-tab').textContent = drenaT;
+  document.getElementById('s-bureau').textContent = DB.bureau.length;
+  document.getElementById('s-port').textContent = DB.portables.length;
+  document.getElementById('s-impr').textContent = DB.imprimantes.length;
+  document.getElementById('s-tab').textContent = DB.tablettes.length;
 }
 
-// ==================== CHARTS ====================
-// Chart.js instances
-var _chartProjets = null;
-var _chartEtats = null;
-var _chartGenre = null;
-var _chartServices = null;
-var _projetsIsBar = true;
-
-var CHART_COLORS = ['#00C9A7','#5ba3f0','#F5841F','#f4b942','#e63946','#a64ccc','#94a3b8','#3dccc1','#ff8c69','#6ec6ff'];
-var ETAT_COLORS = {'Nouvel PC':'#00C9A7','Nouveau':'#3dccc1','N/S':'#5ba3f0','Ancien PC':'#F5841F','Ancien PC (Restitué)':'#f4b942','Ancien PC (Non Restitué)':'#e63946','En Maintenance':'#a64ccc'};
-
-function destroyChart(ref) { if (ref) { try { ref.destroy(); } catch(e){} } return null; }
-
-function buildCharts() {
-  var all = DB.bureau.concat(DB.portables);
-  var pc = {}, ec = {}, sc = {};
-  all.forEach(function(r){
-    pc[r.projet||'N/S'] = (pc[r.projet||'N/S']||0)+1;
-    ec[r.etat||'N/S']   = (ec[r.etat||'N/S']||0)+1;
-    sc[r.service||'N/S'] = (sc[r.service||'N/S']||0)+1;
-  });
-
-  var projLabels = Object.keys(pc).sort(function(a,b){return pc[b]-pc[a];});
-  var projData   = projLabels.map(function(k){return pc[k];});
-  var projCols   = projLabels.map(function(_,i){return CHART_COLORS[i%CHART_COLORS.length];});
-
-  var etatLabels = Object.keys(ec).sort(function(a,b){return ec[b]-ec[a];});
-  var etatData   = etatLabels.map(function(k){return ec[k];});
-  var etatCols   = etatLabels.map(function(k){return ETAT_COLORS[k]||'#94a3b8';});
-
-  // DRENAET as a consolidated entry in chart
-  var drenaCount = DB.bureau.concat(DB.portables).filter(isDrena).length;
-  if (drenaCount > 0) sc['DRENAET (Directions Régionales)'] = drenaCount;
-  var svcLabels  = Object.keys(sc).sort(function(a,b){return sc[b]-sc[a];}).slice(0,12);
-  var svcData    = svcLabels.map(function(k){return sc[k];});
-  var svcColors  = svcLabels.map(function(k){
-    return k.includes('DRENA') ? 'rgba(244,185,66,0.75)' : 'rgba(91,163,240,0.7)';
-  });
-
-  var chartDefaults = {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ labels:{ color:'#94a3b8', font:{size:11} } } }
-  };
-
-  // ── 1. Histogramme Projets (toggleable to pie) ──
-  _chartProjets = destroyChart(_chartProjets);
-  var ctxP = document.getElementById('chart-projets');
-  if (ctxP) {
-    _chartProjets = new Chart(ctxP, {
-      type: _projetsIsBar ? 'bar' : 'pie',
-      data: { labels: projLabels, datasets:[{ label:'Équipements', data:projData, backgroundColor:projCols, borderColor:projCols.map(function(c){return c+'cc';}), borderWidth:1, borderRadius:6 }] },
-      options: Object.assign({}, chartDefaults, _projetsIsBar ? {
-        indexAxis:'y',
-        scales:{
-          x:{ ticks:{color:'#94a3b8',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'} },
-          y:{ ticks:{color:'#e8edf5',font:{size:11}}, grid:{display:false} }
-        },
-        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(c){return ' '+c.raw+' équipements';}}} }
-      } : {
-        plugins:{ legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11}} } }
-      })
-    });
-  }
-
-  // ── 2. Anneau États ──
-  _chartEtats = destroyChart(_chartEtats);
-  var ctxE = document.getElementById('chart-etats');
-  if (ctxE) {
-    _chartEtats = new Chart(ctxE, {
-      type:'doughnut',
-      data:{ labels:etatLabels, datasets:[{ data:etatData, backgroundColor:etatCols, borderColor:'rgba(0,0,0,0.3)', borderWidth:2, hoverOffset:8 }] },
-      options: Object.assign({}, chartDefaults, {
-        cutout:'65%',
-        plugins:{
-          legend:{ position:'right', labels:{color:'#94a3b8',font:{size:11},padding:10} },
-          tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+c.raw+' ('+Math.round(c.raw/c.dataset.data.reduce(function(a,b){return a+b;},0)*100)+'%)';}}}
-        }
-      })
-    });
-  }
-
-  // ── 3. Secteur Genre (portables) ──
-  var femmes = DB.portables.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-  var hommes = DB.portables.length - femmes;
-  _chartGenre = destroyChart(_chartGenre);
-  var ctxG = document.getElementById('chart-genre');
-  if (ctxG) {
-    _chartGenre = new Chart(ctxG, {
-      type:'pie',
-      data:{
-        labels:['♀ Féminin','♂ Masculin'],
-        datasets:[{ data:[femmes,hommes], backgroundColor:['#e63946','#5ba3f0'], borderColor:'rgba(0,0,0,0.3)', borderWidth:2, hoverOffset:8 }]
-      },
-      options: Object.assign({}, chartDefaults, {
-        plugins:{
-          legend:{ position:'bottom', labels:{color:'#94a3b8',font:{size:11}} },
-          tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+c.raw+' ('+Math.round(c.raw/DB.portables.length*100)+'%)';}}}
-        }
-      })
-    });
-  }
-
-  // ── 4. Histogramme Services ──
-  _chartServices = destroyChart(_chartServices);
-  var ctxS = document.getElementById('chart-services');
-  if (ctxS) {
-    _chartServices = new Chart(ctxS, {
-      type:'bar',
-      data:{
-        labels:svcLabels,
-        datasets:[{ label:'Équipements', data:svcData,
-          backgroundColor:svcColors, borderColor:svcLabels.map(function(k){return k.includes('DRENA')?'#f4b942':'#5ba3f0';}), borderWidth:1, borderRadius:5
-        }]
-      },
-      options: Object.assign({}, chartDefaults, {
-        scales:{
-          x:{ ticks:{color:'#94a3b8',font:{size:10},maxRotation:30}, grid:{color:'rgba(255,255,255,0.04)'} },
-          y:{ ticks:{color:'#94a3b8',font:{size:11},stepSize:1}, grid:{color:'rgba(255,255,255,0.04)'} }
-        },
-        plugins:{ legend:{display:false} }
-      })
-    });
-  }
-}
-
-function toggleChartType(which) {
-  if (which === 'projets') {
-    _projetsIsBar = !_projetsIsBar;
-    var btn = document.getElementById('btn-projets-type');
-    if (btn) btn.textContent = _projetsIsBar ? '⇌ Secteur' : '⇌ Barres';
-    buildCharts();
-  }
-}
 
 function buildDashTable() {
   document.getElementById('dash-tbl').innerHTML = DB.bureau.slice(0,10).map(function(r){
@@ -2350,7 +1965,26 @@ function buildDashTable() {
   }).join('');
 }
 
-// ==================== FILTERS ====================
+
+function buildCharts() {
+  var all = DB.bureau.concat(DB.portables);
+  var pc = {}, ec = {};
+  all.forEach(function(r){ pc[r.projet||'N/S']=(pc[r.projet||'N/S']||0)+1; ec[r.etat||'N/S']=(ec[r.etat||'N/S']||0)+1; });
+  var cols = ['#00C9A7','#5ba3f0','#F5841F','#f4b942','#e63946','#a64ccc','#94a3b8'];
+  var ecols = {'Nouvel PC':'#00C9A7','Ancien PC':'#F5841F','Ancien PC (Non Restitué)':'#e63946','Ancien PC (Restitué)':'#f4b942'};
+  function bars(obj, colmap) {
+    var mx = Math.max.apply(null, Object.values(obj));
+    return Object.entries(obj).sort(function(a,b){return b[1]-a[1];}).map(function(e,i){
+      var col = typeof colmap === 'object' && !Array.isArray(colmap) ? (colmap[e[0]]||'#5ba3f0') : colmap[i%colmap.length];
+      return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:3px;"><span>'+e[0]+'</span><strong style="color:var(--txt)">'+e[1]+'</strong></div>'
+        +'<div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;border-radius:4px;width:'+Math.round(e[1]/mx*100)+'%;background:'+col+'"></div></div></div>';
+    }).join('');
+  }
+  document.getElementById('ch-projets').innerHTML = bars(pc, cols);
+  document.getElementById('ch-etats').innerHTML = bars(ec, ecols);
+}
+
+
 function populateFilters(type) {
   var d = DB[type]; if(!d) return;
   var uniq = function(f){ return [...new Set(d.map(function(r){return r[f];}).filter(Boolean))].sort(); };
@@ -2358,19 +1992,18 @@ function populateFilters(type) {
   else if (type==='portables') { fillSel('f-p-proj',uniq('projet')); fillSel('f-p-svc',uniq('service')); fillSel('f-p-etat',uniq('etat')); }
   else if (type==='imprimantes') { fillSel('f-i-etat',uniq('etat')); }
 }
+
+
 function fillSel(id, vals) {
   var e = document.getElementById(id); if(!e) return;
   var f = e.options[0].outerHTML;
   e.innerHTML = f + vals.map(function(v){ return '<option value="'+v+'">'+v+'</option>'; }).join('');
 }
-function populatePrintServices() {
-  var all = DB.bureau.concat(DB.portables).concat(DB.imprimantes).concat(DB.tablettes);
-  var svcs = [...new Set(all.map(function(r){return r.service;}).filter(Boolean))].sort();
-  fillSel('pr-svc', svcs);
-}
+
+
 function v(id){ var e=document.getElementById(id); return e?e.value:''; }
 
-// ==================== TABLES ====================
+
 function getFiltered(type) {
   var isDrenaType = type.startsWith('drena-');
   var baseType = isDrenaType ? type.replace('drena-','').replace('bureau','bureau').replace('portables','portables').replace('impr','imprimantes').replace('tab','tablettes') : type;
@@ -2388,6 +2021,7 @@ function getFiltered(type) {
   return d;
 }
 
+
 function renderTbl(type) {
   var data = getFiltered(type), pg = PG[type]||0;
   var sl = data.slice(pg*PGSZ,(pg+1)*PGSZ);
@@ -2398,6 +2032,7 @@ function renderTbl(type) {
   tb.innerHTML = sl.map(function(r){ return buildRow(r, type, (DB[baseType]||DB[type]||[]).indexOf(r)); }).join('');
   renderPag(type, data.length, pg);
 }
+
 
 function buildRow(r, type, idx) {
   var ebg = etatBadge(r.etat);
@@ -2426,6 +2061,7 @@ function buildRow(r, type, idx) {
   return '';
 }
 
+
 function etatBadge(e) {
   var s=(e||'').toLowerCase();
   if(s.includes('nouvel')||s.includes('nouveau'))return '<td><span class="badge b-green">'+e+'</span>';
@@ -2435,6 +2071,7 @@ function etatBadge(e) {
   if(s.includes('ancien'))return '<td><span class="badge b-gray">'+e+'</span>';
   return '<td><span class="badge b-blue">'+(e||'—')+'</span>';
 }
+
 
 function renderPag(type, total, pg) {
   var pages=Math.ceil(total/PGSZ)||1, s=pg*PGSZ+1, e=Math.min((pg+1)*PGSZ,total);
@@ -2448,17 +2085,22 @@ function renderPag(type, total, pg) {
   h+='<button class="pb" '+(pg>=pages-1?'disabled':'')+' onclick="goPg('+qtype+','+(pg+1)+')">&#8250;</button>';
   pb.innerHTML=h;
 }
+
+
 function goPg(type, pg){ PG[type]=pg; renderTbl(type); }
+
 
 function renderDrenaTbls() {
   ['drena-bureau','drena-portables','drena-impr','drena-tab'].forEach(function(t){ renderTbl(t); });
 }
 
-// ==================== SEARCH ====================
+
 function globalSearch(q){ gSearch=q.trim(); ['bureau','portables','imprimantes','tablettes'].forEach(function(t){renderTbl(t);}); }
+
+
 function clearSearch(){ document.getElementById('g-search').value=''; globalSearch(''); }
 
-// ==================== CRUD ====================
+
 function openAdd(type) {
   if (!currentUser || currentUser.role !== 'admin') { notif('⛔ Accès réservé à l\'administrateur','err'); return; }
   editIdx=null; editType=type||'bureau';
@@ -2466,6 +2108,8 @@ function openAdd(type) {
   document.getElementById('m-add-title').textContent='＋ Ajouter un équipement';
   buildForm(); document.getElementById('m-add').classList.add('on');
 }
+
+
 function editRec(type, idx) {
   if (!currentUser || currentUser.role !== 'admin') { notif('⛔ Accès réservé à l\'administrateur','err'); return; }
   editIdx=idx; editType=type;
@@ -2476,6 +2120,8 @@ function editRec(type, idx) {
   Object.keys(r).forEach(function(k){ var el=document.getElementById('fld-'+k); if(el) el.value=r[k]||''; });
   document.getElementById('m-add').classList.add('on');
 }
+
+
 function buildForm() {
   var type=document.getElementById('add-type').value;
   var svcs=['SDESP','SDPP','SDEPMI','SDGFNE','SDPSEPP','SICRE','SECRETARIAT'].map(function(s){return '<option>'+s+'</option>';}).join('');
@@ -2516,6 +2162,8 @@ function buildForm() {
              :'<input type="text" id="fld-'+f.id+'" placeholder="'+(f.ph||'')+'">');
   }).join('');
 }
+
+
 function saveRecord() {
   var type=document.getElementById('add-type').value;
   var rec={};
@@ -2529,6 +2177,8 @@ function saveRecord() {
   updateBadges(); updateStats(); buildCharts(); buildDashTable();
   populateFilters(type); renderTbl(type);
 }
+
+
 function viewRec(type, idx) {
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
   var src = DB[baseType]||DB[type]||[];
@@ -2540,25 +2190,20 @@ function viewRec(type, idx) {
   }).join('')+'</div>';
   document.getElementById('m-detail').classList.add('on');
 }
+
+
 function delRec(type,idx){
-  if(!confirm('Déplacer cet enregistrement dans la corbeille ?')) return;
+  if(!confirm('Supprimer cet enregistrement ?')) return;
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
-  var src = DB[baseType]||DB[type];
-  var record = src[idx];
-  if (!record) return;
-  // Move to trash
-  var trash = JSON.parse(localStorage.getItem('desps_trash')||'[]');
-  trash.unshift({record:record, type:baseType, deletedAt:new Date().toISOString(), deletedBy:currentUser?currentUser.login:'?'});
-  if(trash.length>100) trash=trash.slice(0,100);
-  localStorage.setItem('desps_trash', JSON.stringify(trash));
-  src.splice(idx,1);
-  save(baseType); notif('🗑 Déplacé en corbeille','info');
+  (DB[baseType]||DB[type]).splice(idx,1);
+  save(baseType); notif('🗑 Supprimé','info');
   updateBadges(); updateStats(); buildCharts(); buildDashTable(); renderTbl(type);
-  refreshTrash();
 }
+
+
 function closeMod(id,e){ if(!e||e.target===document.getElementById(id)) document.getElementById(id).classList.remove('on'); }
 
-// ==================== EXPORT CSV ====================
+
 function exportCSV(type) {
   var data=DB[type]; if(!data||!data.length){notif('⚠️ Aucune donnée','err');return;}
   var keys=Object.keys(data[0]);
@@ -2567,9 +2212,11 @@ function exportCSV(type) {
   dlFile('﻿'+csv,'DESPS_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
   notif('⬇ Export CSV téléchargé','ok');
 }
+
+
 function exportAll(){ ['bureau','portables','imprimantes','tablettes'].forEach(function(t,i){setTimeout(function(){exportCSV(t);},i*400);}); }
 
-// ==================== EXPORT EXCEL (CSV) + WORD ====================
+
 function exportTableExcel(type) {
   var data = getFiltered(type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes'));
   if (type.startsWith('drena-')) data = data.filter(function(r){return isDrena(r);});
@@ -2580,6 +2227,8 @@ function exportTableExcel(type) {
   dlFile('﻿'+csv,'DESPS_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
   notif('⬇ Export Excel téléchargé','ok');
 }
+
+
 function exportTableWord(type) {
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
   var data = getFiltered(baseType);
@@ -2596,1027 +2245,20 @@ function exportTableWord(type) {
   notif('⬇ Export Word téléchargé','ok');
 }
 
-// ==================== RAPPORT ====================
-// ==================== RAPPORT STRUCTURÉ ====================
-var _rpStep = 1;
 
-function buildRapport() {
-  // Build stats snapshot on step 1
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
-  var el = document.getElementById('rp-stats-snap');
-  if (!el) return;
-  var neufsB = b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
-  var femmesP = p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:7px;font-size:12.5px;">'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);"><span>🖥️ PC Bureau</span><strong>'+b.length+'</strong></div>'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);"><span>💻 PC Portables</span><strong>'+p.length+'</strong></div>'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);"><span>🖨️ Imprimantes</span><strong>'+im.length+'</strong></div>'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);"><span>📱 Tablettes</span><strong>'+ta.length+'</strong></div>'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);"><span>✅ Neufs (Bureau)</span><strong style="color:var(--accent)">'+neufsB+'</strong></div>'
-    + '<div style="display:flex;justify-content:space-between;padding:5px 0;"><span>♀ Femmes (Portables)</span><strong style="color:var(--red)">'+femmesP+'</strong></div>'
-    + '</div>';
-
-  // Auto stats for dev section
-  var el2 = document.getElementById('rp-auto-stats');
-  if (el2) {
-    var projets={};
-    b.concat(p).forEach(function(r){var k=r.projet||'N/S';projets[k]=(projets[k]||0)+1;});
-    var topProj = Object.entries(projets).sort(function(a,b2){return b2[1]-a[1];}).slice(0,5);
-    el2.innerHTML = '<strong style="color:var(--txt);display:block;margin-bottom:6px;">Inclus automatiquement :</strong>'
-      + '&#8226; Tableaux statistiques complets<br>'
-      + '&#8226; R&eacute;partition par projet et par &eacute;tat<br>'
-      + '&#8226; Analyse par genre (portables)<br>'
-      + '&#8226; Donn&eacute;es DRENAET vs Centrale<br>'
-      + '<div style="margin-top:8px;font-size:11px;color:var(--accent);">Top projets : ' + topProj.map(function(e){return e[0]+' ('+e[1]+')';}).join(', ') + '</div>';
-  }
-
-  // Pre-fill default values
-  onRpTypeChange();
-}
-
-function onRpTypeChange() {
-  var type = document.getElementById('rp-type') ? document.getElementById('rp-type').value : 'T1';
-  var annee = document.getElementById('rp-annee') ? document.getElementById('rp-annee').value : '2026';
-  var periodes = {
-    'T1':'1er Trimestre (Janvier – Mars) '+annee,
-    'T2':'2ème Trimestre (Avril – Juin) '+annee,
-    'T3':'3ème Trimestre (Juillet – Septembre) '+annee,
-    'T4':'4ème Trimestre (Octobre – Décembre) '+annee,
-    'AN':'Année '+annee+' (Janvier – Décembre)'
-  };
-  var titres = {
-    'T1':'Rapport d\'activité du 1er Trimestre '+annee,
-    'T2':'Rapport d\'activité du 2ème Trimestre '+annee,
-    'T3':'Rapport d\'activité du 3ème Trimestre '+annee,
-    'T4':'Rapport d\'activité du 4ème Trimestre '+annee,
-    'AN':'Rapport d\'activité Annuel '+annee
-  };
-  var ssTitres = {
-    'T1':'Gestion du Parc Informatique — Janvier à Mars '+annee,
-    'T2':'Gestion du Parc Informatique — Avril à Juin '+annee,
-    'T3':'Gestion du Parc Informatique — Juillet à Septembre '+annee,
-    'T4':'Gestion du Parc Informatique — Octobre à Décembre '+annee,
-    'AN':'Gestion du Parc Informatique — Bilan Annuel '+annee
-  };
-  var p = document.getElementById('rp-periode');
-  var t = document.getElementById('rp-titre');
-  var st = document.getElementById('rp-sous-titre');
-  var de = document.getElementById('rp-date-edition');
-  if(p && !p._userEdited) p.value = periodes[type]||'';
-  if(t && !t._userEdited) t.value = titres[type]||'';
-  if(st && !st._userEdited) st.value = ssTitres[type]||'';
-  if(de && !de._userEdited) de.value = 'Abidjan, '+new Date().toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
-  // Mark as auto-filled (user can override)
-  ['rp-periode','rp-titre','rp-sous-titre','rp-date-edition'].forEach(function(id){
-    var el = document.getElementById(id);
-    if (el) el.addEventListener('input', function(){ this._userEdited = true; }, {once:true});
-  });
-}
-
-function goStep(n) {
-  _rpStep = n;
-  document.querySelectorAll('.rapport-step').forEach(function(el){ el.classList.remove('active'); });
-  document.querySelectorAll('.step-btn').forEach(function(el,i){ 
-    el.classList.remove('active','done');
-    if (i+1 < n) el.classList.add('done');
-    if (i+1 === n) el.classList.add('active');
-  });
-  var el = document.getElementById('step-'+n);
-  if (el) el.classList.add('active');
-  if (n === 6) buildRapportPreview();
-  if (n === 4) buildRapport(); // refresh auto-stats
-}
-
-// ─── IA DE RÉDACTION ─────────────────────────────────────────────
-function getRapportContext() {
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
-  var annee = document.getElementById('rp-annee') ? document.getElementById('rp-annee').value : '2026';
-  var type = document.getElementById('rp-type') ? document.getElementById('rp-type').value : 'T1';
-  var periode = document.getElementById('rp-periode') ? document.getElementById('rp-periode').value : '';
-  var perim = document.getElementById('rp-perimetre') ? document.getElementById('rp-perimetre').value : 'all';
-  var redacteur = document.getElementById('rp-redacteur') ? document.getElementById('rp-redacteur').value : 'DIOMANDE YAYA';
-
-  var neufsB = b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
-  var anciensB = b.filter(function(r){return (r.etat||'').toLowerCase().includes('ancien');}).length;
-  var restitB = b.filter(function(r){return (r.etat||'').toLowerCase().includes('restit');}).length;
-  var femmesP = p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-  var drenaB = b.filter(isDrena).length;
-  var projets={};
-  b.concat(p).forEach(function(r){var k=r.projet||'N/S';projets[k]=(projets[k]||0)+1;});
-  var topProj = Object.entries(projets).sort(function(a,c){return c[1]-a[1];}).slice(0,5).map(function(e){return e[0]+': '+e[1];}).join(', ');
-
-  return {
-    type:type, annee:annee, periode:periode, perim:perim, redacteur:redacteur,
-    nbBureau:b.length, nbPort:p.length, nbImpr:im.length, nbTab:ta.length,
-    total:b.length+p.length+im.length+ta.length,
-    neufsB:neufsB, anciensB:anciensB, restitB:restitB,
-    femmesP:femmesP, hommesP:p.length-femmesP,
-    drenaB:drenaB, centraleB:b.length-drenaB, topProj:topProj
-  };
-}
-
-function aiGenerateAll() {
-  notif('🤖 Génération IA en cours…','info');
-  var ctx = getRapportContext();
-  setTimeout(function(){ aiGenSection('garde', ctx); }, 200);
-  setTimeout(function(){ aiGenSection('intro', ctx); }, 800);
-  setTimeout(function(){ aiGenSection('dev', ctx); }, 1600);
-  setTimeout(function(){ aiGenSection('conclu', ctx); }, 2400);
-  setTimeout(function(){
-    aiApplyIntro(); aiApplyDev(); aiApplyConclu();
-    notif('✅ Rapport généré par l\'IA !','ok');
-  }, 3200);
-}
-
-function aiGenSection(section, ctxArg) {
-  var ctx = ctxArg || getRapportContext();
-  var el = document.getElementById('ai-'+section);
-  if (!el) return;
-  el.innerHTML = '<div class="ai-loading"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>&nbsp;Rédaction en cours…</div>';
-
-  setTimeout(function() {
-    var txt = '';
-    var isTrim = ctx.type !== 'AN';
-    var typ = isTrim ? 'trimestriel' : 'annuel';
-
-    if (section === 'garde') {
-      var titre = document.getElementById('rp-titre') ? document.getElementById('rp-titre').value : 'Rapport d\'activité';
-      var sstitre = document.getElementById('rp-sous-titre') ? document.getElementById('rp-sous-titre').value : '';
-      var periode = document.getElementById('rp-periode') ? document.getElementById('rp-periode').value : '';
-      var dateEd = document.getElementById('rp-date-edition') ? document.getElementById('rp-date-edition').value : '';
-      var confid = document.getElementById('rp-confidentialite') ? document.getElementById('rp-confidentialite').value : '';
-      el.innerHTML = '<strong>📋 Éléments suggérés pour la page de garde :</strong><br><br>'
-        + '<strong>Titre :</strong> ' + titre + '<br>'
-        + '<strong>Sous-titre :</strong> ' + sstitre + '<br>'
-        + '<strong>Période :</strong> ' + periode + '<br>'
-        + '<strong>Rédacteur :</strong> ' + ctx.redacteur + '<br>'
-        + '<strong>Structure :</strong> DIRECTION DES ETUDES, DES STRATÉGIES DE LA PLANIFICATION ET DES STATISTIQUES — DESPS<br>'
-        + '<strong>Ministère :</strong> Ministère de l\'Éducation Nationale, de l\'Alphabétisation et de l\'Enseignement Technique<br>'
-        + '<strong>Édition :</strong> ' + dateEd + '<br>'
-        + (confid ? '<strong>Mention :</strong> ' + confid + '<br>' : '')
-        + '<br>✅ <em>Tous les éléments sont remplis automatiquement.</em>';
-
-    } else if (section === 'intro') {
-      txt = 'CONTEXTE :\n'
-        + 'Dans le cadre de ses missions de gestion et de suivi du patrimoine informatique, le Service de '
-        + 'Digitalisation, d\'Exploitation des Plateformes et de Maintenance Informatique de la DESPS '
-        + 'présente ce rapport ' + typ + ' relatif à la ' + ctx.periode + '. '
-        + 'Ce rapport s\'inscrit dans la démarche de transparence et de suivi rigoureux du parc informatique '
-        + 'mis à la disposition des agents du Ministère de l\'Éducation Nationale, de l\'Alphabétisation '
-        + 'et de l\'Enseignement Technique (MENAET).\n\n'
-        + 'OBJECTIFS :\n'
-        + 'Le présent rapport a pour objectifs de : (1) dresser un état exhaustif du parc informatique '
-        + 'de la DESPS pour la période de ' + ctx.periode + ', (2) présenter les indicateurs clés '
-        + 'relatifs à la distribution, à l\'état et à la répartition des équipements, (3) identifier '
-        + 'les forces, les contraintes et les opportunités d\'amélioration.\n\n'
-        + 'MÉTHODOLOGIE :\n'
-        + 'Les données présentées ont été collectées et centralisées dans le système de gestion du '
-        + 'Parc Informatique DESPS. Elles concernent un total de ' + ctx.total + ' équipements enregistrés, '
-        + 'dont ' + ctx.nbBureau + ' ordinateurs de bureau, ' + ctx.nbPort + ' ordinateurs portables, '
-        + ctx.nbImpr + ' imprimantes et ' + ctx.nbTab + ' tablettes.';
-      el.innerHTML = txt.replace(/\n/g,'<br>');
-
-    } else if (section === 'dev') {
-      txt = 'I. ÉTAT GÉNÉRAL DU PARC INFORMATIQUE\n\n'
-        + 'Au cours de la ' + ctx.periode + ', le parc informatique de la DESPS compte '
-        + ctx.total + ' équipements au total. La répartition est la suivante :\n'
-        + '• ' + ctx.nbBureau + ' ordinateurs de bureau (dont ' + ctx.neufsB + ' nouveaux et '
-        + ctx.anciensB + ' anciens, ' + ctx.restitB + ' restitués)\n'
-        + '• ' + ctx.nbPort + ' ordinateurs portables distribués aux agents\n'
-        + '• ' + ctx.nbImpr + ' imprimantes pour l\'ensemble des services\n'
-        + '• ' + ctx.nbTab + ' tablettes et autres périphériques\n\n'
-        + 'II. RÉPARTITION PAR PROJET\n\n'
-        + 'L\'analyse par projet révèle la distribution suivante : ' + ctx.topProj + '. '
-        + 'Ces données témoignent de l\'engagement de la DESPS dans les grands projets '
-        + 'de digitalisation du secteur éducatif ivoirien.\n\n'
-        + 'III. ANALYSE PAR GENRE — PORTABLES\n\n'
-        + 'Sur les ' + ctx.nbPort + ' ordinateurs portables distribués, ' + ctx.femmesP
-        + ' ont été attribués à des agentes féminines (soit '
-        + Math.round(ctx.femmesP/Math.max(ctx.nbPort,1)*100) + '%) et '
-        + ctx.hommesP + ' à des agents masculins ('
-        + Math.round(ctx.hommesP/Math.max(ctx.nbPort,1)*100) + '%). '
-        + 'Cet indicateur démontre une attention portée à l\'équité de genre dans la distribution.\n\n'
-        + 'IV. RÉPARTITION CENTRALE DESPS / DRENAET\n\n'
-        + 'Sur les ' + ctx.nbBureau + ' PC de bureau, '
-        + ctx.centraleB + ' sont localisés à la Centrale DESPS et '
-        + ctx.drenaB + ' sont déployés dans les DRENAET.\n\n'
-        + 'V. ACTIVITÉS DE MAINTENANCE\n\n'
-        + 'Des opérations de maintenance préventive et corrective ont été conduites sur '
-        + 'plusieurs équipements afin d\'assurer la continuité des activités. '
-        + 'Les pannes signalées ont fait l\'objet de traitements appropriés.';
-      el.innerHTML = txt.replace(/\n/g,'<br>');
-
-    } else if (section === 'conclu') {
-      txt = 'BILAN GÉNÉRAL :\n'
-        + 'Au terme de la ' + ctx.periode + ', le bilan de la gestion du parc informatique '
-        + 'de la DESPS est globalement satisfaisant. Sur un total de ' + ctx.total
-        + ' équipements recensés, la grande majorité est en état de fonctionnement et '
-        + 'contribue activement aux missions des services. Le taux d\'équipements neufs '
-        + '(' + Math.round(ctx.neufsB/Math.max(ctx.nbBureau,1)*100) + '% pour les PC de bureau) '
-        + 'témoigne des efforts d\'acquisition récents dans le cadre des projets CLEF, PATEB et apparentés.\n\n'
-        + 'PERSPECTIVES :\n'
-        + 'Pour la période à venir, il est envisagé de : (1) poursuivre les opérations '
-        + 'de maintenance préventive sur les équipements anciens, (2) renforcer la collecte '
-        + 'de données via KoboToolbox pour une meilleure exhaustivité de l\'inventaire, '
-        + '(3) étendre la couverture des DRENAET encore sous-équipées, '
-        + '(4) initier le processus de renouvellement des équipements déclassés.\n\n'
-        + 'Le présent rapport a été élaboré par ' + ctx.redacteur + ', '
-        + 'Chargé d\'Étude au SERVICE DIGITALISATION, EXPLOITATION DES PLATEFORMES ET MAINTENANCE INFORMATIQUE, '
-        + 'DIRECTION DES ETUDES, DES STRATÉGIES DE LA PLANIFICATION ET DES STATISTIQUES (DESPS), '
-        + 'Ministère de l\'Éducation Nationale, de l\'Alphabétisation et de l\'Enseignement Technique.';
-      el.innerHTML = txt.replace(/\n/g,'<br>');
-    }
-  }, 600 + Math.random() * 400);
-}
-
-function aiApplyIntro() {
-  var el = document.getElementById('ai-intro');
-  if (!el) return;
-  var txt = el.innerText || el.textContent;
-  if (txt.includes('En attente') || txt.includes('cours')) return;
-  var parts = txt.split('OBJECTIFS :');
-  var contexteParts = parts[0].replace('CONTEXTE :','').trim();
-  var rest = parts[1] ? parts[1].split('MÉTHODOLOGIE :') : ['',''];
-  var objTxt = rest[0] ? rest[0].trim() : '';
-  var methTxt = rest[1] ? rest[1].trim() : '';
-  var c = document.getElementById('rp-contexte'); if(c) c.value = contexteParts;
-  var o = document.getElementById('rp-objectifs'); if(o) o.value = objTxt;
-  var m = document.getElementById('rp-methode'); if(m) m.value = methTxt;
-  notif('✅ Introduction appliquée','ok');
-}
-
-function aiApplyDev() {
-  var el = document.getElementById('ai-dev');
-  if (!el) return;
-  var txt = el.innerText || el.textContent;
-  if (txt.includes('attente') || txt.includes('cours')) return;
-  var a = document.getElementById('rp-activites');
-  var r = document.getElementById('rp-resultats');
-  var d = document.getElementById('rp-difficultes');
-  var rec = document.getElementById('rp-recommandations');
-  var parts = txt.split(/(?=II\.|III\.|IV\.|V\.)/);
-  if(a && parts[0]) a.value = parts[0].trim();
-  if(r && parts[1]) r.value = (parts[1]||'').trim() + (parts[2] ? '\n\n' + parts[2].trim() : '');
-  if(d) d.value = 'Des difficultés liées à la connectivité et à la disponibilité des pièces de rechange ont été signalées.';
-  if(rec) rec.value = '1. Accélérer le renouvellement des équipements anciens.\n2. Renforcer la maintenance préventive.\n3. Étendre la couverture DRENAET.\n4. Systématiser la collecte via KoboToolbox.';
-  notif('✅ Développement appliqué','ok');
-}
-
-function aiApplyConclu() {
-  var el = document.getElementById('ai-conclu');
-  if (!el) return;
-  var txt = el.innerText || el.textContent;
-  if (txt.includes('attente') || txt.includes('cours')) return;
-  var parts = txt.split('PERSPECTIVES :');
-  var b = document.getElementById('rp-bilan');
-  var pv = document.getElementById('rp-perspectives');
-  if(b && parts[0]) b.value = parts[0].replace('BILAN GÉNÉRAL :','').trim();
-  if(pv && parts[1]) pv.value = parts[1].trim();
-  notif('✅ Conclusion appliquée','ok');
-}
-
-// ─── APERÇU HTML COMPLET ──────────────────────────────────────────
-function buildRapportPreview() {
-  var ctx = getRapportContext();
-  var titre = document.getElementById('rp-titre') ? document.getElementById('rp-titre').value : 'Rapport d\'activité';
-  var sstitre = document.getElementById('rp-sous-titre') ? document.getElementById('rp-sous-titre').value : '';
-  var periode = document.getElementById('rp-periode') ? document.getElementById('rp-periode').value : '';
-  var dateEd = document.getElementById('rp-date-edition') ? document.getElementById('rp-date-edition').value : '';
-  var redact = document.getElementById('rp-redacteur') ? document.getElementById('rp-redacteur').value : ctx.redacteur;
-  var fonct = document.getElementById('rp-fonction') ? document.getElementById('rp-fonction').value : 'Chargé d\'Étude';
-  var confid = document.getElementById('rp-confidentialite') ? document.getElementById('rp-confidentialite').value : '';
-  var contexte = document.getElementById('rp-contexte') ? document.getElementById('rp-contexte').value : '';
-  var objectifs = document.getElementById('rp-objectifs') ? document.getElementById('rp-objectifs').value : '';
-  var methode = document.getElementById('rp-methode') ? document.getElementById('rp-methode').value : '';
-  var activites = document.getElementById('rp-activites') ? document.getElementById('rp-activites').value : '';
-  var resultats = document.getElementById('rp-resultats') ? document.getElementById('rp-resultats').value : '';
-  var difficultes = document.getElementById('rp-difficultes') ? document.getElementById('rp-difficultes').value : '';
-  var recommandations = document.getElementById('rp-recommandations') ? document.getElementById('rp-recommandations').value : '';
-  var bilan = document.getElementById('rp-bilan') ? document.getElementById('rp-bilan').value : '';
-  var perspectives = document.getElementById('rp-perspectives') ? document.getElementById('rp-perspectives').value : '';
-  var signature = document.getElementById('rp-signature') ? document.getElementById('rp-signature').value : redact;
-
-  function para(txt) {
-    return txt ? txt.split('\n').filter(function(l){return l.trim();}).map(function(l){return '<p>'+l+'</p>';}).join('') : '';
-  }
-
-  // Build stats tables for dev section
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
-  var projets={};
-  b.concat(p).forEach(function(r){var k=r.projet||'N/S';projets[k]=(projets[k]||0)+1;});
-  var projRows = Object.entries(projets).sort(function(a,c){return c[1]-a[1];}).map(function(e,i){
-    return '<tr><td>'+(i+1)+'</td><td>'+e[0]+'</td><td>'+e[1]+'</td><td>'+Math.round(e[1]/ctx.total*100)+'%</td></tr>';
-  }).join('');
-  var etats={};
-  b.forEach(function(r){var k=r.etat||'N/S';etats[k]=(etats[k]||0)+1;});
-  var etatRows = Object.entries(etats).sort(function(a,c){return c[1]-a[1];}).map(function(e){
-    return '<tr><td>'+e[0]+'</td><td>'+e[1]+'</td><td>'+Math.round(e[1]/b.length*100)+'%</td></tr>';
-  }).join('');
-
-  var html_preview =
-    // ── PAGE DE GARDE
-    '<div class="rp-page">'
-      + '<div class="page-header">'
-        + '<div style="font-size:11px;font-weight:bold;color:#666;text-transform:uppercase;margin-bottom:8px;">République de Côte d\'Ivoire</div>'
-        + '<div style="font-size:11px;color:#666;margin-bottom:8px;">Ministère de l\'Éducation Nationale, de l\'Alphabétisation et de l\'Enseignement Technique</div>'
-        + '<div style="font-size:11px;font-weight:bold;color:#1a3066;margin-bottom:4px;">DIRECTION DES ETUDES, DES STRATÉGIES DE LA PLANIFICATION ET DES STATISTIQUES — DESPS</div>'
-        + (confid ? '<div style="display:inline-block;background:#e63946;color:white;padding:3px 12px;border-radius:3px;font-size:10px;font-weight:bold;margin:10px 0;">'+confid+'</div>' : '')
-      + '</div>'
-      + '<div style="text-align:center;margin:40px 0;">'
-        + '<div style="font-size:22px;font-weight:bold;color:#1a3066;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">'+titre+'</div>'
-        + '<div style="font-size:14px;color:#333;margin-bottom:20px;">'+sstitre+'</div>'
-        + '<div style="width:80px;height:4px;background:#1a3066;margin:0 auto 20px;"></div>'
-        + '<div style="font-size:13px;color:#555;margin-bottom:6px;"><strong>Période couverte :</strong> '+periode+'</div>'
-        + '<div style="font-size:13px;color:#555;margin-bottom:6px;"><strong>Rédigé par :</strong> '+redact+'</div>'
-        + '<div style="font-size:13px;color:#555;margin-bottom:6px;"><strong>Fonction :</strong> '+fonct+'</div>'
-        + '<div style="font-size:13px;color:#555;margin-bottom:20px;"><strong>Édition :</strong> '+dateEd+'</div>'
-      + '</div>'
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET · Rapport '+periode+'</div>'
-    + '</div>'
-
-    // ── SOMMAIRE
-    + '<div class="rp-page" style="margin-top:16px;">'
-      + '<h1>SOMMAIRE</h1>'
-      + '<div class="sommaire">'
-        + '<ul style="list-style:none;padding:0;margin:0;">'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span><span class="rp-toc-num">I.</span> &nbsp;Introduction</span><span>3</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;1.1 Contexte et cadre institutionnel</span><span>3</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;1.2 Objectifs du rapport</span><span>3</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;1.3 Méthodologie</span><span>4</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span><span class="rp-toc-num">II.</span> &nbsp;Développement — État du parc informatique</span><span>4</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;2.1 État général du parc</span><span>4</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;2.2 Répartition par projet</span><span>5</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;2.3 Analyse par genre (portables)</span><span>5</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;2.4 Centrale DESPS vs Directions Régionales (DRENAET)</span><span>6</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span>&nbsp;&nbsp;&nbsp;2.5 Difficultés &amp; recommandations</span><span>6</span></li>'
-          + '<li style="padding:7px 0;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;"><span><span class="rp-toc-num">III.</span> &nbsp;Conclusion &amp; Perspectives</span><span>7</span></li>'
-          + '<li style="padding:7px 0;display:flex;justify-content:space-between;"><span>Annexes — Tableaux statistiques</span><span>8</span></li>'
-        + '</ul>'
-      + '</div>'
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET</div>'
-    + '</div>'
-
-    // ── INTRODUCTION
-    + '<div class="rp-page" style="margin-top:16px;">'
-      + '<h1>I. Introduction</h1>'
-      + '<h2>1.1 Contexte et cadre institutionnel</h2>' + para(contexte)
-      + '<h2>1.2 Objectifs du rapport</h2>' + para(objectifs)
-      + '<h2>1.3 Méthodologie</h2>' + para(methode)
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET</div>'
-    + '</div>'
-
-    // ── DÉVELOPPEMENT
-    + '<div class="rp-page" style="margin-top:16px;">'
-      + '<h1>II. Développement</h1>'
-      + '<h2>2.1 Activités menées sur le parc</h2>' + para(activites)
-      + '<h2>2.2 Tableau récapitulatif — État du parc</h2>'
-      + '<table><thead><tr><th>Catégorie</th><th>Nombre</th><th>Neufs</th><th>Anciens</th></tr></thead>'
-        + '<tbody>'
-          + '<tr><td>Ordinateurs de bureau</td><td>'+b.length+'</td><td>'+ctx.neufsB+'</td><td>'+ctx.anciensB+'</td></tr>'
-          + '<tr><td>Ordinateurs portables</td><td>'+p.length+'</td><td>—</td><td>—</td></tr>'
-          + '<tr><td>Imprimantes</td><td>'+im.length+'</td><td>—</td><td>—</td></tr>'
-          + '<tr><td>Tablettes &amp; autres</td><td>'+ta.length+'</td><td>—</td><td>—</td></tr>'
-          + '<tr style="font-weight:bold;background:#e8f0fe;"><td>TOTAL</td><td>'+ctx.total+'</td><td>'+ctx.neufsB+'</td><td>'+ctx.anciensB+'</td></tr>'
-        + '</tbody></table>'
-      + '<h2>2.3 Répartition par projet</h2>'
-      + '<table><thead><tr><th>N°</th><th>Projet</th><th>Équipements</th><th>Pourcentage</th></tr></thead>'
-        + '<tbody>'+projRows+'</tbody></table>'
-      + '<h2>2.4 Résultats et observations</h2>' + para(resultats)
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET</div>'
-    + '</div>'
-
-    // ── SUITE DÉVELOPPEMENT
-    + '<div class="rp-page" style="margin-top:16px;">'
-      + '<h2>2.5 État des PC Bureau</h2>'
-      + '<table><thead><tr><th>État</th><th>Nombre</th><th>Pourcentage</th></tr></thead>'
-        + '<tbody>'+etatRows+'</tbody></table>'
-      + '<h2>2.6 Analyse genre — PC Portables</h2>'
-      + '<table><thead><tr><th>Genre</th><th>Nombre</th><th>Pourcentage</th></tr></thead>'
-        + '<tbody>'
-          + '<tr><td>♀ Féminin</td><td>'+ctx.femmesP+'</td><td>'+Math.round(ctx.femmesP/Math.max(p.length,1)*100)+'%</td></tr>'
-          + '<tr><td>♂ Masculin</td><td>'+ctx.hommesP+'</td><td>'+Math.round(ctx.hommesP/Math.max(p.length,1)*100)+'%</td></tr>'
-          + '<tr style="font-weight:bold;"><td>Total</td><td>'+p.length+'</td><td>100%</td></tr>'
-        + '</tbody></table>'
-      + '<h2>2.7 Difficultés &amp; Contraintes</h2>' + para(difficultes)
-      + '<h2>2.8 Recommandations</h2>' + para(recommandations)
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET</div>'
-    + '</div>'
-
-    // ── CONCLUSION
-    + '<div class="rp-page" style="margin-top:16px;">'
-      + '<h1>III. Conclusion &amp; Perspectives</h1>'
-      + '<h2>3.1 Bilan général</h2>' + para(bilan)
-      + '<h2>3.2 Perspectives et prochaines étapes</h2>' + para(perspectives)
-      + '<div style="margin-top:40px;text-align:right;">'
-        + '<p style="font-style:italic;">Fait à Abidjan, le '+new Date().toLocaleDateString('fr-FR')+'</p>'
-        + '<p style="margin-top:20px;"><strong>'+signature+'</strong></p>'
-        + '<p style="font-size:11px;color:#666;">SERVICE DIGITALISATION, EXPLOITATION DES PLATEFORMES ET MAINTENANCE INFORMATIQUE<br>'
-        + 'DIRECTION DES ETUDES, DES STRATÉGIES DE LA PLANIFICATION ET DES STATISTIQUES — DESPS</p>'
-      + '</div>'
-      + '<div class="page-footer">DESPS — Parc Informatique MENAET · '+periode+'</div>'
-    + '</div>';
-
-  var el = document.getElementById('rapport-preview-area');
-  if (el) {
-    el.innerHTML = '<div class="rapport-preview">'+html_preview+'</div>';
-  }
-  // Store for export
-  window._rapportHTML = html_preview;
-}
-
-function printRapport() {
-  buildRapportPreview();
-  setTimeout(function(){ window.print(); }, 500);
-}
-
-function exportRapportWord() {
-  buildRapportPreview();
-  var content = window._rapportHTML || '';
-  var doc = '<html><head><meta charset="UTF-8">'
-    + '<style>body{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.6;}'
-    + 'h1{font-size:16pt;color:#1a3066;text-align:center;text-transform:uppercase;}'
-    + 'h2{font-size:13pt;color:#1a3066;border-bottom:2px solid #1a3066;margin-top:20pt;}'
-    + 'h3{font-size:12pt;color:#333;}'
-    + 'p{text-align:justify;margin:6pt 0;}'
-    + 'table{border-collapse:collapse;width:100%;margin:10pt 0;}'
-    + 'th{background:#1a3066;color:white;padding:6pt;text-align:left;border:1px solid #999;}'
-    + 'td{border:1px solid #ccc;padding:5pt;}'
-    + 'tr:nth-child(even) td{background:#f5f8ff;}'
-    + '.rp-page{page-break-after:always;padding:40pt 50pt;}'
-    + '</style></head><body>'+content+'</body></html>';
-  dlFile(doc, 'DESPS_Rapport_'+new Date().toISOString().slice(0,10)+'.doc', 'application/msword');
-  notif('⬇ Rapport Word téléchargé','ok');
-}
-
-function exportRapportExcel() {
-  var ctx = getRapportContext();
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes;
-  var rows=[['Catégorie','Nombre','Neufs','Anciens','Restitués']];
-  rows.push(['PC Bureau',b.length,ctx.neufsB,ctx.anciensB,ctx.restitB]);
-  rows.push(['PC Portables',p.length,'—','—','—']);
-  rows.push(['Imprimantes',im.length,'—','—','—']);
-  rows.push(['Tablettes',DB.tablettes.length,'—','—','—']);
-  rows.push(['TOTAL',ctx.total,ctx.neufsB,ctx.anciensB,ctx.restitB]);
-  rows.push([]);
-  rows.push(['Projet','Nombre','Pourcentage']);
-  var projets={};
-  b.concat(p).forEach(function(r){var k=r.projet||'N/S';projets[k]=(projets[k]||0)+1;});
-  Object.entries(projets).sort(function(a,c){return c[1]-a[1];}).forEach(function(e){
-    rows.push([e[0],e[1],Math.round(e[1]/ctx.total*100)+'%']);
-  });
-  rows.push([]);
-  rows.push(['Genre (Portables)','Nombre','Pourcentage']);
-  rows.push(['Féminin',ctx.femmesP,Math.round(ctx.femmesP/Math.max(p.length,1)*100)+'%']);
-  rows.push(['Masculin',ctx.hommesP,Math.round(ctx.hommesP/Math.max(p.length,1)*100)+'%']);
-  var csv = rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\n');
-  dlFile('\uFEFF'+csv,'DESPS_Rapport_Statistiques_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
-  notif('⬇ Rapport Excel téléchargé','ok');
+function dlFile(content, name, type) {
+  var blob=new Blob([content],{type:type});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
 }
 
 
-// ==================== PRINT LIST ====================
-function getPrintData() {
-  var type=v('pr-type'), genre=v('pr-genre'), svc=v('pr-svc'), date=v('pr-date');
-  var src = type==='portables' ? DB.portables : type==='imprimantes' ? DB.imprimantes : type==='tablettes' ? DB.tablettes : DB.bureau;
-  var d=src.slice();
-  if(genre) d=d.filter(function(r){return detectGenre(r.nom||'')===genre;});
-  if(svc)   d=d.filter(function(r){return r.service===svc;});
-  if(date)  d=d.filter(function(r){var dt=r.date_obtention||''; return dt.includes(date)||dt===date;});
-  return d;
-}
-function previewPrint() {
-  var d=getPrintData();
-  var type=v('pr-type');
-  var countEl=document.getElementById('pr-count');
-  if(countEl) countEl.textContent=d.length+' enregistrement'+(d.length>1?'s':'');
-  var pa=document.getElementById('print-preview-area'); if(!pa) return;
-  if(!d.length){pa.innerHTML='<div style="text-align:center;padding:30px;color:var(--txt3)">Aucun résultat pour ces critères.</div>';return;}
-  var cols = type==='portables'
-    ? [['Nom & Prénoms','nom'],['N° Série','num_serie'],['Marque','marque'],['Projet','projet'],['Service','service'],['Date','date_obtention'],['Genre',function(r){return detectGenre(r.nom||'')==='F'?'Féminin':'Masculin';}],['État','etat']]
-    : [['N°','id'],['Nom','nom'],['N° Série','num_serie'],['Marque','marque'],['Projet','projet'],['Service','service'],['État','etat'],['Date','date_obtention']];
-  var html='<div style="margin-top:14px;overflow-x:auto;"><table style="width:100%;"><thead style="background:rgba(26,95,200,0.25);"><tr>'
-    +cols.map(function(c){return '<th>'+c[0]+'</th>';}).join('')+'</tr></thead><tbody>'
-    +d.map(function(r){return '<tr>'+cols.map(function(c){
-      var val=typeof c[1]==='function'?c[1](r):(r[c[1]]||'—');
-      return '<td>'+val+'</td>';
-    }).join('')+'</tr>';}).join('')
-    +'</tbody></table></div>';
-  pa.innerHTML=html;
-}
-function doPrint() {
-  document.getElementById('print-date-label').textContent=new Date().toLocaleDateString('fr-FR');
-  window.print();
-}
-function exportPrintExcel() {
-  var d=getPrintData(), type=v('pr-type');
-  if(!d.length){notif('⚠️ Aucune donnée','err');return;}
-  var keys=['nom','num_serie','marque','projet','service','date_obtention','etat'];
-  var hdrs=['Nom & Prénoms','N° Série','Marque','Projet','Service','Date obtention','État'];
-  if(type==='portables') { keys.push('_genre'); hdrs.push('Genre'); }
-  var csv=hdrs.join(';')+'\n';
-  d.forEach(function(r){csv+=keys.map(function(k){return '"'+(k==='_genre'?detectGenre(r.nom||'')==='F'?'Féminin':'Masculin':(r[k]||'')).replace(/"/g,'""')+'"';}).join(';')+'\n';});
-  dlFile('﻿'+csv,'DESPS_Liste_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
-  notif('⬇ Liste Excel téléchargée','ok');
-}
-function exportPrintWord() {
-  var d=getPrintData(), type=v('pr-type');
-  var svc=v('pr-svc'), genre=v('pr-genre'), date=v('pr-date');
-  var filtres=['Type: '+type.toUpperCase(), svc?'Service: '+svc:'', genre?'Genre: '+(genre==='F'?'Féminin':'Masculin'):'', date?'Date: '+date:''].filter(Boolean).join(' | ');
-  var keys=['nom','num_serie','marque','projet','service','date_obtention','etat'];
-  var hdrs=['Nom & Prénoms','N° Série','Marque','Projet','Service','Date','État'];
-  var rows=d.map(function(r){return '<tr>'+keys.map(function(k){return '<td style="border:1px solid #ccc;padding:5px;font-size:11px;">'+(r[k]||'')+'</td>';}).join('')+'</tr>';}).join('');
-  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;font-size:12px;}h1{color:#1a5fc8;font-size:15px;}th{background:#1a5fc8;color:white;padding:6px;font-size:11px;border:1px solid #999;}table{border-collapse:collapse;width:100%;}</style></head><body>'
-    +'<h1>DESPS — Liste des bénéficiaires : '+type.toUpperCase()+'</h1>'
-    +'<p style="font-size:11px;color:#555;">Filtres : '+filtres+' | '+d.length+' enregistrement(s) | Éditée le '+new Date().toLocaleDateString('fr-FR')+'</p>'
-    +'<table><thead><tr>'+hdrs.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table></body></html>';
-  dlFile(doc,'DESPS_Liste_'+type+'_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
-  notif('⬇ Liste Word téléchargée','ok');
-}
-
-// ==================== CLOCK ====================
-function startClock() {
-  function updateClock() {
-    var now = new Date();
-    var days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-    var months = ['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
-    var h = String(now.getHours()).padStart(2,'0');
-    var m = String(now.getMinutes()).padStart(2,'0');
-    var s = String(now.getSeconds()).padStart(2,'0');
-    var ct = document.getElementById('clock-time');
-    var cd = document.getElementById('clock-date');
-    var cy = document.getElementById('clock-year');
-    if(ct) ct.textContent = h+':'+m+':'+s;
-    if(cd) cd.textContent = days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
-    if(cy) cy.textContent = now.getFullYear();
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-}
-
-// ==================== IMPORT MODE ====================
-var _importMode = 'add';
-function setImportMode(mode) {
-  _importMode = mode;
-  ['add','update','replace'].forEach(function(m){
-    var b=document.getElementById('mode-'+m);
-    if(b) b.className='import-mode-btn'+(m===mode?' active':'');
-  });
-  var hints = {
-    add:'<strong style="color:var(--accent);">➕ Ajouter seulement</strong> : les doublons (même N° série) sont ignorés. Seuls les nouveaux enregistrements sont ajoutés.',
-    update:'<strong style="color:var(--blue-light);">🔄 Mettre à jour</strong> : les enregistrements existants sont mis à jour si le N° série correspond. Les nouveaux sont ajoutés.',
-    replace:'<strong style="color:var(--red);">♻️ Remplacer tout</strong> : ⚠️ tous les enregistrements existants sont remplacés par le fichier importé.'
-  };
-  var el=document.getElementById('import-mode-hint');
-  if(el) el.innerHTML=hints[mode]||'';
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('dropzone-label').classList.remove('drag-over');
-  var files=e.dataTransfer.files;
-  if(files.length>0){
-    var fakeInput={files:files};
-    handleImport(fakeInput);
-  }
-}
-
-// ==================== EXPORT JSON ====================
-function exportJSON() {
-  var data = {bureau:DB.bureau, portables:DB.portables, imprimantes:DB.imprimantes, tablettes:DB.tablettes,
-    exportedAt:new Date().toISOString(), version:'1.0'};
-  var json = JSON.stringify(data, null, 2);
-  dlFile(json, 'DESPS_Sauvegarde_'+new Date().toISOString().slice(0,10)+'.json', 'application/json');
-  notif('💾 Sauvegarde JSON téléchargée','ok');
-}
-
-// ==================== STATS PAGE (multi-tab) ====================
-var _currentStatsTab = 'general';
-
-function toggleStatsMenu() {
-  var sub = document.getElementById('stats-submenu');
-  var par = document.getElementById('nav-stats-parent');
-  if (!sub) return;
-  var isOpen = sub.classList.contains('open');
-  sub.classList.toggle('open', !isOpen);
-  if (par) par.classList.toggle('sub-open', !isOpen);
-  if (!isOpen) {
-    // Navigate to stats page when opening
-    nav('stats');
-  }
-}
-
-function navStats(tab) {
-  // Navigate to stats page and switch to tab
-  nav('stats');
-  switchStatsTab(tab);
-  // Highlight sub-item
-  document.querySelectorAll('.stats-sub-item').forEach(function(el){el.classList.remove('active');});
-  var ss = document.getElementById('ss-'+tab);
-  if(ss) ss.classList.add('active');
-}
-
-function switchStatsTab(tab) {
-  _currentStatsTab = tab;
-  // Tabs bar
-  document.querySelectorAll('.stats-tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  var tb = document.getElementById('stab-'+tab);
-  if(tb) tb.classList.add('active');
-  // Panels
-  document.querySelectorAll('.stats-panel').forEach(function(p){ p.classList.remove('active'); });
-  var sp = document.getElementById('sp-'+tab);
-  if(sp) sp.classList.add('active');
-  // Update title
-  var titles = {general:'📊 Vue générale',bureau:'🖥️ Statistiques — Ordinateurs Bureaux',
-    portables:'💻 Statistiques — Ordinateurs Portables',imprimantes:'🖨️ Statistiques — Imprimantes',
-    tablettes:'📱 Statistiques — Tablettes',projets:'📂 Statistiques par Projet',
-    services:'🏢 Statistiques par Service / Direction',genre:'👥 Statistiques par Genre',
-    drenaet:'🏫 Statistiques DRENAET',etat:'⚙️ État du Parc'};
-  var tEl=document.getElementById('stats-page-title');
-  if(tEl) tEl.textContent=titles[tab]||'Statistiques';
-  // Build the panel if empty
-  buildStatPanel(tab);
-  // Sync sub-menu
-  document.querySelectorAll('.stats-sub-item').forEach(function(el){el.classList.remove('active');});
-  var ss=document.getElementById('ss-'+tab); if(ss) ss.classList.add('active');
-}
-
-function kpi(val, lbl, color, sub) {
-  return '<div class="stat-full-card"><div class="stat-full-title">'+lbl+'</div>'
-    +'<div class="stat-full-val" style="color:'+color+'">'+val+'</div>'
-    +(sub?'<div class="stat-full-sub">'+sub+'</div>':'')+'</div>';
-}
-
-function tableHtml(headers, rows, maxH) {
-  var style = maxH ? 'max-height:'+maxH+'px;overflow-y:auto;' : '';
-  return '<div style="overflow-x:auto;'+style+'"><table style="width:100%;border-collapse:collapse;font-size:12.5px;">'
-    +'<thead style="background:rgba(0,0,0,0.25);position:sticky;top:0;"><tr>'
-    + headers.map(function(h){return '<th style="padding:8px 12px;text-align:left;font-size:10.5px;color:var(--txt2);text-transform:uppercase;letter-spacing:0.8px;border-bottom:1px solid var(--border);">'+h+'</th>';}).join('')
-    +'</tr></thead><tbody>'
-    + rows.map(function(r,i){return '<tr style="'+(i%2===0?'':'background:rgba(91,163,240,0.04);">')+'">'
-      +r.map(function(c){return '<td style="padding:7px 12px;border-bottom:1px solid rgba(91,163,240,0.05);">'+c+'</td>';}).join('')
-      +'</tr>';}).join('')
-    +'</tbody></table></div>';
-}
-
-function barLine(val, max, color) {
-  var pct = Math.round(val/Math.max(max,1)*100);
-  return '<div style="display:flex;align-items:center;gap:8px;">'
-    +'<div style="flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;">'
-    +'<div style="height:100%;border-radius:3px;width:'+pct+'%;background:'+(color||'var(--accent)')+'"></div></div>'
-    +'<span style="font-size:11px;color:var(--txt2);min-width:28px;text-align:right;">'+val+'</span></div>';
-}
-
-function buildStatPanel(tab) {
-  var el = document.getElementById('sp-'+tab);
-  if (!el || el.dataset.built === '1') return;
-  el.dataset.built = '1';
-
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
-  var total = b.length+p.length+im.length+ta.length;
-
-  // Helper: count by field
-  function countBy(arr, field) {
-    var obj={};
-    arr.forEach(function(r){var k=r[field]||'N/S';obj[k]=(obj[k]||0)+1;});
-    return Object.entries(obj).sort(function(a,c){return c[1]-a[1];});
-  }
-
-  if (tab === 'general') {
-    var neufsB=b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
-    var ancsB=b.filter(function(r){return (r.etat||'').toLowerCase().includes('ancien');}).length;
-    var femmesP=p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-    var drenaB=b.filter(isDrena).length, centraleB=b.length-drenaB;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(5,1fr);">'
-        +kpi(b.length,'PC Bureau','var(--blue-light)','Centrale DESPS')
-        +kpi(p.length,'PC Portables','var(--accent)','Distribués')
-        +kpi(im.length,'Imprimantes','var(--orange)','Parc')
-        +kpi(ta.length,'Tablettes','var(--red)','& autres')
-        +kpi(total,'Parc Total','var(--gold)','Tous équipements')
-      +'</div>'
-      +'<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(neufsB,'Neufs (Bureau)','var(--accent)',Math.round(neufsB/Math.max(b.length,1)*100)+'% du parc bureau')
-        +kpi(ancsB,'Anciens (Bureau)','var(--orange)',Math.round(ancsB/Math.max(b.length,1)*100)+'% du parc bureau')
-        +kpi(femmesP,'Femmes (Portables)','var(--red)',Math.round(femmesP/Math.max(p.length,1)*100)+'% des portables')
-        +kpi(drenaB,'DRENAET (Bureau)','var(--gold)','vs Centrale : '+centraleB)
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Top 5 projets</h3></div><div style="padding:14px;">'
-          +countBy(b.concat(p),'projet').slice(0,5).map(function(e){return '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>'+e[0]+'</span><strong>'+e[1]+'</strong></div>'+barLine(e[1],total,'var(--accent)')+'</div>';}).join('')
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Top 5 services</h3></div><div style="padding:14px;">'
-          +countBy(b.concat(p),'service').slice(0,5).map(function(e){return '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span>'+e[0]+'</span><strong>'+e[1]+'</strong></div>'+barLine(e[1],total,'var(--blue-light)')+'</div>';}).join('')
-        +'</div></div>'
-      +'</div>';
-
-  } else if (tab === 'bureau') {
-    var neufs=b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
-    var ancs=b.filter(function(r){return (r.etat||'').toLowerCase().includes('ancien');}).length;
-    var restit=b.filter(function(r){return (r.etat||'').toLowerCase().includes('restit');}).length;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(b.length,'Total PC Bureau','var(--blue-light)')
-        +kpi(neufs,'Neufs','var(--accent)',Math.round(neufs/Math.max(b.length,1)*100)+'%')
-        +kpi(ancs,'Anciens','var(--orange)',Math.round(ancs/Math.max(b.length,1)*100)+'%')
-        +kpi(restit,'Restitués','var(--gold)',Math.round(restit/Math.max(b.length,1)*100)+'%')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>🖥️ PC Bureau par projet</h3></div><div style="padding:14px;">'
-          +tableHtml(['Projet','Nombre','%'],countBy(b,'projet').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(b.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>🖥️ PC Bureau par service</h3></div><div style="padding:14px;">'
-          +tableHtml(['Service','Nombre','%'],countBy(b,'service').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(b.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Liste complète — PC Bureau</h3></div><div style="padding:0;">'
-        +tableHtml(['N°','Nom','N° Série','Marque','Projet','Service','État','Date'],
-          b.map(function(r,i){return [i+1,r.nom||'—',r.num_serie||'—',r.marque||'—',r.projet||'—',r.service||'—',r.etat||'—',r.date_obtention||'—'];}),320)
-      +'</div></div>';
-
-  } else if (tab === 'portables') {
-    var f=p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-    var h=p.length-f;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(p.length,'Total Portables','var(--accent)')
-        +kpi(f,'Femmes','var(--red)',Math.round(f/Math.max(p.length,1)*100)+'%')
-        +kpi(h,'Hommes','var(--blue-light)',Math.round(h/Math.max(p.length,1)*100)+'%')
-        +kpi(countBy(p,'projet').length,'Projets couverts','var(--gold)')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>💻 Portables par projet</h3></div><div style="padding:14px;">'
-          +tableHtml(['Projet','Nombre','%'],countBy(p,'projet').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(p.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>💻 Portables par service</h3></div><div style="padding:14px;">'
-          +tableHtml(['Service','Nombre','%'],countBy(p,'service').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(p.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Liste complète — PC Portables</h3></div>'
-        +tableHtml(['Nom','N° Série','Marque','Projet','Service','Genre','État','Date'],
-          p.map(function(r){return [r.nom||'—',r.num_serie||'—',r.marque||'—',r.projet||'—',r.service||'—',detectGenre(r.nom||'')==='F'?'♀ F':'♂ M',r.etat||'—',r.date_obtention||'—'];}),280)
-      +'</div>';
-
-  } else if (tab === 'imprimantes') {
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(3,1fr);">'
-        +kpi(im.length,'Total Imprimantes','var(--orange)')
-        +kpi(countBy(im,'marque').length,'Marques différentes','var(--blue-light)')
-        +kpi(countBy(im,'service').length,'Services couverts','var(--accent)')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>🖨️ Par marque</h3></div><div style="padding:14px;">'
-          +tableHtml(['Marque','Nombre'],countBy(im,'marque').map(function(e){return [e[0],e[1]];}),200)
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>🖨️ Par service</h3></div><div style="padding:14px;">'
-          +tableHtml(['Service','Nombre'],countBy(im,'service').map(function(e){return [e[0],e[1]];}),200)
-        +'</div></div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Liste — Imprimantes</h3></div>'
-        +tableHtml(['N°','N° Série','Marque','Caract.','Projet','Service','État'],
-          im.map(function(r){return [r.id||'—',r.num_serie||'—',r.marque||'—',r.caracteristiques||'—',r.projet||'—',r.service||'—',r.etat||'—'];}),260)
-      +'</div>';
-
-  } else if (tab === 'tablettes') {
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(3,1fr);">'
-        +kpi(ta.length,'Total Tablettes','var(--red)')
-        +kpi(countBy(ta,'marque').length,'Marques différentes','var(--blue-light)')
-        +kpi(countBy(ta,'projet').length,'Projets','var(--accent)')
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Liste — Tablettes &amp; autres</h3></div>'
-        +tableHtml(['N°','N° Série','Marque','CPU','RAM','Stockage','Projet','Service','État'],
-          ta.map(function(r){return [r.id||'—',r.num_serie||'—',r.marque||'—',r.cpu||'—',r.ram||'—',r.stockage||'—',r.projet||'—',r.service||'—',r.etat||'—'];}),300)
-      +'</div>';
-
-  } else if (tab === 'projets') {
-    var allEq = b.concat(p).concat(im).concat(ta);
-    var byProj = countBy(allEq,'projet');
-    var maxP = byProj[0]?byProj[0][1]:1;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(3,1fr);">'
-        +kpi(byProj.length,'Projets distincts','var(--accent)')
-        +kpi(allEq.length,'Équipements totaux','var(--blue-light)')
-        +kpi(byProj[0]?byProj[0][0]:'-','Projet principal','var(--gold)',byProj[0]?byProj[0][1]+' équipements':'')
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>📂 Tous les projets — Détail par catégorie</h3></div><div style="padding:14px;">'
-        +tableHtml(['Projet','PC Bureau','Portables','Imprimantes','Tablettes','Total','%'],
-          byProj.map(function(e){
-            var prj=e[0];
-            var nb=b.filter(function(r){return (r.projet||'N/S')===prj;}).length;
-            var np=p.filter(function(r){return (r.projet||'N/S')===prj;}).length;
-            var ni=im.filter(function(r){return (r.projet||'N/S')===prj;}).length;
-            var nt=ta.filter(function(r){return (r.projet||'N/S')===prj;}).length;
-            var tot=nb+np+ni+nt;
-            return [prj,nb,np,ni,nt,'<strong>'+tot+'</strong>',Math.round(tot/allEq.length*100)+'%'];
-          }),320)
-      +'</div></div>';
-
-  } else if (tab === 'services') {
-    var allEq2=b.concat(p);
-    var bySvc=countBy(allEq2,'service');
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(3,1fr);">'
-        +kpi(bySvc.length,'Services / Directions','var(--accent)')
-        +kpi(allEq2.length,'Équipements (Bureau+Port)','var(--blue-light)')
-        +kpi(bySvc[0]?bySvc[0][0]:'-','Service principal','var(--gold)',bySvc[0]?bySvc[0][1]+' équipements':'')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>PC Bureau par service</h3></div><div style="padding:14px;">'
-          +tableHtml(['Service','Nombre','%'],countBy(b,'service').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(b.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Portables par service</h3></div><div style="padding:14px;">'
-          +tableHtml(['Service','Nombre','%'],countBy(p,'service').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(p.length,1)*100)+'%'];}),260)
-        +'</div></div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Tous équipements par service</h3></div><div style="padding:14px;">'
-        +tableHtml(['Service','PC Bureau','Portables','Total'],
-          bySvc.slice(0,20).map(function(e){
-            var svc=e[0];
-            var nb=b.filter(function(r){return (r.service||'N/S')===svc;}).length;
-            var np=p.filter(function(r){return (r.service||'N/S')===svc;}).length;
-            return [svc,nb,np,'<strong>'+(nb+np)+'</strong>'];
-          }),280)
-      +'</div></div>';
-
-  } else if (tab === 'genre') {
-    var f2=p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-    var h2=p.length-f2;
-    var f2b=b.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
-    var h2b=b.length-f2b;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi('♀ '+f2,'Femmes — Portables','var(--red)',Math.round(f2/Math.max(p.length,1)*100)+'%')
-        +kpi('♂ '+h2,'Hommes — Portables','var(--blue-light)',Math.round(h2/Math.max(p.length,1)*100)+'%')
-        +kpi('♀ '+f2b,'Femmes — Bureau','var(--red)',Math.round(f2b/Math.max(b.length,1)*100)+'%')
-        +kpi('♂ '+h2b,'Hommes — Bureau','var(--blue-light)',Math.round(h2b/Math.max(b.length,1)*100)+'%')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>♀ Femmes — Portables</h3></div>'
-          +tableHtml(['Nom','Service','Projet'],
-            p.filter(function(r){return detectGenre(r.nom||'')==='F';}).map(function(r){return [r.nom||'—',r.service||'—',r.projet||'—'];}),260)
-        +'</div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>♂ Hommes — Portables</h3></div>'
-          +tableHtml(['Nom','Service','Projet'],
-            p.filter(function(r){return detectGenre(r.nom||'')==='M';}).map(function(r){return [r.nom||'—',r.service||'—',r.projet||'—'];}),260)
-        +'</div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Genre par service — Portables</h3></div><div style="padding:14px;">'
-        +tableHtml(['Service','Femmes','Hommes','Total'],
-          (function(){
-            var svcs2={};
-            p.forEach(function(r){var s=r.service||'N/S';if(!svcs2[s])svcs2[s]={f:0,m:0};var g=detectGenre(r.nom||'');if(g==='F')svcs2[s].f++;else svcs2[s].m++;});
-            return Object.entries(svcs2).sort(function(a,c){return (c[1].f+c[1].m)-(a[1].f+a[1].m);}).map(function(e){return [e[0],e[1].f,e[1].m,e[1].f+e[1].m];});
-          })(),240)
-      +'</div></div>';
-
-  } else if (tab === 'drenaet') {
-    var dB=b.filter(isDrena), dP=p.filter(isDrena), dI=im.filter(isDrena), dT=ta.filter(isDrena);
-    var dTotal=dB.length+dP.length+dI.length+dT.length;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(dB.length,'PC Bureau DRENAET','var(--gold)')
-        +kpi(dP.length,'Portables DRENAET','var(--gold)')
-        +kpi(dI.length,'Imprimantes DRENAET','var(--gold)')
-        +kpi(dTotal,'Total DRENAET','var(--gold)','Directions Régionales')
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>PC Bureau — Directions Régionales</h3></div>'
-        +tableHtml(['Nom','N° Série','Marque','Service','Projet','État'],
-          dB.map(function(r){return [r.nom||'—',r.num_serie||'—',r.marque||'—',r.service||'—',r.projet||'—',r.etat||'—'];}),280)
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>PC Portables — Directions Régionales</h3></div>'
-        +tableHtml(['Nom','N° Série','Marque','Service','Projet','État'],
-          dP.map(function(r){return [r.nom||'—',r.num_serie||'—',r.marque||'—',r.service||'—',r.projet||'—',r.etat||'—'];}),280)
-      +'</div>';
-
-  } else if (tab === 'etat') {
-    var byEtat=countBy(b,'etat');
-    var neufsAll=(b.concat(p)).filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
-    var ancsAll=(b.concat(p)).filter(function(r){return (r.etat||'').toLowerCase().includes('ancien');}).length;
-    el.innerHTML =
-      '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(neufsAll,'Neufs (Bureau+Port)','var(--accent)')
-        +kpi(ancsAll,'Anciens (Bureau+Port)','var(--orange)')
-        +kpi(b.filter(function(r){return (r.etat||'').toLowerCase().includes('restit');}).length,'Restitués','var(--gold)')
-        +kpi(b.filter(function(r){return (r.etat||'').toLowerCase().includes('maint');}).length,'En Maintenance','var(--red)')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>État des PC Bureau</h3></div><div style="padding:14px;">'
-          +tableHtml(['État','Nombre','%'],countBy(b,'etat').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(b.length,1)*100)+'%'];}),220)
-        +'</div></div>'
-        +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>État des PC Portables</h3></div><div style="padding:14px;">'
-          +tableHtml(['État','Nombre','%'],countBy(p,'etat').map(function(e){return [e[0],e[1],Math.round(e[1]/Math.max(p.length,1)*100)+'%'];}),220)
-        +'</div></div>'
-      +'</div>'
-      +'<div class="tcard"><div class="tcard-head"><h3>Neufs vs Anciens — évolution par projet</h3></div><div style="padding:14px;">'
-        +tableHtml(['Projet','Neufs','Anciens','Total'],
-          (function(){
-            var projs={};
-            b.forEach(function(r){var k=r.projet||'N/S';if(!projs[k])projs[k]={n:0,a:0};var e=(r.etat||'').toLowerCase();if(e.includes('nouvel'))projs[k].n++;else projs[k].a++;});
-            return Object.entries(projs).sort(function(a,c){return (c[1].n+c[1].a)-(a[1].n+a[1].a);}).map(function(e){return [e[0],e[1].n,e[1].a,e[1].n+e[1].a];});
-          })(),240)
-      +'</div></div>';
-  }
-}
-
-function buildStatsPage() {
-  // Reset all panels so they get rebuilt
-  document.querySelectorAll('.stats-panel').forEach(function(p){ p.dataset.built=''; });
-  // Build active one
-  buildStatPanel(_currentStatsTab);
-}
-
-function printStats() {
-  buildStatPanel(_currentStatsTab);
-  setTimeout(function(){ window.print(); }, 400);
-}
-function exportStatsExcel() {
-  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
-  var total=b.length+p.length+im.length+ta.length;
-  var rows=[['Catégorie','Nombre','%']];
-  [[b,'PC Bureau'],[p,'PC Portables'],[im,'Imprimantes'],[ta,'Tablettes']].forEach(function(x){
-    rows.push([x[1],x[0].length,Math.round(x[0].length/total*100)+'%']);
-  });
-  rows.push(['TOTAL',total,'100%']);
-  var projets={};
-  b.concat(p).forEach(function(r){var k=r.projet||'N/S';projets[k]=(projets[k]||0)+1;});
-  rows.push([]);
-  rows.push(['Projet','Nombre','%']);
-  Object.entries(projets).sort(function(a,c){return c[1]-a[1];}).forEach(function(e){
-    rows.push([e[0],e[1],Math.round(e[1]/total*100)+'%']);
-  });
-  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c||'').replace(/"/g,'""')+'"';}).join(';');}).join('\n');
-  dlFile('\uFEFF'+csv,'DESPS_Statistiques_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
-  notif('⬇ Statistiques Excel téléchargées','ok');
-}
-function exportStatsWord() {
-  var el=document.getElementById('sp-'+_currentStatsTab);
-  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;}h1,h3{color:#1a3066;}table{border-collapse:collapse;width:100%;margin:8px 0;}th{background:#1a3066;color:white;padding:6px 8px;border:1px solid #999;}td{border:1px solid #ccc;padding:5px 8px;}</style></head><body>'
-    +'<h1>DESPS — Statistiques : '+_currentStatsTab.charAt(0).toUpperCase()+_currentStatsTab.slice(1)+'</h1>'
-    +'<p>Éditées le '+new Date().toLocaleDateString('fr-FR')+'</p>'
-    +(el?el.innerHTML:'')+'</body></html>';
-  dlFile(doc,'DESPS_Stats_'+_currentStatsTab+'_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
-  notif('⬇ Statistiques Word téléchargées','ok');
+function notif(msg,type) {
+  var cls={ok:'n-ok',err:'n-err',info:'n-info'}[type]||'n-info';
+  var el=document.createElement('div'); el.className='notif '+cls; el.textContent=msg;
+  document.body.appendChild(el); setTimeout(function(){el.remove();},3500);
 }
 
 
-// ==================== CORBEILLE ====================
-function refreshTrash() {
-  var el=document.getElementById('trash-content'); if(!el) return;
-  var trash=JSON.parse(localStorage.getItem('desps_trash')||'[]');
-  if(!trash.length){
-    el.innerHTML='<div style="text-align:center;padding:30px;color:var(--txt3);"><div style="font-size:40px;margin-bottom:10px;">🗑️</div><div>La corbeille est vide</div></div>';
-    return;
-  }
-  el.innerHTML=trash.map(function(item,i){
-    var r=item.record; var dt=new Date(item.deletedAt).toLocaleString('fr-FR');
-    return '<div class="trash-card">'
-      +'<div class="tc-ico">'+(item.type==='bureau'?'🖥️':item.type==='portables'?'💻':item.type==='imprimantes'?'🖨️':'📱')+'</div>'
-      +'<div class="tc-info"><div class="tc-name">'+(r.nom||r.marque||'—')+'</div>'
-        +'<div class="tc-meta">N° série : '+(r.num_serie||'—')+' · Projet : '+(r.projet||'—')+' · Supprimé le '+dt+' par '+(item.deletedBy||'?')+'</div>'
-      +'</div>'
-      +'<div class="tc-actions">'
-        +'<button class="btn btn-sec btn-sm" onclick="restoreItem('+i+')">♻️ Restaurer</button>'
-        +'<button class="btn btn-danger btn-sm" onclick="deleteForever('+i+')">🗑 Définitif</button>'
-      +'</div></div>';
-  }).join('');
-}
-
-function restoreItem(idx) {
-  var trash=JSON.parse(localStorage.getItem('desps_trash')||'[]');
-  var item=trash[idx]; if(!item) return;
-  DB[item.type].unshift(item.record);
-  save(item.type);
-  trash.splice(idx,1);
-  localStorage.setItem('desps_trash',JSON.stringify(trash));
-  notif('♻️ Élément restauré','ok');
-  refreshTrash(); updateBadges(); updateStats(); renderTbl(item.type);
-}
-
-function deleteForever(idx) {
-  if(!confirm('Supprimer définitivement cet élément ?')) return;
-  var trash=JSON.parse(localStorage.getItem('desps_trash')||'[]');
-  trash.splice(idx,1);
-  localStorage.setItem('desps_trash',JSON.stringify(trash));
-  notif('🗑 Supprimé définitivement','info');
-  refreshTrash();
-}
-
-function restoreAll() {
-  var trash=JSON.parse(localStorage.getItem('desps_trash')||'[]');
-  trash.forEach(function(item){if(DB[item.type]){DB[item.type].unshift(item.record);save(item.type);}});
-  localStorage.setItem('desps_trash','[]');
-  notif('♻️ Tout restauré','ok');
-  refreshTrash(); updateBadges(); updateStats();
-}
-
-function emptyTrash() {
-  if(!confirm('Vider définitivement la corbeille ?')) return;
-  localStorage.setItem('desps_trash','[]');
-  notif('🗑 Corbeille vidée','info');
-  refreshTrash();
-}
-
-// ==================== IMPORT ====================
 function handleImport(input) {
   var file=input.files[0]; if(!file) return;
   if(!currentUser||currentUser.role!=='admin'){notif('⛔ Réservé à l\'administrateur','err');return;}
@@ -3646,6 +2288,8 @@ function handleImport(input) {
   };
   reader.readAsText(file,'UTF-8');
 }
+
+
 function confirmImport() {
   var records=window._importBuf||[], target=window._importTgt||'bureau';
   var existing=new Set((DB[target]||[]).map(function(r){return (r.num_serie||'').toUpperCase().trim();}));
@@ -3657,16 +2301,225 @@ function confirmImport() {
   window._importBuf=[];
 }
 
-// ==================== UTILS ====================
-function dlFile(content, name, type) {
-  var blob=new Blob([content],{type:type});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
+
+function getPrintData() {
+  var type=v('pr-type'), genre=v('pr-genre'), svc=v('pr-svc'), date=v('pr-date');
+  var src = type==='portables' ? DB.portables : type==='imprimantes' ? DB.imprimantes : type==='tablettes' ? DB.tablettes : DB.bureau;
+  var d=src.slice();
+  if(genre) d=d.filter(function(r){return detectGenre(r.nom||'')===genre;});
+  if(svc)   d=d.filter(function(r){return r.service===svc;});
+  if(date)  d=d.filter(function(r){var dt=r.date_obtention||''; return dt.includes(date)||dt===date;});
+  return d;
 }
-function notif(msg,type) {
-  var cls={ok:'n-ok',err:'n-err',info:'n-info'}[type]||'n-info';
-  var el=document.createElement('div'); el.className='notif '+cls; el.textContent=msg;
-  document.body.appendChild(el); setTimeout(function(){el.remove();},3500);
+
+
+function previewPrint() {
+  var d=getPrintData();
+  var type=v('pr-type');
+  var countEl=document.getElementById('pr-count');
+  if(countEl) countEl.textContent=d.length+' enregistrement'+(d.length>1?'s':'');
+  var pa=document.getElementById('print-preview-area'); if(!pa) return;
+  if(!d.length){pa.innerHTML='<div style="text-align:center;padding:30px;color:var(--txt3)">Aucun résultat pour ces critères.</div>';return;}
+  var cols = type==='portables'
+    ? [['Nom & Prénoms','nom'],['N° Série','num_serie'],['Marque','marque'],['Projet','projet'],['Service','service'],['Date','date_obtention'],['Genre',function(r){return detectGenre(r.nom||'')==='F'?'Féminin':'Masculin';}],['État','etat']]
+    : [['N°','id'],['Nom','nom'],['N° Série','num_serie'],['Marque','marque'],['Projet','projet'],['Service','service'],['État','etat'],['Date','date_obtention']];
+  var html='<div style="margin-top:14px;overflow-x:auto;"><table style="width:100%;"><thead style="background:rgba(26,95,200,0.25);"><tr>'
+    +cols.map(function(c){return '<th>'+c[0]+'</th>';}).join('')+'</tr></thead><tbody>'
+    +d.map(function(r){return '<tr>'+cols.map(function(c){
+      var val=typeof c[1]==='function'?c[1](r):(r[c[1]]||'—');
+      return '<td>'+val+'</td>';
+    }).join('')+'</tr>';}).join('')
+    +'</tbody></table></div>';
+  pa.innerHTML=html;
 }
+
+
+function doPrint() {
+  document.getElementById('print-date-label').textContent=new Date().toLocaleDateString('fr-FR');
+  window.print();
+}
+
+
+function exportPrintExcel() {
+  var d=getPrintData(), type=v('pr-type');
+  if(!d.length){notif('⚠️ Aucune donnée','err');return;}
+  var keys=['nom','num_serie','marque','projet','service','date_obtention','etat'];
+  var hdrs=['Nom & Prénoms','N° Série','Marque','Projet','Service','Date obtention','État'];
+  if(type==='portables') { keys.push('_genre'); hdrs.push('Genre'); }
+  var csv=hdrs.join(';')+'\n';
+  d.forEach(function(r){csv+=keys.map(function(k){return '"'+(k==='_genre'?detectGenre(r.nom||'')==='F'?'Féminin':'Masculin':(r[k]||'')).replace(/"/g,'""')+'"';}).join(';')+'\n';});
+  dlFile('﻿'+csv,'DESPS_Liste_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
+  notif('⬇ Liste Excel téléchargée','ok');
+}
+
+
+function exportPrintWord() {
+  var d=getPrintData(), type=v('pr-type');
+  var svc=v('pr-svc'), genre=v('pr-genre'), date=v('pr-date');
+  var filtres=['Type: '+type.toUpperCase(), svc?'Service: '+svc:'', genre?'Genre: '+(genre==='F'?'Féminin':'Masculin'):'', date?'Date: '+date:''].filter(Boolean).join(' | ');
+  var keys=['nom','num_serie','marque','projet','service','date_obtention','etat'];
+  var hdrs=['Nom & Prénoms','N° Série','Marque','Projet','Service','Date','État'];
+  var rows=d.map(function(r){return '<tr>'+keys.map(function(k){return '<td style="border:1px solid #ccc;padding:5px;font-size:11px;">'+(r[k]||'')+'</td>';}).join('')+'</tr>';}).join('');
+  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;font-size:12px;}h1{color:#1a5fc8;font-size:15px;}th{background:#1a5fc8;color:white;padding:6px;font-size:11px;border:1px solid #999;}table{border-collapse:collapse;width:100%;}</style></head><body>'
+    +'<h1>DESPS — Liste des bénéficiaires : '+type.toUpperCase()+'</h1>'
+    +'<p style="font-size:11px;color:#555;">Filtres : '+filtres+' | '+d.length+' enregistrement(s) | Éditée le '+new Date().toLocaleDateString('fr-FR')+'</p>'
+    +'<table><thead><tr>'+hdrs.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table></body></html>';
+  dlFile(doc,'DESPS_Liste_'+type+'_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
+  notif('⬇ Liste Word téléchargée','ok');
+}
+
+
+function buildRapport() {
+  var b=DB.bureau, p=DB.portables, im=DB.imprimantes, ta=DB.tablettes;
+  var total=b.length+p.length+im.length+ta.length;
+  var neufs_b=b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
+  var neufs_p=p.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
+  var femmes_p=p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
+  var hommes_p=p.length-femmes_p;
+  var projB={},svcB={};
+  b.forEach(function(r){projB[r.projet||'N/S']=(projB[r.projet||'N/S']||0)+1;svcB[r.service||'N/S']=(svcB[r.service||'N/S']||0)+1;});
+  var el=document.getElementById('rapport-content'); if(!el) return;
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">'
+    +[['🖥️','PC Bureau',b.length,'var(--blue-light)'],['💻','PC Portables',p.length,'var(--accent)'],['🖨️','Imprimantes',im.length,'var(--orange)'],['📦','Total Parc',total,'var(--gold)']].map(function(x){
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:20px">'+x[0]+'</div><div style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;color:'+x[3]+';margin:4px 0">'+x[2]+'</div><div style="font-size:11px;color:var(--txt2)">'+x[1]+'</div></div>';
+    }).join('')+'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">'
+    +'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;">'
+    +'<div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Répartition par projet</div>'
+    +Object.entries(projB).sort(function(a,b){return b[1]-a[1];}).map(function(e){return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+e[0]+'</span><strong style="color:var(--txt)">'+e[1]+'</strong></div>';}).join('')+'</div>'
+    +'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;">'
+    +'<div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Répartition par service</div>'
+    +Object.entries(svcB).sort(function(a,b){return b[1]-a[1];}).map(function(e){return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+e[0]+'</span><strong style="color:var(--txt)">'+e[1]+'</strong></div>';}).join('')+'</div>'
+    +'<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;">'
+    +'<div style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Portables par genre</div>'
+    +'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>♀ Féminin</span><strong style="color:var(--red)">'+femmes_p+'</strong></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>♂ Masculin</span><strong style="color:var(--blue-light)">'+hommes_p+'</strong></div>'
+    +'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;"><span>Total</span><strong style="color:var(--accent)">'+p.length+'</strong></div>'
+    +'</div></div>';
+}
+
+
+function exportRapportExcel() {
+  var b=DB.bureau,p=DB.portables;
+  var rows=[['Type','Nom','N° Série','Marque','Projet','Service','État','Date']];
+  b.forEach(function(r){rows.push(['PC Bureau',r.nom||'',r.num_serie||'',r.marque||'',r.projet||'',r.service||'',r.etat||'',r.date_obtention||'']);});
+  p.forEach(function(r){rows.push(['PC Portable',r.nom||'',r.num_serie||'',r.marque||'',r.projet||'',r.service||'',r.etat||'',r.date_obtention||'']);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+c.replace(/"/g,'""')+'"';}).join(';');}).join('\n');
+  dlFile('﻿'+csv,'DESPS_Rapport_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
+  notif('⬇ Rapport Excel téléchargé','ok');
+}
+
+
+function exportRapportWord() {
+  var el=document.getElementById('rapport-content');
+  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;}h1{font-size:16px;color:#1a5fc8;}</style></head><body>'
+    +'<h1>DESPS — Rapport du Parc Informatique</h1>'
+    +'<p>Généré le '+new Date().toLocaleDateString('fr-FR')+'</p>'
+    +(el?el.innerHTML:'')+'</body></html>';
+  dlFile(doc,'DESPS_Rapport_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
+  notif('⬇ Rapport Word téléchargé','ok');
+}
+
+
+function populatePrintServices() {
+  var all = DB.bureau.concat(DB.portables).concat(DB.imprimantes).concat(DB.tablettes);
+  var svcs = [...new Set(all.map(function(r){return r.service;}).filter(Boolean))].sort();
+  fillSel('pr-svc', svcs);
+}
+
+
+function bars(obj, colmap) {
+    var mx = Math.max.apply(null, Object.values(obj));
+    return Object.entries(obj).sort(function(a,b){return b[1]-a[1];}).map(function(e,i){
+      var col = typeof colmap === 'object' && !Array.isArray(colmap) ? (colmap[e[0]]||'#5ba3f0') : colmap[i%colmap.length];
+      return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:3px;"><span>'+e[0]+'</span><strong style="color:var(--txt)">'+e[1]+'</strong></div>'
+        +'<div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;border-radius:4px;width:'+Math.round(e[1]/mx*100)+'%;background:'+col+'"></div></div></div>';
+    }).join('');
+  }
+
+
+function loadUsers() {
+  var stored = localStorage.getItem('desps_accounts');
+  if (stored) {
+    try { return JSON.parse(stored); } catch(e){}
+  }
+  localStorage.setItem('desps_accounts', JSON.stringify(DEFAULT_ACCOUNTS));
+  return JSON.parse(JSON.stringify(DEFAULT_ACCOUNTS));
+}
+
+
+function saveUsers(accounts) {
+  localStorage.setItem('desps_accounts', JSON.stringify(accounts));
+  if (window.fbSaveUsers && window._fbReady) window.fbSaveUsers(accounts);
+}
+
+
+function hashPw(pw) {
+  // Simple XOR obfuscation (not crypto, but hides plaintext)
+  var k='DESPS2026MENAET';var r='';
+  for(var i=0;i<pw.length;i++) r+=String.fromCharCode(pw.charCodeAt(i)^k.charCodeAt(i%k.length));
+  return btoa(r);
+}
+
+
+function syncFromFirestore() {
+  if (!window._fbReady || !window.fbLoad) return;
+  var cats = Object.keys(INIT);
+  var loaded = 0;
+  cats.forEach(function(k) {
+    window.fbLoad('parc_'+k).then(function(records) {
+      if (records && records.length > 0) {
+        DB[k] = records;
+        DB[k].forEach(function(r){ if(!r.genre) r.genre = detectGenre(r.nom||''); });
+        localStorage.setItem('desps26_'+k, JSON.stringify(records));
+        loaded++;
+        if (loaded === 1) {
+          updateBadges(); updateStats();
+          try { buildCharts(); } catch(e){}
+          buildDashTable();
+          notif('🔥 Données Firebase synchronisées','ok');
+        }
+      }
+    }).catch(function(e){ console.warn('Sync failed:', k, e); });
+  });
+  if (window.fbLoadUsers) {
+    window.fbLoadUsers().then(function(fbUsers) {
+      if (fbUsers && Object.keys(fbUsers).length > 0) {
+        localStorage.setItem('desps_accounts', JSON.stringify(fbUsers));
+      }
+    }).catch(function(){});
+  }
+}
+
+function showLoadingOverlay(show) { /* no-op — instant load */ }
+function updateFirebaseStatus(online) {
+  var dot=document.getElementById('fb-dot');
+  var txt=document.getElementById('fb-status-txt');
+  if(dot) dot.style.background=online?'var(--accent)':'var(--red)';
+  if(txt) txt.textContent=online?'🔥 Firebase actif':'⚠️ Hors ligne';
+}
+window.addEventListener('online',  function(){ updateFirebaseStatus(true);  notif('🔥 Firebase reconnecté','ok'); });
+window.addEventListener('offline', function(){ updateFirebaseStatus(false); notif('⚠️ Mode hors ligne','info'); });
+
+window.onload = function() {
+  var saved = sessionStorage.getItem('desps_user');
+  if (saved) {
+    try {
+      var u = JSON.parse(saved);
+      setUser(u.login, u.role, u.name);
+    } catch(e) { sessionStorage.removeItem('desps_user'); }
+  }
+  document.getElementById('login-pw').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  document.getElementById('login-id').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+};
+
 </script>
+
+<!-- Firebase status indicator -->
+<div class="fb-status" id="fb-status-bar" style="position:fixed;bottom:14px;right:14px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;display:flex;align-items:center;gap:6px;color:var(--txt2);">
+  <div class="fb-dot online" id="fb-dot" style="width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;"></div>
+  <span id="fb-status-txt">🔥 Firebase actif</span>
+</div>
+
 </body>
 </html>
