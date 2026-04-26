@@ -234,6 +234,8 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 .btn-sec{background:var(--card);color:var(--txt);border:1px solid var(--border2);}
 .btn-sec:hover{border-color:var(--blue-light);}
 .btn-gold{background:var(--gold);color:#1a0d00;}
+.btn-danger{background:rgba(230,57,70,0.15);color:var(--red);border:1px solid rgba(230,57,70,0.3);}
+.btn-danger:hover{background:rgba(230,57,70,0.3);}
 .btn-sm{padding:5px 11px;font-size:12px;}
 
 /* ====== CONTENT ====== */
@@ -1911,8 +1913,11 @@ function nav(page) {
     'drena-impr':'🖨️ DRENAET — Imprimantes', 'drena-tab':'📱 DRENAET — Tablettes'
   };
   document.getElementById('page-title').textContent = titles[page]||page;
-  if (page === 'rapport') buildRapport();
-  if (page === 'print') previewPrint();
+  if (page === 'rapport') try{buildRapport();}catch(e){}
+  if (page === 'print') try{previewPrint();}catch(e){}
+  if (page === 'stats') { try{buildStatsPage();}catch(e){} var sub=document.getElementById('stats-submenu'); if(sub)sub.classList.add('open'); }
+  if (page === 'corbeille') try{refreshTrash();}catch(e){}
+  if (page === 'users') { try{refreshUsersList();}catch(e){} try{refreshLog();}catch(e){} }
 }
 
 
@@ -1920,20 +1925,27 @@ function initApp() {
   for (var k of Object.keys(INIT)) {
     var stored = localStorage.getItem('desps26_'+k);
     DB[k] = stored ? JSON.parse(stored) : INIT[k].map(function(r){ return Object.assign({}, r); });
-    // Add genre if missing
     DB[k].forEach(function(r){ if(!r.genre) r.genre = detectGenre(r.nom||''); });
   }
-  updateBadges(); updateStats(); buildCharts(); buildDashTable();
+  updateBadges();
+  updateStats();
+  buildDashTable();
   populateFilters('bureau'); populateFilters('portables');
   populateFilters('imprimantes'); populateFilters('tablettes');
   populatePrintServices();
   renderTbl('bureau'); renderTbl('portables');
   renderTbl('imprimantes'); renderTbl('tablettes');
   renderDrenaTbls();
-  buildRapport();
-  previewPrint();
-
-  setTimeout(function(){if(window._fbReady)syncFromFirestore();},500);
+  try { buildRapport(); } catch(e){}
+  try { previewPrint(); } catch(e){}
+  // Charts need the DOM to be ready — wait one tick
+  setTimeout(function(){
+    try { buildCharts(); } catch(e){ console.warn('Chart error:',e); }
+    try { startClock(); } catch(e){}
+    try { buildStatsPage(); } catch(e){}
+    try { refreshTrash(); } catch(e){}
+    if(window._fbReady) setTimeout(syncFromFirestore, 500);
+  }, 50);
 }
 
 
@@ -1946,10 +1958,19 @@ function updateBadges() {
 
 
 function updateStats() {
-  document.getElementById('s-bureau').textContent = DB.bureau.length;
-  document.getElementById('s-port').textContent = DB.portables.length;
-  document.getElementById('s-impr').textContent = DB.imprimantes.length;
-  document.getElementById('s-tab').textContent = DB.tablettes.length;
+  var drenaB=DB.bureau.filter(isDrena).length;
+  var drenaP=DB.portables.filter(isDrena).length;
+  var drenaI=DB.imprimantes.filter(isDrena).length;
+  var drenaT=DB.tablettes.filter(isDrena).length;
+  var el;
+  el=document.getElementById('s-bureau'); if(el) el.textContent=DB.bureau.length-drenaB;
+  el=document.getElementById('s-port');   if(el) el.textContent=DB.portables.length-drenaP;
+  el=document.getElementById('s-impr');   if(el) el.textContent=DB.imprimantes.length-drenaI;
+  el=document.getElementById('s-tab');    if(el) el.textContent=DB.tablettes.length-drenaT;
+  el=document.getElementById('s-drena-bureau'); if(el) el.textContent=drenaB;
+  el=document.getElementById('s-drena-port');   if(el) el.textContent=drenaP;
+  el=document.getElementById('s-drena-impr');   if(el) el.textContent=drenaI;
+  el=document.getElementById('s-drena-tab');    if(el) el.textContent=drenaT;
 }
 
 
@@ -1966,22 +1987,93 @@ function buildDashTable() {
 }
 
 
+function destroyChart(ref) { if(ref){try{ref.destroy();}catch(e){}} return null; }
+var _chartProjets=null,_chartEtats=null,_chartGenre=null,_chartServices=null,_projetsIsBar=true;
+var CHART_COLORS=['#00C9A7','#5ba3f0','#F5841F','#f4b942','#e63946','#a64ccc','#94a3b8','#3dccc1','#ff8c69','#6ec6ff'];
+var ETAT_COLORS={'Nouvel PC':'#00C9A7','Nouveau':'#3dccc1','N/S':'#5ba3f0','Ancien PC':'#F5841F','Ancien PC (Restitué)':'#f4b942','Ancien PC (Non Restitué)':'#e63946','En Maintenance':'#a64ccc'};
+
 function buildCharts() {
   var all = DB.bureau.concat(DB.portables);
-  var pc = {}, ec = {};
-  all.forEach(function(r){ pc[r.projet||'N/S']=(pc[r.projet||'N/S']||0)+1; ec[r.etat||'N/S']=(ec[r.etat||'N/S']||0)+1; });
-  var cols = ['#00C9A7','#5ba3f0','#F5841F','#f4b942','#e63946','#a64ccc','#94a3b8'];
-  var ecols = {'Nouvel PC':'#00C9A7','Ancien PC':'#F5841F','Ancien PC (Non Restitué)':'#e63946','Ancien PC (Restitué)':'#f4b942'};
-  function bars(obj, colmap) {
-    var mx = Math.max.apply(null, Object.values(obj));
-    return Object.entries(obj).sort(function(a,b){return b[1]-a[1];}).map(function(e,i){
-      var col = typeof colmap === 'object' && !Array.isArray(colmap) ? (colmap[e[0]]||'#5ba3f0') : colmap[i%colmap.length];
-      return '<div style="margin-bottom:9px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:3px;"><span>'+e[0]+'</span><strong style="color:var(--txt)">'+e[1]+'</strong></div>'
-        +'<div style="height:7px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;"><div style="height:100%;border-radius:4px;width:'+Math.round(e[1]/mx*100)+'%;background:'+col+'"></div></div></div>';
-    }).join('');
+  var pc={},ec={},sc={};
+  all.forEach(function(r){
+    pc[r.projet||'N/S']=(pc[r.projet||'N/S']||0)+1;
+    ec[r.etat||'N/S']=(ec[r.etat||'N/S']||0)+1;
+    sc[r.service||'N/S']=(sc[r.service||'N/S']||0)+1;
+  });
+  var drenaCount=DB.bureau.concat(DB.portables).filter(isDrena).length;
+  if(drenaCount>0) sc['DRENAET (Dir. Régionales)']=drenaCount;
+
+  var projLabels=Object.keys(pc).sort(function(a,b){return pc[b]-pc[a];});
+  var projData=projLabels.map(function(k){return pc[k];});
+  var projCols=projLabels.map(function(_,i){return CHART_COLORS[i%CHART_COLORS.length];});
+  var etatLabels=Object.keys(ec).sort(function(a,b){return ec[b]-ec[a];});
+  var etatData=etatLabels.map(function(k){return ec[k];});
+  var etatCols=etatLabels.map(function(k){return ETAT_COLORS[k]||'#94a3b8';});
+  var svcLabels=Object.keys(sc).sort(function(a,b){return sc[b]-sc[a];}).slice(0,12);
+  var svcData=svcLabels.map(function(k){return sc[k];});
+  var svcColors=svcLabels.map(function(k){return k.includes('DRENA')?'rgba(244,185,66,0.75)':'rgba(91,163,240,0.7)';});
+
+  var cd={responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}}};
+
+  // 1. Histogramme Projets
+  _chartProjets=destroyChart(_chartProjets);
+  var ctxP=document.getElementById('chart-projets');
+  if(ctxP && typeof Chart!=='undefined'){
+    _chartProjets=new Chart(ctxP,{
+      type:_projetsIsBar?'bar':'pie',
+      data:{labels:projLabels,datasets:[{label:'Équipements',data:projData,backgroundColor:projCols,borderColor:projCols.map(function(c){return c+'cc';}),borderWidth:1,borderRadius:6}]},
+      options:Object.assign({},cd,_projetsIsBar?{
+        indexAxis:'y',
+        scales:{x:{ticks:{color:'#94a3b8',font:{size:11}},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#e8edf5',font:{size:11}},grid:{display:false}}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return ' '+c.raw+' équipements';}}}}
+      }:{plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:11}}}}})
+    });
   }
-  document.getElementById('ch-projets').innerHTML = bars(pc, cols);
-  document.getElementById('ch-etats').innerHTML = bars(ec, ecols);
+
+  // 2. Anneau États
+  _chartEtats=destroyChart(_chartEtats);
+  var ctxE=document.getElementById('chart-etats');
+  if(ctxE && typeof Chart!=='undefined'){
+    _chartEtats=new Chart(ctxE,{
+      type:'doughnut',
+      data:{labels:etatLabels,datasets:[{data:etatData,backgroundColor:etatCols,borderColor:'rgba(0,0,0,0.3)',borderWidth:2,hoverOffset:8}]},
+      options:Object.assign({},cd,{cutout:'65%',plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:11},padding:10}},tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+c.raw+' ('+Math.round(c.raw/c.dataset.data.reduce(function(a,b){return a+b;},0)*100)+'%)';}}}}})
+    });
+  }
+
+  // 3. Secteur Genre
+  var f=DB.portables.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
+  var h=DB.portables.length-f;
+  _chartGenre=destroyChart(_chartGenre);
+  var ctxG=document.getElementById('chart-genre');
+  if(ctxG && typeof Chart!=='undefined'){
+    _chartGenre=new Chart(ctxG,{
+      type:'pie',
+      data:{labels:['♀ Féminin','♂ Masculin'],datasets:[{data:[f,h],backgroundColor:['#e63946','#5ba3f0'],borderColor:'rgba(0,0,0,0.3)',borderWidth:2,hoverOffset:8}]},
+      options:Object.assign({},cd,{plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:11}}},tooltip:{callbacks:{label:function(c){return ' '+c.label+': '+c.raw+' ('+Math.round(c.raw/Math.max(DB.portables.length,1)*100)+'%)';}}}}})
+    });
+  }
+
+  // 4. Histogramme Services
+  _chartServices=destroyChart(_chartServices);
+  var ctxS=document.getElementById('chart-services');
+  if(ctxS && typeof Chart!=='undefined'){
+    _chartServices=new Chart(ctxS,{
+      type:'bar',
+      data:{labels:svcLabels,datasets:[{label:'Équipements',data:svcData,backgroundColor:svcColors,borderColor:svcLabels.map(function(k){return k.includes('DRENA')?'#f4b942':'#5ba3f0';}),borderWidth:1,borderRadius:5}]},
+      options:Object.assign({},cd,{scales:{x:{ticks:{color:'#94a3b8',font:{size:10},maxRotation:30},grid:{color:'rgba(255,255,255,0.04)'}},y:{ticks:{color:'#94a3b8',font:{size:11},stepSize:1},grid:{color:'rgba(255,255,255,0.04)'}}},plugins:{legend:{display:false}}})
+    });
+  }
+}
+
+function toggleChartType(which) {
+  if(which==='projets'){
+    _projetsIsBar=!_projetsIsBar;
+    var btn=document.getElementById('btn-projets-type');
+    if(btn) btn.textContent=_projetsIsBar?'⇌ Secteur':'⇌ Barres';
+    buildCharts();
+  }
 }
 
 
@@ -2501,6 +2593,76 @@ function updateFirebaseStatus(online) {
 window.addEventListener('online',  function(){ updateFirebaseStatus(true);  notif('🔥 Firebase reconnecté','ok'); });
 window.addEventListener('offline', function(){ updateFirebaseStatus(false); notif('⚠️ Mode hors ligne','info'); });
 
+function startClock() {
+  function upd() {
+    var now=new Date();
+    var days=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+    var months=['Janv','Févr','Mars','Avr','Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc'];
+    var h=String(now.getHours()).padStart(2,'0');
+    var m=String(now.getMinutes()).padStart(2,'0');
+    var s=String(now.getSeconds()).padStart(2,'0');
+    var ct=document.getElementById('clock-time'); if(ct) ct.textContent=h+':'+m+':'+s;
+    var cd=document.getElementById('clock-date'); if(cd) cd.textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+    var cy=document.getElementById('clock-year'); if(cy) cy.textContent=now.getFullYear();
+  }
+  upd(); setInterval(upd,1000);
+}
+
+function buildStatsPage() {
+  var el=document.getElementById('stats-page-content'); if(!el) return;
+  var b=DB.bureau,p=DB.portables,im=DB.imprimantes,ta=DB.tablettes;
+  var total=b.length+p.length+im.length+ta.length;
+  function cnt(arr,f){var o={};arr.forEach(function(r){var k=r[f]||'N/S';o[k]=(o[k]||0)+1;});return Object.entries(o).sort(function(a,c){return c[1]-a[1];});}
+  var projRows=cnt(b.concat(p),'projet').map(function(e){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+e[0]+'</span><strong>'+e[1]+'</strong></div>';}).join('');
+  var svcRows=cnt(b.concat(p),'service').slice(0,10).map(function(e){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+e[0]+'</span><strong>'+e[1]+'</strong></div>';}).join('');
+  var etatRows=cnt(b,'etat').map(function(e){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;"><span>'+e[0]+'</span><strong>'+e[1]+'</strong></div>';}).join('');
+  var neufsB=b.filter(function(r){return (r.etat||'').toLowerCase().includes('nouvel');}).length;
+  var f=p.filter(function(r){return detectGenre(r.nom||'')==='F';}).length;
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;">'
+    +'<div class="stat-full-card"><div class="stat-full-title">PC Bureau</div><div class="stat-full-val" style="color:var(--blue-light)">'+b.length+'</div></div>'
+    +'<div class="stat-full-card"><div class="stat-full-title">PC Portables</div><div class="stat-full-val" style="color:var(--accent)">'+p.length+'</div></div>'
+    +'<div class="stat-full-card"><div class="stat-full-title">Imprimantes</div><div class="stat-full-val" style="color:var(--orange)">'+im.length+'</div></div>'
+    +'<div class="stat-full-card"><div class="stat-full-title">Tablettes</div><div class="stat-full-val" style="color:var(--red)">'+ta.length+'</div></div>'
+    +'<div class="stat-full-card"><div class="stat-full-title">Total Parc</div><div class="stat-full-val" style="color:var(--gold)">'+total+'</div></div>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">'
+    +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Par projet</h3></div><div style="padding:14px;">'+projRows+'</div></div>'
+    +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Par service</h3></div><div style="padding:14px;">'+svcRows+'</div></div>'
+    +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>État bureau</h3></div><div style="padding:14px;">'+etatRows+'</div></div>'
+    +'</div>';
+}
+function buildStatPanel(tab){ buildStatsPage(); }
+function switchStatsTab(tab){ buildStatsPage(); }
+function printStats(){ buildStatsPage(); window.print(); }
+function exportStatsExcel(){ exportCSV('bureau'); }
+function exportStatsWord(){
+  var el=document.getElementById('stats-page-content');
+  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial;font-size:12px;}h1{color:#1a3066;}</style></head><body><h1>DESPS — Statistiques</h1>'+(el?el.innerHTML:'')+'</body></html>';
+  dlFile(doc,'DESPS_Stats_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
+  notif('⬇ Word téléchargé','ok');
+}
+
+function refreshTrash() {
+  var el=document.getElementById('trash-content'); if(!el) return;
+  var trash=JSON.parse(localStorage.getItem('desps_trash')||'[]');
+  if(!trash.length){el.innerHTML='<div style="text-align:center;padding:30px;color:var(--txt3);"><div style="font-size:36px">🗑️</div><div>La corbeille est vide</div></div>';return;}
+  el.innerHTML=trash.map(function(item,i){var r=item.record||{};return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid rgba(230,57,70,0.2);border-radius:9px;margin-bottom:8px;"><div style="flex:1;font-size:12.5px;"><strong>'+(r.nom||r.marque||'—')+'</strong><div style="font-size:11px;color:var(--txt3);">N° série: '+(r.num_serie||'—')+' · '+item.type+'</div></div><button class="btn btn-sec btn-sm" onclick="restoreItem('+i+')">♻️</button><button class="btn btn-danger btn-sm" onclick="deleteForever('+i+')">🗑</button></div>';}).join('');
+}
+function restoreItem(idx){var t=JSON.parse(localStorage.getItem('desps_trash')||'[]');var item=t[idx];if(!item)return;DB[item.type].unshift(item.record);save(item.type);t.splice(idx,1);localStorage.setItem('desps_trash',JSON.stringify(t));notif('♻️ Restauré','ok');refreshTrash();updateBadges();}
+function deleteForever(idx){if(!confirm('Supprimer définitivement ?'))return;var t=JSON.parse(localStorage.getItem('desps_trash')||'[]');t.splice(idx,1);localStorage.setItem('desps_trash',JSON.stringify(t));notif('🗑 Supprimé','info');refreshTrash();}
+function restoreAll(){var t=JSON.parse(localStorage.getItem('desps_trash')||'[]');t.forEach(function(item){if(DB[item.type])DB[item.type].unshift(item.record);save(item.type);});localStorage.setItem('desps_trash','[]');notif('♻️ Tout restauré','ok');refreshTrash();updateBadges();}
+function emptyTrash(){if(!confirm('Vider la corbeille ?'))return;localStorage.setItem('desps_trash','[]');notif('🗑 Corbeille vidée','info');refreshTrash();}
+
+function toggleStatsMenu(){
+  var sub=document.getElementById('stats-submenu');
+  var par=document.getElementById('nav-stats-parent');
+  if(!sub)return;
+  var open=sub.classList.contains('open');
+  sub.classList.toggle('open',!open);
+  if(par)par.classList.toggle('sub-open',!open);
+  if(!open){nav('stats');}
+}
+function navStats(tab){nav('stats');try{switchStatsTab(tab);}catch(e){}document.querySelectorAll('.stats-sub-item').forEach(function(el){el.classList.remove('active');});var ss=document.getElementById('ss-'+tab);if(ss)ss.classList.add('active');}
 window.onload = function() {
   var saved = sessionStorage.getItem('desps_user');
   if (saved) {
