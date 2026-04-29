@@ -2633,7 +2633,7 @@ function nav(page) {
   if (page === 'suivi-materiel') { setTimeout(function(){ renderMouvements(); updateMouvementsStats(); },80); }
   if (page === 'suivi-maintenance') { setTimeout(function(){ renderMaintenance(); updateMaintenanceStats(); },80); }
 
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
   var pg = document.getElementById('pg-'+page);
   if (pg) { pg.classList.add('active'); pg.style.display='block'; }
@@ -2642,6 +2642,8 @@ function nav(page) {
     if (oc.includes("'"+page+"'")) n.classList.add('active');
   });
   var titles = {
+    parametres:'⚙️ Paramètres', 'suivi-materiel':'📦 Suivi Matériel',
+    'suivi-maintenance':'🛠️ Suivi Maintenance',
     dashboard:'📊 Tableau de bord', bureau:'💻 Ordinateurs Bureaux',
     portables:'🖥️ Ordinateurs Portables', imprimantes:'🖨️ Imprimantes',
     tablettes:'📱 Tablettes & Autres', import:'📥 Import / Export',
@@ -2969,8 +2971,16 @@ function editRec(type, idx) {
 }
 function buildForm() {
   var type=document.getElementById('add-type').value;
-  var svcs=['SDESP','SDPP','SDEPMI','SDGFNE','SDPSEPP','SICRE','SECRETARIAT'].map(function(s){return '<option>'+s+'</option>';}).join('');
-  var projs=['CLEF','PIP','PATEB','UNICEF','DESPS','DESPS-KPD','DESPS-FASFE'].map(function(p){return '<option>'+p+'</option>';}).join('');
+  // Lire depuis PARAMS mis à jour via l'onglet Paramètres
+  loadParams();
+  var svcList = (PARAMS.services && PARAMS.services.length > 0)
+    ? PARAMS.services.map(function(s){ return s.abrev||s.nom; })
+    : ['SDESP','SDPP','SDEPMI','SDGFNE','SDPSEPP','SDPSEP','SICRE','SECRETARIAT','DESPS'];
+  var projList = (PARAMS.projets && PARAMS.projets.length > 0)
+    ? PARAMS.projets.map(function(p){ return p.nom; })
+    : ['CLEF','PIP','PATEB','UNICEF','DESPS','DESPS-KPD','DESPS-FASFE'];
+  var svcs = '<option value="">— Sélectionner —</option>'+svcList.map(function(s){return '<option>'+s+'</option>';}).join('');
+  var projs = '<option value="">— Sélectionner —</option>'+projList.map(function(p){return '<option>'+p+'</option>';}).join('');
   var etats=['Nouvel PC','Ancien PC','Ancien PC (Restitué)','Ancien PC (Non Restitué)','En Maintenance'].map(function(e){return '<option>'+e+'</option>';}).join('');
   var fields = type==='bureau' ? [
     {id:'id',l:'N° Ordre',ph:'001'},{id:'nom',l:'Nom & Prénoms',ph:'NOM PRENOM',f:true},
@@ -3675,8 +3685,8 @@ function renderServices() {
 }
 function openAddService(){ editSvcIdx=null; document.getElementById('m-service-title').textContent='🏢 Nouveau Service / Direction'; ['svc-nom','svc-abrev','svc-desc'].forEach(function(id){document.getElementById(id).value='';}); document.getElementById('svc-type').value='Service'; openMod('m-service'); }
 function openEditService(idx){ editSvcIdx=idx; var s=PARAMS.services[idx]; document.getElementById('m-service-title').textContent='✏️ Modifier'; document.getElementById('svc-nom').value=s.nom; document.getElementById('svc-abrev').value=s.abrev; document.getElementById('svc-type').value=s.type; document.getElementById('svc-desc').value=s.desc||''; openMod('m-service'); }
-function saveService(){ loadParams(); var s={id:editSvcIdx!==null?PARAMS.services[editSvcIdx].id:'s'+Date.now(),nom:document.getElementById('svc-nom').value.trim(),abrev:document.getElementById('svc-abrev').value.trim(),type:document.getElementById('svc-type').value,desc:document.getElementById('svc-desc').value.trim()}; if(!s.nom){notif('Nom obligatoire','err');return;} if(editSvcIdx!==null)PARAMS.services[editSvcIdx]=s; else PARAMS.services.push(s); saveParam('services'); closeMod('m-service'); renderServices(); notif('✅ Service enregistré','ok'); }
-function deleteService(idx){ if(!confirm('Supprimer ?'))return; loadParams(); PARAMS.services.splice(idx,1); saveParam('services'); renderServices(); notif('🗑 Supprimé','ok'); }
+function saveService(){ loadParams(); var s={id:editSvcIdx!==null?PARAMS.services[editSvcIdx].id:'s'+Date.now(),nom:document.getElementById('svc-nom').value.trim(),abrev:document.getElementById('svc-abrev').value.trim(),type:document.getElementById('svc-type').value,desc:document.getElementById('svc-desc').value.trim()}; if(!s.nom){notif('Nom obligatoire','err');return;} if(editSvcIdx!==null)PARAMS.services[editSvcIdx]=s; else PARAMS.services.push(s); saveParam('services'); closeMod('m-service'); renderServices(); buildForm(); notif('✅ Service enregistré','ok'); }
+function deleteService(idx){ if(!confirm('Supprimer ?'))return; loadParams(); PARAMS.services.splice(idx,1); saveParam('services'); renderServices(); buildForm(); notif('🗑 Supprimé','ok'); }
 
 function renderProjets(){
   loadParams();
@@ -3693,8 +3703,8 @@ function renderProjets(){
 }
 function openAddProjet(){ editProjIdx=null; document.getElementById('m-projet-title').textContent='📁 Nouveau Projet'; ['proj-nom','proj-intitule','proj-bailleur','proj-annee'].forEach(function(id){document.getElementById(id).value='';}); openMod('m-projet'); }
 function openEditProjet(idx){ editProjIdx=idx; var p=PARAMS.projets[idx]; document.getElementById('m-projet-title').textContent='✏️ Modifier Projet'; document.getElementById('proj-nom').value=p.nom; document.getElementById('proj-intitule').value=p.intitule; document.getElementById('proj-bailleur').value=p.bailleur; document.getElementById('proj-annee').value=p.annee; openMod('m-projet'); }
-function saveProjet(){ loadParams(); var p={id:editProjIdx!==null?PARAMS.projets[editProjIdx].id:'p'+Date.now(),nom:document.getElementById('proj-nom').value.trim(),intitule:document.getElementById('proj-intitule').value.trim(),bailleur:document.getElementById('proj-bailleur').value.trim(),annee:document.getElementById('proj-annee').value.trim()}; if(!p.nom){notif('Nom obligatoire','err');return;} if(editProjIdx!==null)PARAMS.projets[editProjIdx]=p; else PARAMS.projets.push(p); saveParam('projets'); closeMod('m-projet'); renderProjets(); notif('✅ Projet enregistré','ok'); }
-function deleteProjet(idx){ if(!confirm('Supprimer ?'))return; loadParams(); PARAMS.projets.splice(idx,1); saveParam('projets'); renderProjets(); notif('🗑 Supprimé','ok'); }
+function saveProjet(){ loadParams(); var p={id:editProjIdx!==null?PARAMS.projets[editProjIdx].id:'p'+Date.now(),nom:document.getElementById('proj-nom').value.trim(),intitule:document.getElementById('proj-intitule').value.trim(),bailleur:document.getElementById('proj-bailleur').value.trim(),annee:document.getElementById('proj-annee').value.trim()}; if(!p.nom){notif('Nom obligatoire','err');return;} if(editProjIdx!==null)PARAMS.projets[editProjIdx]=p; else PARAMS.projets.push(p); saveParam('projets'); closeMod('m-projet'); renderProjets(); buildForm(); notif('✅ Projet enregistré','ok'); }
+function deleteProjet(idx){ if(!confirm('Supprimer ?'))return; loadParams(); PARAMS.projets.splice(idx,1); saveParam('projets'); renderProjets(); buildForm(); notif('🗑 Supprimé','ok'); }
 
 function renderColonnes(){
   loadParams();
