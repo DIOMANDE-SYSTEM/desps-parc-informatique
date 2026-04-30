@@ -66,7 +66,7 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 
 /* ====== SIDEBAR ====== */
 .sidebar{
-  width:268px;flex-shrink:0;
+  width:240px;flex-shrink:0;
   background:linear-gradient(175deg,var(--navy2),#030c1e);
   border-right:1px solid var(--border);
   display:flex;flex-direction:column;
@@ -152,7 +152,7 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 .logout-btn:hover{background:rgba(230,57,70,0.25);}
 
 /* ====== MAIN ====== */
-.main{flex:1;margin-left:268px;display:flex;flex-direction:column;min-height:100vh;}
+.main{flex:1;margin-left:240px;display:flex;flex-direction:column;min-height:100vh;max-width:calc(100vw - 240px);overflow-x:hidden;}
 
 /* ====== APP HEADER (armoirie + DESPS) ====== */
 .app-header{
@@ -180,7 +180,8 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 .topbar{
   height:52px;background:rgba(6,16,31,0.96);backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 22px;gap:12px;
+  display:flex;align-items:center;padding:0 16px;gap:8px;
+  box-sizing:border-box;width:100%;overflow:hidden;
 }
 .topbar-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;flex:1;color:var(--txt);}
 .search-wrap{
@@ -198,11 +199,11 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 .btn-sm{padding:5px 11px;font-size:12px;}
 
 /* ====== CONTENT ====== */
-.content{flex:1;padding:18px 22px;}
+.content{flex:1;padding:14px 16px;box-sizing:border-box;width:100%;overflow-x:hidden;}
 .page{display:none;}.page.active{display:block !important;}
 
 /* ====== STAT CARDS ====== */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px;}
 .stats-grid-8{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:6px;}
 .stats-section-label{
   font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
@@ -211,7 +212,7 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 }
 .stats-section-label.centrale{color:var(--blue-light);}
 .stats-section-label.drenaet{color:var(--gold);}
-.chart-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;}
+.chart-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px;}
 .chart-container{position:relative;height:220px;}
 canvas{max-width:100%;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:17px;position:relative;overflow:hidden;transition:transform 0.2s;}
@@ -239,7 +240,7 @@ canvas{max-width:100%;}
 .flt{background:var(--surface);border:1px solid var(--border);color:var(--txt);padding:5px 9px;border-radius:7px;font-size:12px;font-family:'Outfit',sans-serif;cursor:pointer;outline:none;}
 .flt:focus{border-color:var(--blue-light);}
 .flt option{background:var(--navy2);}
-.scroll{overflow-x:auto;}
+.scroll{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;}
 thead{background:rgba(0,0,0,0.25);}
 th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;border-bottom:1px solid var(--border);}
@@ -473,6 +474,16 @@ body.role-user .user-nav-only{display:flex!important;}
 .print-header{display:none;text-align:center;margin-bottom:18px;}
 
 /* ====== SCROLLBAR ====== */
+.global-hscroll{position:fixed;bottom:0;left:240px;right:0;height:16px;background:rgba(6,16,31,0.97);border-top:1px solid rgba(91,163,240,0.18);z-index:300;display:none;align-items:center;padding:0 8px;gap:6px;}
+.global-hscroll.show{display:flex;}
+.hs-label{font-size:9px;color:var(--txt3);font-family:"IBM Plex Mono",monospace;flex-shrink:0;}
+.hs-track{flex:1;height:5px;background:rgba(91,163,240,0.12);border-radius:3px;position:relative;cursor:pointer;}
+.hs-thumb{position:absolute;top:0;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--blue-light));min-width:30px;cursor:grab;}
+.hs-thumb:active{cursor:grabbing;}
+body.has-hscroll{padding-bottom:16px;}
+@media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}.chart-row{grid-template-columns:1fr 1fr!important;}}
+@media(max-width:900px){.sidebar{width:200px!important;}.main{margin-left:200px!important;max-width:calc(100vw - 200px)!important;}.global-hscroll{left:200px!important;}.content{padding:10px 12px!important;}}
+@media(max-width:700px){.sidebar{width:0!important;overflow:hidden!important;}.main{margin-left:0!important;max-width:100vw!important;}.global-hscroll{left:0!important;}}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--navy);}
 ::-webkit-scrollbar-thumb{background:rgba(26,95,200,0.4);border-radius:3px;}
@@ -531,7 +542,8 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
     </div>
     <button class="login-btn" onclick="doLogin()">Se connecter</button>
     <div class="login-error" id="login-error">Identifiant ou mot de passe incorrect.</div>
-    <div class="login-footer">&copy; DESPS 2026 &mdash; DIOM.YA</div>
+    <div style="text-align:center;margin:8px 0 0;padding:6px 12px;background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.2);border-radius:8px;font-size:11px;color:var(--accent);">🔒 <strong>Connexion locale</strong> — Mode hors-ligne</div>
+<div class="login-footer">&copy; DESPS 2026 &mdash; DIOM.YA</div>
   </div>
 </div>
 
@@ -678,18 +690,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       </div>
 
       <!-- ── SUIVI MATÉRIELS ET MAINTENANCE (admin) ── -->
-      <div class="nav-item has-sub admin-nav-only" id="nav-suivi-parent" onclick="toggleSuiviMenu()" style="display:none;">
+      <div class="nav-item admin-nav-only" id="nav-suivi-parent" onclick="nav('suivi-unifie')" style="display:none;">
         <span class="nav-ico">🔧</span>
-        <span>Suivi Matériels &amp; Maintenance</span>
-        <span class="nav-arrow">&#9654;</span>
-      </div>
-      <div class="stats-submenu" id="suivi-submenu" style="display:none;">
-        <div class="stats-sub-item" id="ss-suivi-materiel" onclick="navSuivi('materiel')">
-          <span class="ss-ico">📦</span> Suivi matériel
-        </div>
-        <div class="stats-sub-item" id="ss-suivi-maintenance" onclick="navSuivi('maintenance')">
-          <span class="ss-ico">🛠️</span> Suivi Maintenance
-        </div>
+        <span>Suivi Mat&eacute;riels &amp; Maintenance</span>
       </div>
 
       <!-- visible to all: guide -->
@@ -1728,9 +1731,24 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       </div>
 
       <!-- ===== PAGE SUIVI MATÉRIEL ===== -->
-      <div id="pg-suivi-materiel" class="page admin-gate" style="display:none;">
+      <!-- ===== PAGE SUIVI UNIFIÉ ===== -->
+      <div id="pg-suivi-unifie" class="page" style="display:none;">
 
-        <!-- KPI Cards -->
+        <!-- Onglets -->
+        <div style="display:flex;gap:0;margin-bottom:18px;border-radius:10px;overflow:hidden;border:1px solid var(--border);width:fit-content;box-shadow:var(--sh);">
+          <button id="su-tab-btn-mat" onclick="switchSuiviTab('mat')"
+            style="padding:9px 24px;font-size:13px;font-weight:700;font-family:Outfit,sans-serif;cursor:pointer;border:none;background:var(--accent);color:#032a22;transition:all 0.2s;display:flex;align-items:center;gap:7px;">
+            📦 Suivi Matériel
+          </button>
+          <button id="su-tab-btn-maint" onclick="switchSuiviTab('maint')"
+            style="padding:9px 24px;font-size:13px;font-weight:700;font-family:Outfit,sans-serif;cursor:pointer;border:none;background:var(--card);color:var(--txt);border-left:1px solid var(--border);transition:all 0.2s;display:flex;align-items:center;gap:7px;">
+            🛠️ Suivi Maintenance
+          </button>
+        </div>
+
+        <!-- Panneau Suivi Matériel -->
+        <div id="su-panel-mat" style="display:block;">
+          <!-- KPI Cards -->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
           <div class="stat-card blue"><div class="stat-ico">📤</div><div class="stat-val" id="mv-s-attr">0</div><div class="stat-lbl">Attributions</div><div class="stat-sub">Total</div></div>
           <div class="stat-card green"><div class="stat-ico">📥</div><div class="stat-val" id="mv-s-rest">0</div><div class="stat-lbl">Restitutions</div><div class="stat-sub">Total</div></div>
@@ -1813,12 +1831,11 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="pag-btns" id="mv-pag-btns"></div>
           </div>
         </div>
-      </div>
+        </div>
 
-      <!-- ===== PAGE SUIVI MAINTENANCE ===== -->
-      <div id="pg-suivi-maintenance" class="page admin-gate" style="display:none;">
-
-        <!-- KPI Cards -->
+        <!-- Panneau Suivi Maintenance -->
+        <div id="su-panel-maint" style="display:none;">
+          <!-- KPI Cards -->
         <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px;">
           <div class="stat-card blue"><div class="stat-ico">🔧</div><div class="stat-val" id="mt-s-total">0</div><div class="stat-lbl">Total interventions</div><div class="stat-sub">Toutes périodes</div></div>
           <div class="stat-card green"><div class="stat-ico">✅</div><div class="stat-val" id="mt-s-done">0</div><div class="stat-lbl">Sous garantie</div><div class="stat-sub">Couvertes</div></div>
@@ -1899,10 +1916,11 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="pag-btns" id="mt-pag-btns"></div>
           </div>
         </div>
+        </div>
+
       </div>
 
-
-        <footer>
+<footer>
       <strong>&copy; DESPS 2026 &mdash; Tous droits r&eacute;serv&eacute;s</strong>
       &nbsp;|&nbsp; Derni&egrave;re mise &agrave; jour : <strong>mai 2026</strong>
       &nbsp;|&nbsp; Conception et design : <strong>DESPS</strong>
@@ -2630,8 +2648,7 @@ function nav(page) {
       });
     },80);
   }
-  if (page === 'suivi-materiel') { setTimeout(function(){ renderMouvements(); updateMouvementsStats(); },80); }
-  if (page === 'suivi-maintenance') { setTimeout(function(){ renderMaintenance(); updateMaintenanceStats(); },80); }
+  if (page === 'suivi-unifie') { setTimeout(function(){ renderMouvements(); updateMouvementsStats(); renderMaintenance(); updateMaintenanceStats(); },80); }
 
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
@@ -4691,6 +4708,59 @@ function notif(msg,type) {
   var el=document.createElement('div'); el.className='notif '+cls; el.textContent=msg;
   document.body.appendChild(el); setTimeout(function(){el.remove();},3500);
 }
+
+// ====== SCROLLBAR HORIZONTALE ======
+(function(){
+  var track,thumb,bar,dr=false,sx=0,sl=0;
+  function init(){
+    bar=document.getElementById('global-hscroll');
+    track=document.getElementById('hs-track');
+    thumb=document.getElementById('hs-thumb');
+    if(!bar||!track||!thumb)return;
+    upd();
+    window.addEventListener('scroll',upd,{passive:true});
+    window.addEventListener('resize',upd);
+    thumb.addEventListener('mousedown',function(e){dr=true;sx=e.clientX;sl=thumb.offsetLeft;document.body.style.userSelect='none';e.preventDefault();});
+    document.addEventListener('mousemove',function(e){if(!dr)return;mv(e.clientX);});
+    document.addEventListener('mouseup',function(){dr=false;document.body.style.userSelect='';});
+    track.addEventListener('click',function(e){if(e.target===thumb)return;var r=track.getBoundingClientRect();sc((e.clientX-r.left)/r.width);});
+    thumb.addEventListener('touchstart',function(e){dr=true;sx=e.touches[0].clientX;sl=thumb.offsetLeft;},{passive:true});
+    document.addEventListener('touchmove',function(e){if(!dr)return;mv(e.touches[0].clientX);},{passive:true});
+    document.addEventListener('touchend',function(){dr=false;});
+  }
+  function mv(cx){var tw=track.offsetWidth,thw=thumb.offsetWidth,ml=tw-thw;sc(ml>0?Math.max(0,Math.min(ml,sl+(cx-sx)))/ml:0);}
+  function sc(r){window.scrollTo({left:r*(document.documentElement.scrollWidth-window.innerWidth),behavior:'instant'});upd();}
+  function upd(){
+    if(!bar||!track||!thumb)return;
+    var pw=document.documentElement.scrollWidth,vw=window.innerWidth,sx2=window.scrollX||0,tw=track.offsetWidth;
+    if(pw<=vw){bar.classList.remove('show');document.body.classList.remove('has-hscroll');return;}
+    bar.classList.add('show');document.body.classList.add('has-hscroll');
+    var r=vw/pw,thw=Math.max(30,tw*r),ml=tw-thw;
+    thumb.style.width=thw+'px';thumb.style.left=(ml>0?ml*(sx2/(pw-vw)):0)+'px';
+  }
+  document.addEventListener('DOMContentLoaded',function(){init();setInterval(upd,600);});
+})();
+
+
+// ====== ONGLETS SUIVI UNIFIÉ ======
+function switchSuiviTab(tab) {
+  var pm  = document.getElementById('su-panel-mat');
+  var pmt = document.getElementById('su-panel-maint');
+  var bm  = document.getElementById('su-tab-btn-mat');
+  var bmt = document.getElementById('su-tab-btn-maint');
+  if (!pm || !pmt) return;
+  var isMat = (tab === 'mat');
+  pm.style.display  = isMat ? 'block' : 'none';
+  pmt.style.display = isMat ? 'none'  : 'block';
+  if (bm) { bm.style.background = isMat ? 'var(--accent)' : 'var(--card)'; bm.style.color = isMat ? '#032a22' : 'var(--txt)'; }
+  if (bmt){ bmt.style.background= isMat ? 'var(--card)' : 'var(--accent)'; bmt.style.color= isMat ? 'var(--txt)' : '#032a22'; }
+  if (isMat) { renderMouvements(); updateMouvementsStats(); }
+  else        { renderMaintenance(); updateMaintenanceStats(); }
+}
+
 </script>
+
+<!-- SCROLLBAR -->
+<div class="global-hscroll" id="global-hscroll"><span class="hs-label">&#9664;</span><div class="hs-track" id="hs-track"><div class="hs-thumb" id="hs-thumb"></div></div><span class="hs-label">&#9654;</span></div>
 </body>
 </html>
