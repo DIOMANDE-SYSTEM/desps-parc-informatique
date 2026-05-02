@@ -5733,5 +5733,52 @@ document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateFbBad
 
 <!-- SCROLLBAR -->
 <div class="global-hscroll" id="global-hscroll"><span class="hs-label">&#9664;</span><div class="hs-track" id="hs-track"><div class="hs-thumb" id="hs-thumb"></div></div><span class="hs-label">&#9654;</span></div>
-</body>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 CONFIG FIREBASE (remplace par tes vraies infos)
+const firebaseConfig = {
+  apiKey: "TA_CLE",
+  authDomain: "TON_PROJET.firebaseapp.com",
+  projectId: "TON_PROJET",
+  storageBucket: "TON_PROJET.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ✅ SUPPRESSION
+async function supprimer(id) {
+  await deleteDoc(doc(db, "utilisateurs", id));
+  charger(); // recharge après suppression
+}
+
+// 🔥 IMPORTANT (corrige ton bug onclick)
+window.supprimer = supprimer;
+
+// ✅ CHARGEMENT DES DONNÉES
+async function charger() {
+  const querySnapshot = await getDocs(collection(db, "utilisateurs"));
+  let html = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    html += `
+      <div style="margin:10px;padding:10px;border:1px solid #ccc;">
+        <b>${data.nom || "Sans nom"}</b>
+        <button onclick="supprimer('${docSnap.id}')">Supprimer</button>
+      </div>
+    `;
+  });
+
+  const zone = document.getElementById("liste");
+  if (zone) zone.innerHTML = html;
+}
+
+// 🚀 LANCEMENT
+charger();
+</script></body>
 </html>
