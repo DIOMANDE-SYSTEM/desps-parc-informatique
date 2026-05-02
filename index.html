@@ -309,6 +309,79 @@ tr.row-selected{background:rgba(0,201,167,0.08)!important;}
 .upzone{border:2px dashed var(--border2);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(26,95,200,0.04);}
 .upzone:hover{border-color:var(--blue-light);background:rgba(26,95,200,0.09);}
 
+/* ====== COURRIER INTERNE ====== */
+.crr-tabs{display:flex;gap:6px;border-bottom:1px solid var(--border);padding:0 18px;background:var(--navy2);}
+.crr-tab{padding:10px 16px;cursor:pointer;font-size:12.5px;font-weight:600;color:var(--txt2);border-bottom:2px solid transparent;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.crr-tab:hover{color:var(--txt);}
+.crr-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.crr-tab .crr-tab-bdg{background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;}
+.crr-list{padding:8px;max-height:520px;overflow-y:auto;}
+.crr-item{display:grid;grid-template-columns:auto 1fr auto;gap:14px;padding:13px 16px;border-radius:10px;cursor:pointer;transition:all 0.15s;border:1px solid transparent;align-items:center;}
+.crr-item:hover{background:rgba(91,163,240,0.06);border-color:var(--border);}
+.crr-item.unread{background:rgba(0,201,167,0.05);border-left:3px solid var(--accent);}
+.crr-item.unread .crr-from{font-weight:700;color:var(--txt);}
+.crr-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;}
+.crr-avatar.admin{background:linear-gradient(135deg,#f4a826,#e89117);}
+.crr-avatar.user{background:linear-gradient(135deg,var(--blue-light),var(--blue2));}
+.crr-meta{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.crr-from{font-size:13px;color:var(--txt2);}
+.crr-subject{font-size:13.5px;font-weight:600;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.crr-preview{font-size:11.5px;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.crr-date{font-size:11px;color:var(--txt3);text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.crr-empty{padding:60px 20px;text-align:center;color:var(--txt3);font-size:13px;}
+.crr-empty .ico{font-size:42px;margin-bottom:8px;}
+.crr-form{padding:18px 22px;}
+.crr-form .fg{margin-bottom:13px;}
+.crr-form textarea{min-height:200px;resize:vertical;font-family:'Outfit',sans-serif;}
+.crr-priority-row{display:flex;gap:10px;align-items:center;}
+.crr-priority-row label{font-size:12px;color:var(--txt2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;border:1px solid var(--border);}
+.crr-priority-row input[type="radio"]{accent-color:var(--accent);}
+.crr-priority-row input[type="radio"]:checked + span{font-weight:700;}
+.badge.b-prio-haute{background:rgba(230,57,70,0.18);color:#ff7a7a;}
+.badge.b-prio-normale{background:rgba(91,163,240,0.18);color:var(--blue-light);}
+.badge.b-prio-basse{background:rgba(150,150,150,0.18);color:#bbb;}
+/* Lecture courrier */
+.crr-read-head{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);}
+.crr-read-meta{padding:14px 20px;background:rgba(0,201,167,0.04);border-bottom:1px solid var(--border);}
+.crr-read-meta .di-grid{grid-template-columns:1fr 1fr;}
+.crr-read-body{padding:22px;font-size:14px;line-height:1.65;color:var(--txt);white-space:pre-wrap;}
+.crr-attach{margin-top:18px;padding:10px 14px;background:rgba(91,163,240,0.07);border:1px dashed var(--border2);border-radius:8px;font-size:12px;color:var(--txt2);}
+/* En-tête imprimable institutionnel */
+.crr-print-page{display:none;}
+@media print{
+  body *{visibility:hidden;}
+  .crr-print-page,.crr-print-page *{visibility:visible;}
+  .crr-print-page{display:block;position:absolute;left:0;top:0;width:100%;background:#fff;color:#000;padding:0;margin:0;}
+}
+.crr-print-page{background:#fff;color:#000;font-family:'Times New Roman',serif;padding:40px 50px;line-height:1.55;font-size:13px;}
+.crr-pp-head{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;border-bottom:2px solid #009a44;padding-bottom:16px;margin-bottom:22px;}
+.crr-pp-left{text-align:center;font-size:11.5px;line-height:1.4;}
+.crr-pp-left .ministry{font-weight:700;text-transform:uppercase;font-size:12px;}
+.crr-pp-left .sub{font-style:italic;font-size:10.5px;color:#444;}
+.crr-pp-center{text-align:center;}
+.crr-pp-center img{width:78px;height:auto;display:block;margin:0 auto 6px;}
+.crr-pp-center .republic{font-weight:700;font-size:11.5px;text-transform:uppercase;}
+.crr-pp-center .devise{font-size:9.5px;font-style:italic;color:#444;margin-top:2px;}
+.crr-pp-right{text-align:center;font-size:10.5px;}
+.crr-pp-right img{width:54px;height:auto;display:block;margin:0 auto 4px;}
+.crr-pp-flag{display:flex;height:5px;margin:6px 0 0;}
+.crr-pp-flag span{flex:1;}
+.crr-pp-flag span:nth-child(1){background:#f77f00;}
+.crr-pp-flag span:nth-child(2){background:#fff;border-top:1px solid #ddd;border-bottom:1px solid #ddd;}
+.crr-pp-flag span:nth-child(3){background:#009a44;}
+.crr-pp-ref{display:flex;justify-content:space-between;font-size:11px;margin-bottom:24px;}
+.crr-pp-dest{margin:30px 0 24px;}
+.crr-pp-dest .label{font-size:10.5px;color:#555;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.crr-pp-dest .val{font-weight:700;font-size:14px;}
+.crr-pp-objet{margin:18px 0;padding-bottom:8px;border-bottom:1px solid #aaa;}
+.crr-pp-objet b{text-decoration:underline;}
+.crr-pp-corps{text-align:justify;margin:14px 0 30px;white-space:pre-wrap;}
+.crr-pp-sign{margin-top:50px;text-align:right;}
+.crr-pp-sign .city{font-style:italic;margin-bottom:6px;}
+.crr-pp-sign .name{margin-top:60px;font-weight:700;text-decoration:underline;}
+.crr-pp-sign .role{font-size:11px;color:#444;margin-top:2px;}
+.crr-pp-foot{margin-top:40px;padding-top:8px;border-top:1px solid #aaa;text-align:center;font-size:9.5px;color:#666;font-style:italic;}
+
 /* ====== ADMIN ONLY ====== */
 .admin-gate{display:none;}
 body.role-admin .admin-gate{display:block;}
@@ -316,6 +389,31 @@ body.role-admin .admin-gate{display:block;}
 body.role-admin .admin-gate-flex{display:flex;}
 .admin-lock{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--txt3);flex-direction:column;gap:10px;}
 .admin-lock .icon{font-size:40px;}
+
+/* ====== PERMISSIONS GRANULAIRES PAR RÔLE (4 rôles : admin/directeur/sousdirecteur/user) ====== */
+/* .write-gate : éléments visibles si rôle peut écrire (admin/directeur/sousdirecteur) - PAS user */
+.write-gate{display:none!important;}
+body.role-admin .write-gate,body.role-directeur .write-gate,body.role-sousdirecteur .write-gate{display:flex!important;}
+/* .delete-gate : éléments de suppression visibles uniquement pour admin */
+.delete-gate{display:none!important;}
+body.role-admin .delete-gate{display:flex!important;}
+/* .export-gate : éléments d'import/export visibles pour admin et directeur */
+.export-gate{display:none!important;}
+body.role-admin .export-gate,body.role-directeur .export-gate{display:flex!important;}
+/* .users-gate : gestion comptes utilisateurs - admin uniquement */
+.users-gate{display:none!important;}
+body.role-admin .users-gate{display:flex!important;}
+/* .reclam-gate : bouton réclamation pour les utilisateurs simples */
+.reclam-gate{display:none!important;}
+body.role-user .reclam-gate{display:flex!important;}
+/* Étendre admin-nav-only et write-gate au menu pour Directeur et Sous-Directeur quand pertinent */
+body.role-directeur .write-nav,body.role-sousdirecteur .write-nav{display:flex!important;}
+/* Cacher les boutons de suppression individuelle 🗑 dans les tableaux pour non-admin */
+.ibt.delete-only{display:none;}
+body.role-admin .ibt.delete-only{display:inline-flex;}
+/* Le bouton modifier ✏️ visible aussi pour directeur et sousdirecteur */
+.ibt.write-only{display:none;}
+body.role-admin .ibt.write-only,body.role-directeur .ibt.write-only,body.role-sousdirecteur .ibt.write-only{display:inline-flex;}
 
 /* ====== NOTIF ====== */
 .notif{position:fixed;top:14px;right:14px;z-index:999;padding:10px 16px;border-radius:9px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;animation:slideIn 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
@@ -545,7 +643,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <label>Espace</label>
       <select id="login-role">
         <option value="admin">&#128081; Administrateur</option>
-        <option value="user">&#128100; Utilisateur</option>
+        <option value="directeur">🟡 Directeur DESPS</option>
+        <option value="sousdirecteur">🔵 Sous-Directeur</option>
+        <option value="user">🔷 Utilisateur DESPS</option>
       </select>
     </div>
     <button class="login-btn" onclick="doLogin()">Se connecter</button>
@@ -671,19 +771,34 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         </div>
       </div>
 
-      <!-- ── ADMINISTRATION (admin only) ── -->
-      <div class="nav-grp-label admin-nav-only" style="display:none;"><span class="grp-icon">⚙️</span> Administration</div>
-      <div class="nav-item admin-nav-only" onclick="nav('stats')" style="display:none;">
-        <span class="nav-ico">📊</span><span>Statistiques</span>
+      <!-- ── COURRIER (visible pour tous) ── -->
+      <div class="nav-grp-label"><span class="grp-icon">📬</span> Communication</div>
+      <div class="nav-item" onclick="nav('courrier')">
+        <span class="nav-ico">📬</span><span>Courrier interne</span>
+        <span class="nav-bdg" id="nb-courrier" style="background:var(--red);color:#fff;display:none;">0</span>
       </div>
-      <div class="nav-item admin-nav-only" onclick="nav('import')" style="display:none;" id="nav-import">
-        <span class="nav-ico">📥</span><span>Import / Export</span>
+      <!-- Raccourci "Faire une réclamation" pour utilisateurs simples -->
+      <div class="nav-item reclam-gate" onclick="crrOpenReclamation()" style="display:none;">
+        <span class="nav-ico">📝</span><span>Faire une réclamation</span>
       </div>
-      <div class="nav-item admin-nav-only" onclick="nav('rapport')" style="display:none;" id="nav-rapport">
+
+      <!-- ── GROUPE STATS / RAPPORTS / SUIVI : visible admin + directeur + sousdirecteur ── -->
+      <div class="nav-grp-label write-nav" style="display:none;"><span class="grp-icon">🛠️</span> Outils & Suivi</div>
+      <div class="nav-item write-nav" onclick="nav('rapport')" style="display:none;" id="nav-rapport">
         <span class="nav-ico">📈</span><span>Rapports d'activit&eacute;</span>
       </div>
-      <div class="nav-item admin-nav-only" onclick="nav('print')" style="display:none;" id="nav-print">
+      <div class="nav-item write-nav" onclick="nav('print')" style="display:none;" id="nav-print">
         <span class="nav-ico">🖨️</span><span>Impression listes</span>
+      </div>
+      <div class="nav-item write-nav" id="nav-suivi-parent" onclick="nav('suivi-unifie')" style="display:none;">
+        <span class="nav-ico">🔧</span>
+        <span>Suivi Mat&eacute;riels &amp; Maintenance</span>
+      </div>
+
+      <!-- ── ADMINISTRATION (admin uniquement) ── -->
+      <div class="nav-grp-label admin-nav-only" style="display:none;"><span class="grp-icon">⚙️</span> Administration</div>
+      <div class="nav-item admin-nav-only" onclick="nav('import')" style="display:none;" id="nav-import">
+        <span class="nav-ico">📥</span><span>Import / Export</span>
       </div>
       <div class="nav-item admin-nav-only" onclick="nav('parametres')" style="display:none;" id="nav-parametres">
         <span class="nav-ico">⚙️</span><span>Paramètres</span>
@@ -698,13 +813,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         <span class="nav-ico">👥</span><span>Comptes utilisateurs</span>
       </div>
 
-      <!-- ── SUIVI MATÉRIELS ET MAINTENANCE (admin) ── -->
-      <div class="nav-item admin-nav-only" id="nav-suivi-parent" onclick="nav('suivi-unifie')" style="display:none;">
-        <span class="nav-ico">🔧</span>
-        <span>Suivi Mat&eacute;riels &amp; Maintenance</span>
-      </div>
-
-      <!-- visible to all: guide -->
+      <!-- visible to all (autres rôles): guide -->
       <div class="nav-item user-nav-only" onclick="nav('guide')" style="display:none;">
         <span class="nav-ico">📖</span><span>Guide d'utilisation</span>
       </div>
@@ -887,8 +996,8 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="tcard-actions">
               <button class="btn btn-sec btn-sm" onclick="exportTableExcel('bureau')">&#8595; Excel</button>
               <button class="btn btn-sec btn-sm" onclick="exportTableWord('bureau')">&#8595; Word</button>
-              <button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-bureau" onclick="deleteSelected('bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-bureau">0</span>)</button>
-              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAdd('bureau')">&#43; Ajouter</button>
+              <button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-bureau" onclick="deleteSelected('bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-bureau">0</span>)</button>
+              <button class="btn btn-primary btn-sm write-gate" onclick="openAdd('bureau')">&#43; Ajouter</button>
             </div>
           </div>
           <div class="filter-row">
@@ -909,8 +1018,8 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="tcard-actions">
               <button class="btn btn-sec btn-sm" onclick="exportTableExcel('portables')">&#8595; Excel</button>
               <button class="btn btn-sec btn-sm" onclick="exportTableWord('portables')">&#8595; Word</button>
-              <button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-portables" onclick="deleteSelected('portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-portables">0</span>)</button>
-              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAdd('portables')">&#43; Ajouter</button>
+              <button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-portables" onclick="deleteSelected('portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-portables">0</span>)</button>
+              <button class="btn btn-primary btn-sm write-gate" onclick="openAdd('portables')">&#43; Ajouter</button>
             </div>
           </div>
           <div class="filter-row">
@@ -932,8 +1041,8 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="tcard-actions">
               <button class="btn btn-sec btn-sm" onclick="exportTableExcel('imprimantes')">&#8595; Excel</button>
               <button class="btn btn-sec btn-sm" onclick="exportTableWord('imprimantes')">&#8595; Word</button>
-              <button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-imprimantes" onclick="deleteSelected('imprimantes')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-imprimantes">0</span>)</button>
-              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAdd('imprimantes')">&#43; Ajouter</button>
+              <button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-imprimantes" onclick="deleteSelected('imprimantes')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-imprimantes">0</span>)</button>
+              <button class="btn btn-primary btn-sm write-gate" onclick="openAdd('imprimantes')">&#43; Ajouter</button>
             </div>
           </div>
           <div class="filter-row">
@@ -951,8 +1060,8 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <div class="tcard-actions">
               <button class="btn btn-sec btn-sm" onclick="exportTableExcel('tablettes')">&#8595; Excel</button>
               <button class="btn btn-sec btn-sm" onclick="exportTableWord('tablettes')">&#8595; Word</button>
-              <button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-tablettes" onclick="deleteSelected('tablettes')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-tablettes">0</span>)</button>
-              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAdd('tablettes')">&#43; Ajouter</button>
+              <button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-tablettes" onclick="deleteSelected('tablettes')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-tablettes">0</span>)</button>
+              <button class="btn btn-primary btn-sm write-gate" onclick="openAdd('tablettes')">&#43; Ajouter</button>
             </div>
           </div>
           <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('tablettes',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>CPU</th><th>RAM</th><th>Stockage</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-tablettes"></tbody></table></div>
@@ -962,21 +1071,21 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       <!-- ===== DRENA pages (filtered) ===== -->
       <div id="pg-drena-bureau" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>N°</th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-bureau"></div><div class="pag-btns" id="pb-drena-bureau"></div></div></div>
       </div>
       <div id="pg-drena-portables" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-portables',this)"></th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-portables"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-portables"></div><div class="pag-btns" id="pb-drena-portables"></div></div></div>
       </div>
       <div id="pg-drena-impr" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div></div>
       </div>
       <div id="pg-drena-tab" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del admin-gate-flex" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div></div>
       </div>
 
@@ -1448,6 +1557,70 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       </div>
 
       <!-- ===== CORBEILLE ===== -->
+      <!-- ===== COURRIER INTERNE ===== -->
+      <div id="pg-courrier" class="page">
+        <div class="tcard" style="overflow:visible;">
+          <div class="tcard-head">
+            <h3>📬 Courrier interne — Communication officielle</h3>
+            <div class="tcard-actions">
+              <button class="btn btn-primary btn-sm" onclick="crrShowTab('compose')">✉️ Nouveau courrier</button>
+            </div>
+          </div>
+          <div class="crr-tabs">
+            <div class="crr-tab active" id="crr-tab-inbox" onclick="crrShowTab('inbox')">📥 Boîte de réception <span class="crr-tab-bdg" id="crr-bdg-unread" style="display:none;">0</span></div>
+            <div class="crr-tab" id="crr-tab-sent" onclick="crrShowTab('sent')">📤 Messages envoyés</div>
+            <div class="crr-tab" id="crr-tab-compose" onclick="crrShowTab('compose')">✉️ Rédiger</div>
+          </div>
+
+          <!-- Boîte de réception -->
+          <div id="crr-pane-inbox" class="crr-list">
+            <div class="crr-empty"><div class="ico">📥</div>Aucun courrier reçu</div>
+          </div>
+
+          <!-- Messages envoyés -->
+          <div id="crr-pane-sent" class="crr-list" style="display:none;">
+            <div class="crr-empty"><div class="ico">📤</div>Aucun courrier envoyé</div>
+          </div>
+
+          <!-- Rédiger -->
+          <div id="crr-pane-compose" class="crr-form" style="display:none;">
+            <div class="mform" style="grid-template-columns:1fr 1fr;">
+              <div class="fg">
+                <label>Destinataire</label>
+                <select id="crr-to">
+                  <option value="">— Choisir un destinataire —</option>
+                </select>
+              </div>
+              <div class="fg">
+                <label>Priorité</label>
+                <div class="crr-priority-row">
+                  <label><input type="radio" name="crr-prio" value="basse"> <span>🔵 Basse</span></label>
+                  <label><input type="radio" name="crr-prio" value="normale" checked> <span>⚪ Normale</span></label>
+                  <label><input type="radio" name="crr-prio" value="haute"> <span>🔴 Haute</span></label>
+                </div>
+              </div>
+              <div class="fg full">
+                <label>Objet</label>
+                <input type="text" id="crr-subject" placeholder="Ex: Demande de matériel informatique" maxlength="200">
+              </div>
+              <div class="fg full">
+                <label>Référence (optionnel)</label>
+                <input type="text" id="crr-ref" placeholder="Ex: Note n°2026/MENAET/DESPS/123" maxlength="120">
+              </div>
+              <div class="fg full">
+                <label>Corps du courrier</label>
+                <textarea id="crr-body" placeholder="Rédigez votre courrier ici..."></textarea>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;">
+              <button class="btn btn-sec" onclick="crrResetCompose()">🗑 Effacer</button>
+              <button class="btn btn-primary" onclick="crrSend()">📨 Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CORBEILLE ===== -->
       <div id="pg-corbeille" class="page">
         <div class="tcard">
           <div class="tcard-head">
@@ -1597,7 +1770,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
                   <div class="rapport-field">
                     <label>Rôle *</label>
                     <select id="new-role">
-                      <option value="user">👤 Utilisateur (lecture seule)</option>
+                      <option value="user">🔷 Utilisateur DESPS (consultation)</option>
+                      <option value="sousdirecteur">🔵 Sous-Directeur (saisie + modification)</option>
+                      <option value="directeur">🟡 Directeur DESPS (saisie + import/export)</option>
                       <option value="admin">👑 Administrateur (accès complet)</option>
                     </select>
                   </div>
@@ -2191,6 +2366,83 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
   </div>
 </div>
 
+<!-- ===== MODAL LECTURE COURRIER ===== -->
+<div class="overlay" id="m-courrier-read" onclick="closeMod('m-courrier-read',event)">
+  <div class="modal" style="width:780px;" onclick="event.stopPropagation()">
+    <div class="crr-read-head">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:22px;">📬</span>
+        <h3 style="font-size:14px;font-weight:700;font-family:'Syne',sans-serif;" id="m-crr-title">Courrier</h3>
+      </div>
+      <button class="mclose" onclick="closeMod('m-courrier-read')">&#10005;</button>
+    </div>
+    <div class="crr-read-meta">
+      <div class="di-grid">
+        <div class="di"><div class="di-lbl">De</div><div class="di-val" id="m-crr-from">—</div></div>
+        <div class="di"><div class="di-lbl">À</div><div class="di-val" id="m-crr-to">—</div></div>
+        <div class="di"><div class="di-lbl">Date</div><div class="di-val" id="m-crr-date">—</div></div>
+        <div class="di"><div class="di-lbl">Priorité</div><div class="di-val" id="m-crr-prio">—</div></div>
+        <div class="di full"><div class="di-lbl">Référence</div><div class="di-val" id="m-crr-ref">—</div></div>
+        <div class="di full"><div class="di-lbl">Objet</div><div class="di-val" id="m-crr-subject" style="font-weight:700;">—</div></div>
+      </div>
+    </div>
+    <div class="crr-read-body" id="m-crr-body">—</div>
+    <div class="mfoot" id="m-crr-actions">
+      <button class="btn btn-sec" onclick="crrPrintCurrent()">🖨️ Imprimer (en-tête officielle)</button>
+      <button class="btn btn-sec" onclick="crrReply()">↩️ Répondre</button>
+      <button class="btn btn-danger" onclick="crrDelete()">🗑 Supprimer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ZONE IMPRESSION COURRIER (en-tête institutionnel) ===== -->
+<div class="crr-print-page" id="crr-print-page">
+  <div class="crr-pp-head">
+    <div class="crr-pp-left">
+      <div class="ministry">Ministère de l'Éducation Nationale,</div>
+      <div class="ministry">de l'Alphabétisation et de</div>
+      <div class="ministry">l'Enseignement Technique</div>
+      <div class="sub">— MENAET —</div>
+      <div style="margin-top:6px;font-size:11px;">Direction des Études, de la</div>
+      <div style="font-size:11px;">Performance et des Statistiques</div>
+      <div style="font-size:11px;font-weight:700;">— DESPS —</div>
+    </div>
+    <div class="crr-pp-center">
+      <img id="crr-pp-armoirie" src="" alt="Armoiries">
+      <div class="republic">République de Côte d'Ivoire</div>
+      <div class="devise">Union – Discipline – Travail</div>
+      <div class="crr-pp-flag"><span></span><span></span><span></span></div>
+    </div>
+    <div class="crr-pp-right">
+      <img id="crr-pp-desps" src="" alt="DESPS">
+      <div style="font-weight:700;">Service Digitalisation,</div>
+      <div>Exploitation des Plateformes</div>
+      <div>et Maintenance Informatique</div>
+    </div>
+  </div>
+  <div class="crr-pp-ref">
+    <div><b>N° :</b> <span id="crr-pp-num">—</span></div>
+    <div id="crr-pp-city">Abidjan, le <span id="crr-pp-date">—</span></div>
+  </div>
+  <div class="crr-pp-dest">
+    <div class="label">Émetteur :</div>
+    <div class="val" id="crr-pp-from">—</div>
+    <div class="label" style="margin-top:14px;">Destinataire :</div>
+    <div class="val" id="crr-pp-to">—</div>
+  </div>
+  <div class="crr-pp-objet">
+    <b>Objet :</b> <span id="crr-pp-objet">—</span>
+  </div>
+  <div class="crr-pp-corps" id="crr-pp-corps">—</div>
+  <div class="crr-pp-sign">
+    <div class="name" id="crr-pp-sign-name">—</div>
+    <div class="role" id="crr-pp-sign-role">—</div>
+  </div>
+  <div class="crr-pp-foot">
+    Document généré depuis la plateforme DESPS — Parc Informatique · MENAET — République de Côte d'Ivoire
+  </div>
+</div>
+
 <!-- PRINT HEADER (visible only on print) -->
 <div class="print-header" id="print-header">
   <h2 style="font-size:16px;margin-bottom:4px;">DESPS — Parc Informatique | Ministère de l’Éducation Nationale, de l’Alphabétisation et de l’Enseignement Technique</h2>
@@ -2270,9 +2522,46 @@ console.log("🔥 Firebase prêt");
 var DEFAULT_ACCOUNTS = {
   admin: { password:'desps@2026', role:'admin', name:'DIOMANDE YAYA',
            service:'SERVICE DIGITALISATION', createdAt:'2026-01-01', active:true, locked:false, attempts:0 },
+  directeur: { password:'desps2026', role:'directeur', name:'Directeur DESPS',
+           service:'DIRECTION DESPS', createdAt:'2026-01-01', active:true, locked:false, attempts:0 },
+  sousdirecteur: { password:'desps2026', role:'sousdirecteur', name:'Sous-Directeur',
+           service:'SOUS-DIRECTION', createdAt:'2026-01-01', active:true, locked:false, attempts:0 },
   user:  { password:'desps2026',  role:'user',  name:'Utilisateur DESPS',
            service:'DESPS', createdAt:'2026-01-01', active:true, locked:false, attempts:0 }
 };
+
+// ════════════════════════════════════════════════════════════════════════
+// SYSTÈME DE PERMISSIONS — 4 RÔLES (admin / directeur / sousdirecteur / user)
+// ════════════════════════════════════════════════════════════════════════
+// admin         : 🔴 tout accès (gestion comptes incluse)
+// directeur     : 🟡 lecture + saisie + modification + import/export — PAS suppression, PAS gestion comptes
+// sousdirecteur : 🔵 lecture + saisie + modification — PAS suppression, PAS export, PAS gestion comptes
+// user          : 🔷 consultation + statistiques + impression + réclamation — PAS modification
+// ────────────────────────────────────────────────────────────────────────
+var ROLE_LABELS = {
+  admin:         { ico:'👑', label:'Administrateur',     color:'var(--gold)',       bg:'rgba(244,185,66,0.15)' },
+  directeur:     { ico:'🟡', label:'Directeur DESPS',    color:'#f4a826',           bg:'rgba(244,168,38,0.15)' },
+  sousdirecteur: { ico:'🔵', label:'Sous-Directeur',     color:'var(--blue-light)', bg:'rgba(91,163,240,0.15)' },
+  user:          { ico:'🔷', label:'Utilisateur DESPS',  color:'var(--accent)',     bg:'rgba(0,201,167,0.15)' }
+};
+function roleLabel(r){ return (ROLE_LABELS[r]||ROLE_LABELS.user); }
+
+// Fonction centrale de permission
+function can(action){
+  if(!currentUser) return false;
+  var r = currentUser.role;
+  // Map des permissions par rôle
+  var P = {
+    admin:         {add:1,edit:1,delete:1,import:1,export:1,manageUsers:1,viewAll:1,viewStats:1,print:1,courrier:1,parametres:1,corbeille:1},
+    directeur:     {add:1,edit:1,delete:0,import:1,export:1,manageUsers:0,viewAll:1,viewStats:1,print:1,courrier:1,parametres:0,corbeille:0},
+    sousdirecteur: {add:1,edit:1,delete:0,import:0,export:0,manageUsers:0,viewAll:1,viewStats:1,print:1,courrier:1,parametres:0,corbeille:0},
+    user:          {add:0,edit:0,delete:0,import:0,export:0,manageUsers:0,viewAll:1,viewStats:1,print:1,courrier:1,parametres:0,corbeille:0}
+  };
+  var perms = P[r] || P.user;
+  return !!perms[action];
+}
+// Raccourci : peut écrire (saisir / modifier) ?
+function canWrite(){ return can('add') || can('edit'); }
 var MAX_ATTEMPTS = 5;  // verrouillage après 5 tentatives
 var SESSION_TIMEOUT = 60; // minutes
 
@@ -2370,6 +2659,8 @@ function initApp() {
   startClock();
   // 2. Si Firebase dispo, lancer la sync temps réel
   if (window.FB_OK) fbSyncAll();
+  // 3. Module Courrier : charge local + abonne Firebase si dispo + badge
+  if (typeof crrInit === 'function') { crrInit(); }
 }
 
 function refreshUI() {
@@ -2418,31 +2709,14 @@ function fbStop(){ _fbUnsubs.forEach(function(u){try{u();}catch(e){}});_fbUnsubs
 function save(k){
   localStorage.setItem('desps26_'+k,JSON.stringify(DB[k]));
   if(!window.FB_OK) return;
+  var batch=window.FB.writeBatch(window.FB.db);
   var data=DB[k];
-  // 1) Calculer l'ensemble des _fbid encore présents localement
-  var keepIds={};
   data.forEach(function(rec){
     var id=rec._fbid||rec.num_serie||rec.id||('r'+Date.now()+Math.random().toString(36).slice(2,6));
     rec._fbid=id;
-    keepIds[id]=true;
+    batch.set(window.FB.doc(window.FB.db,'parc_'+k,id),rec);
   });
-  // 2) Récupérer les ids actuellement dans Firestore et supprimer ceux qui ne sont plus présents
-  window.FB.getDocs(window.FB.collection(window.FB.db,'parc_'+k))
-    .then(function(snap){
-      var batch=window.FB.writeBatch(window.FB.db);
-      // Suppressions Firestore (documents qui n'existent plus localement)
-      snap.forEach(function(d){
-        if(!keepIds[d.id]){
-          batch.delete(window.FB.doc(window.FB.db,'parc_'+k,d.id));
-        }
-      });
-      // Mises à jour / créations
-      data.forEach(function(rec){
-        batch.set(window.FB.doc(window.FB.db,'parc_'+k,rec._fbid),rec);
-      });
-      return batch.commit();
-    })
-    .catch(function(e){console.warn('Save '+k+':',e.message);});
+  batch.commit().catch(function(e){console.warn('Save '+k+':',e.message);});
 }
 
 // ==================== AUTH ====================
@@ -2569,6 +2843,8 @@ function loginSuccess(id,acc) {
   sessionStorage.setItem('desps_user',JSON.stringify({login:id,role:acc.role,name:name,loginTime:Date.now(),service:acc.service||'DESPS'}));
   addLog('Connexion : '+id+' ('+acc.role+')');
   setUser(id,acc.role,name);
+  // Compléter currentUser avec le service (utile pour le courrier officiel)
+  if(currentUser) currentUser.service = acc.service||'DESPS';
 }
 
 
@@ -2580,21 +2856,28 @@ function notifLogin(msg) {
 
 function setUser(login, role, name) {
   currentUser = {login:login, role:role, name:name};
-  // Set role class on body
+  // Set role class on body (4 rôles possibles : admin / directeur / sousdirecteur / user)
   document.body.className = 'role-' + role;
-  // Update admin nav visibility
+  // Update nav visibility
+  // - .admin-nav-only : visible pour admin uniquement (gestion comptes, paramètres, corbeille)
+  // - .write-nav : visible aussi pour directeur et sousdirecteur (saisie possible)
+  // - .user-nav-only : visible pour user (raccourci réclamation)
   document.querySelectorAll('.admin-nav-only').forEach(function(el){ el.style.display = role==='admin' ? '' : 'none'; });
+  document.querySelectorAll('.write-nav').forEach(function(el){
+    el.style.display = (role==='admin'||role==='directeur'||role==='sousdirecteur') ? '' : 'none';
+  });
   document.querySelectorAll('.user-nav-only').forEach(function(el){ el.style.display = role==='user' ? 'flex' : 'none'; });
-  // Update UI
+  // Update UI — étiquettes selon rôle
+  var rl = roleLabel(role);
   document.getElementById('sb-avatar').textContent = name.charAt(0).toUpperCase();
   document.getElementById('sb-avatar').className = 'sb-avatar ' + role;
   document.getElementById('sb-pname').textContent = name;
   var roleEl = document.getElementById('sb-prole');
-  roleEl.textContent = role === 'admin' ? '👑 Administrateur' : '👤 Utilisateur';
+  roleEl.textContent = rl.ico + ' ' + rl.label;
   roleEl.className = 'prole ' + role;
   document.getElementById('ah-username').textContent = name;
   var badgeEl = document.getElementById('ah-badge');
-  badgeEl.textContent = role === 'admin' ? '👑 Admin' : '👤 Utilisateur';
+  badgeEl.textContent = rl.ico + ' ' + rl.label;
   badgeEl.className = 'ah-badge ' + role;
   // Show app
   document.getElementById('login-page').style.display = 'none';
@@ -2632,18 +2915,17 @@ function refreshUsersList() {
   var el = document.getElementById('users-list-area'); if(!el) return;
   var accounts = loadUsers();
   var html2 = '';
+  // Comptes "système" qu'on ne peut pas supprimer (ils servent de référence)
+  var SYSTEM_ACCOUNTS = ['admin','user','directeur','sousdirecteur'];
   Object.keys(accounts).forEach(function(id) {
     var a = accounts[id];
-    var roleColor = a.role==='admin' ? 'var(--gold)' : 'var(--blue-light)';
-    var roleBg    = a.role==='admin' ? 'rgba(244,185,66,0.15)' : 'rgba(91,163,240,0.15)';
-    var lockBadge = a.locked
-      ? '<span class="badge b-red" style="margin-left:6px;">🔒 Verrouillé</span>' : '';
-    var activeBadge = !a.active
-      ? '<span class="badge b-gray" style="margin-left:6px;">Désactivé</span>' : '';
+    var rl = roleLabel(a.role);
+    var lockBadge = a.locked ? '<span class="badge b-red" style="margin-left:6px;">🔒 Verrouillé</span>' : '';
+    var activeBadge = !a.active ? '<span class="badge b-gray" style="margin-left:6px;">Désactivé</span>' : '';
     html2 += '<div class="user-card">'
-      + '<div class="uc-avatar" style="background:'+roleBg+';color:'+roleColor+';">'+a.name.charAt(0)+'</div>'
+      + '<div class="uc-avatar" style="background:'+rl.bg+';color:'+rl.color+';">'+(a.name||id).charAt(0)+'</div>'
       + '<div class="uc-info">'
-        + '<div class="uc-name">'+a.name+' <span class="badge" style="background:'+roleBg+';color:'+roleColor+';font-size:10px;">'+( a.role==='admin'?'👑 Admin':'👤 Utilisateur')+'</span>'+lockBadge+activeBadge+'</div>'
+        + '<div class="uc-name">'+(a.name||id)+' <span class="badge" style="background:'+rl.bg+';color:'+rl.color+';font-size:10px;">'+rl.ico+' '+rl.label+'</span>'+lockBadge+activeBadge+'</div>'
         + '<div class="uc-meta">ID : <strong>'+id+'</strong> &nbsp;|&nbsp; Service : '+(a.service||'—')
           +'&nbsp;|&nbsp; Créé : '+(a.createdAt||'—')
           +(a.lastLogin?' &nbsp;|&nbsp; Dernière connexion : '+new Date(a.lastLogin).toLocaleString('fr-FR'):'')
@@ -2653,7 +2935,7 @@ function refreshUsersList() {
         + (id!=='admin'?'<button class="btn btn-sec btn-sm" onclick="editUserModal(\''+id+'\')">✏️</button>':'')
         + (a.locked?'<button class="btn btn-sec btn-sm" onclick="unlockUser(\''+id+'\')">🔓</button>':'')
         + (a.active?'<button class="btn btn-danger btn-sm" onclick="toggleUserActive(\''+id+'\',false)">⛔</button>':'<button class="btn btn-sec btn-sm" onclick="toggleUserActive(\''+id+'\',true)">✅</button>')
-        + (id!=='admin'&&id!=='user'?'<button class="btn btn-danger btn-sm" onclick="deleteUser(\''+id+'\')">🗑</button>':'')
+        + (SYSTEM_ACCOUNTS.indexOf(id)===-1?'<button class="btn btn-danger btn-sm" onclick="deleteUser(\''+id+'\')">🗑</button>':'')
       + '</div>'
     + '</div>';
   });
@@ -2855,6 +3137,7 @@ function nav(page) {
     },80);
   }
   if (page === 'suivi-unifie') { setTimeout(function(){ renderMouvements(); updateMouvementsStats(); renderMaintenance(); updateMaintenanceStats(); },80); }
+  if (page === 'courrier') { setTimeout(function(){ crrInit(); },60); }
 
   document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
   document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
@@ -2881,7 +3164,8 @@ function nav(page) {
     'stats-services':'🏢 Statistiques par Service',
     'stats-genre':'👥 Statistiques par Genre',
     'stats-drenaet':'🏫 Statistiques DRENAET',
-    'stats-etat':'⚙️ État du Parc'
+    'stats-etat':'⚙️ État du Parc',
+    'courrier':'📬 Courrier interne'
   };
   document.getElementById('page-title').textContent = titles[page]||page;
   if (page === 'rapport') buildRapport();
@@ -3118,13 +3402,16 @@ function renderTbl(type) {
 
 function buildRow(r, type, idx) {
   var ebg = etatBadge(r.etat);
-  var isAdmin = currentUser && currentUser.role === 'admin';
+  // Utiliser le système de permissions : tout rôle qui peut écrire voit ✏️ ; seul l'admin voit 🗑
+  var canEdit = canWrite();
+  var canDel  = can('delete');
   var v0 = "viewRec('" + type + "'," + idx + ")";
   var e0 = "editRec('" + type + "'," + idx + ")";
   var d0 = "delRec('" + type + "'," + idx + ")";
-  var acts = isAdmin
-    ? '<td><div class="act-cell"><button class="ibt" onclick="'+v0+'">&#128065;</button><button class="ibt admin-only" onclick="'+e0+'">&#9999;</button><button class="ibt admin-only" onclick="'+d0+'">&#128465;</button></div></td>'
-    : '<td><div class="act-cell"><button class="ibt" onclick="'+v0+'">&#128065;</button></div></td>';
+  var actsHtml = '<button class="ibt" onclick="'+v0+'">&#128065;</button>';
+  if (canEdit) actsHtml += '<button class="ibt write-only" onclick="'+e0+'">&#9999;</button>';
+  if (canDel)  actsHtml += '<button class="ibt delete-only" onclick="'+d0+'">&#128465;</button>';
+  var acts = '<td><div class="act-cell">'+actsHtml+'</div></td>';
   // Cellule checkbox de sélection (visible admin uniquement via .sel-col)
   var selCell = '<td class="sel-col"><input type="checkbox" class="row-chk" data-type="'+type+'" data-idx="'+idx+'" onclick="onRowCheck(this)"></td>';
   
@@ -3179,14 +3466,14 @@ function clearSearch(){ document.getElementById('g-search').value=''; globalSear
 
 // ==================== CRUD ====================
 function openAdd(type) {
-  if (!currentUser || currentUser.role !== 'admin') { notif('⛔ Accès réservé à l\'administrateur','err'); return; }
+  if (!can('add')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
   editIdx=null; editType=type||'bureau';
   document.getElementById('add-type').value=editType;
   document.getElementById('m-add-title').textContent='＋ Ajouter un équipement';
   buildForm(); document.getElementById('m-add').classList.add('on');
 }
 function editRec(type, idx) {
-  if (!currentUser || currentUser.role !== 'admin') { notif('⛔ Accès réservé à l\'administrateur','err'); return; }
+  if (!can('edit')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
   editIdx=idx; editType=type;
   document.getElementById('add-type').value=type;
   document.getElementById('m-add-title').textContent='✏️ Modifier';
@@ -3268,6 +3555,7 @@ function viewRec(type, idx) {
   document.getElementById('m-detail').classList.add('on');
 }
 function delRec(type,idx){
+  if(!can('delete')){ notif('⛔ Suppression réservée à l\u2019administrateur','err'); return; }
   if(!confirm('Déplacer cet enregistrement dans la corbeille ?')) return;
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
   var src = DB[baseType]||DB[type];
@@ -3278,21 +3566,31 @@ function delRec(type,idx){
   trash.unshift({record:record, type:baseType, deletedAt:new Date().toISOString(), deletedBy:currentUser?currentUser.login:'?'});
   if(trash.length>100) trash=trash.slice(0,100);
   localStorage.setItem('desps_trash', JSON.stringify(trash));
+  // Mémoriser l'_fbid AVANT splice puis supprimer le doc Firestore ciblé
+  var fbid = record._fbid;
   src.splice(idx,1);
-  save(baseType); notif('🗑 Déplacé en corbeille','info');
+  save(baseType);
+  fbDeleteDoc(baseType, fbid);
+  notif('🗑 Déplacé en corbeille','info');
   updateBadges(); updateStats(); buildCharts(); buildDashTable(); renderTbl(type);
   refreshTrash();
 }
+// Suppression ciblée d'un document Firestore (sans modifier save())
+function fbDeleteDoc(col, id){
+  if(!window.FB_OK || !id) return;
+  try{
+    window.FB.deleteDoc(window.FB.doc(window.FB.db,'parc_'+col,id))
+      .catch(function(e){console.warn('Delete '+col+'/'+id+':',e.message);});
+  }catch(e){console.warn('Delete '+col+'/'+id+':',e.message);}
+}
 
 // ==================== SÉLECTION MULTIPLE & SUPPRESSION GROUPÉE (admin) ====================
-// Lors du clic sur une checkbox de ligne : surligne la ligne et met à jour la barre
 function onRowCheck(cb){
   var tr = cb.closest('tr');
   if(tr) tr.classList.toggle('row-selected', cb.checked);
   var type = cb.getAttribute('data-type');
   updateBulkBar(type);
 }
-// Tout cocher / tout décocher dans la page courante
 function toggleAllSel(type, headCb){
   var tb = document.getElementById('tbl-'+type); if(!tb) return;
   var boxes = tb.querySelectorAll('input.row-chk');
@@ -3303,7 +3601,6 @@ function toggleAllSel(type, headCb){
   }
   updateBulkBar(type);
 }
-// Met à jour le compteur du bouton "Supprimer la sélection" et l'état (activé/désactivé)
 function updateBulkBar(type){
   var tb = document.getElementById('tbl-'+type); if(!tb) return;
   var checked = tb.querySelectorAll('input.row-chk:checked').length;
@@ -3311,7 +3608,6 @@ function updateBulkBar(type){
   var btn = document.getElementById('bulk-del-'+type);
   if(cnt) cnt.textContent = checked;
   if(btn) btn.disabled = (checked===0);
-  // Synchroniser la checkbox d'entête
   var head = tb.parentElement && tb.parentElement.querySelector('thead input.head-chk');
   if(head){
     var total = tb.querySelectorAll('input.row-chk').length;
@@ -3319,9 +3615,8 @@ function updateBulkBar(type){
     head.indeterminate = (checked>0 && checked<total);
   }
 }
-// Supprime toutes les lignes cochées (vers la corbeille) — admin uniquement
 function deleteSelected(type){
-  if(!currentUser || currentUser.role!=='admin'){ notif('⛔ Action réservée à l\u2019administrateur','err'); return; }
+  if(!can('delete')){ notif('⛔ Suppression réservée à l\u2019administrateur','err'); return; }
   var tb = document.getElementById('tbl-'+type); if(!tb) return;
   var boxes = tb.querySelectorAll('input.row-chk:checked');
   if(!boxes.length){ notif('⚠️ Aucune ligne sélectionnée','err'); return; }
@@ -3330,7 +3625,7 @@ function deleteSelected(type){
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
   var src = DB[baseType]||DB[type]; if(!src) return;
 
-  // Récupérer les enregistrements à supprimer (par référence) AVANT splice pour éviter le décalage d'index
+  // Récupérer les enregistrements à supprimer (par référence) AVANT modification
   var toRemove = [];
   for(var i=0;i<boxes.length;i++){
     var idx = parseInt(boxes[i].getAttribute('data-idx'),10);
@@ -3348,10 +3643,16 @@ function deleteSelected(type){
   if(trash.length>100) trash = trash.slice(0,100);
   localStorage.setItem('desps_trash', JSON.stringify(trash));
 
-  // Retirer du tableau source par référence (sûr face aux indices décalés)
+  // Mémoriser les _fbid avant retrait local
+  var fbids = toRemove.map(function(r){return r._fbid;}).filter(function(x){return !!x;});
+
+  // Retirer du tableau source par référence
   DB[baseType] = src.filter(function(r){ return toRemove.indexOf(r)===-1; });
 
+  // Persistance locale + Firestore (suppression ciblée pour chaque _fbid)
   save(baseType);
+  for(var k=0;k<fbids.length;k++){ fbDeleteDoc(baseType, fbids[k]); }
+
   notif('🗑 '+toRemove.length+' élément(s) déplacé(s) en corbeille','info');
   updateBadges(); updateStats(); buildCharts(); buildDashTable();
   renderTbl(type);
@@ -4943,7 +5244,7 @@ function emptyTrash() {
 // ==================== IMPORT ====================
 function handleImport(input) {
   var file=input.files[0]; if(!file) return;
-  if(!currentUser||currentUser.role!=='admin'){notif('⛔ Réservé à l\'administrateur','err');return;}
+  if(!can('import')){notif('⛔ Import réservé aux administrateurs et directeurs','err');return;}
   var res=document.getElementById('import-res'); var target=v('import-target');
   if(!file.name.match(/\.csv$/i)){res.innerHTML='<p style="color:var(--orange);margin-top:10px;">⚠️ Veuillez importer un fichier CSV.</p>';return;}
   var reader=new FileReader();
@@ -4986,6 +5287,376 @@ function dlFile(content, name, type) {
   var blob=new Blob([content],{type:type});
   var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); URL.revokeObjectURL(a.href);
 }
+// ════════════════════════════════════════════════════════════════════════
+// MODULE COURRIER INTERNE — Communication officielle Admin ↔ Utilisateurs
+// Stockage : localStorage 'desps_courriers' + Firebase 'parc_courriers'
+// ════════════════════════════════════════════════════════════════════════
+var COURRIERS = [];   // tableau global de tous les courriers
+var CRR_TAB = 'inbox';
+var CRR_REPLY_TO = null;
+var CRR_CURRENT = null;
+
+// Chargement / sauvegarde locale
+function crrLoad(){
+  try{ COURRIERS = JSON.parse(localStorage.getItem('desps_courriers')||'[]'); }catch(e){ COURRIERS = []; }
+}
+function crrSaveLocal(){
+  localStorage.setItem('desps_courriers', JSON.stringify(COURRIERS));
+}
+// Persistance Firebase (set/get/delete ciblés - même mécanique que le parc, sans toucher save())
+function crrSaveOne(c){
+  crrSaveLocal();
+  if(!window.FB_OK) return;
+  try{
+    window.FB.setDoc(window.FB.doc(window.FB.db,'parc_courriers',c._fbid), c)
+      .catch(function(e){console.warn('crrSaveOne:',e.message);});
+  }catch(e){console.warn('crrSaveOne:',e.message);}
+}
+function crrDeleteFb(id){
+  if(!window.FB_OK || !id) return;
+  try{
+    window.FB.deleteDoc(window.FB.doc(window.FB.db,'parc_courriers',id))
+      .catch(function(e){console.warn('crrDeleteFb:',e.message);});
+  }catch(e){console.warn('crrDeleteFb:',e.message);}
+}
+// Sync temps-réel des courriers (s'abonne lors du premier nav vers Courrier)
+var _crrUnsub = null;
+function crrSubscribe(){
+  if(!window.FB_OK || _crrUnsub) return;
+  try{
+    _crrUnsub = window.FB.onSnapshot(
+      window.FB.collection(window.FB.db,'parc_courriers'),
+      function(snap){
+        var arr=[];
+        snap.forEach(function(d){ arr.push(Object.assign({_fbid:d.id}, d.data())); });
+        COURRIERS = arr;
+        crrSaveLocal();
+        crrRender();
+        crrUpdateBadge();
+      },
+      function(e){ console.warn('Sync courriers:', e.message); }
+    );
+  }catch(e){ console.warn('crrSubscribe:', e.message); }
+}
+
+// Init au moment d'ouvrir l'onglet Courrier
+function crrInit(){
+  crrLoad();
+  crrSubscribe();
+  crrPopulateRecipients();
+  crrRender();
+  crrUpdateBadge();
+}
+
+// Raccourci "Faire une réclamation" pour les utilisateurs simples
+// → Ouvre directement le module courrier en mode rédaction avec un objet pré-rempli
+function crrOpenReclamation(){
+  nav('courrier');
+  setTimeout(function(){
+    crrShowTab('compose');
+    var subj = document.getElementById('crr-subject');
+    if(subj && !subj.value) subj.value = 'Réclamation — ';
+    var body = document.getElementById('crr-body');
+    if(body && !body.value){
+      body.value = 'Madame, Monsieur,\n\nJe me permets de vous adresser la présente réclamation concernant :\n\n[Décrivez ici le problème rencontré, le matériel concerné, et la suite que vous souhaitez voir donnée.]\n\nDans l\'attente de votre retour, je vous prie d\'agréer, Madame, Monsieur, l\'expression de mes salutations distinguées.';
+    }
+    var prio = document.querySelector('input[name="crr-prio"][value="haute"]');
+    if(prio) prio.checked = true;
+    // Sélectionner automatiquement le premier admin disponible
+    var sel = document.getElementById('crr-to');
+    if(sel && !sel.value){
+      for(var i=1;i<sel.options.length;i++){
+        if(sel.options[i].textContent.indexOf('Admin')!==-1){ sel.value = sel.options[i].value; break; }
+      }
+    }
+    if(subj) subj.focus();
+  }, 150);
+}
+
+// Remplir la liste des destinataires selon le rôle de l'utilisateur courant
+function crrPopulateRecipients(){
+  var sel = document.getElementById('crr-to'); if(!sel) return;
+  sel.innerHTML = '<option value="">— Choisir un destinataire —</option>';
+  if(!currentUser) return;
+  var accounts = {};
+  try{ accounts = JSON.parse(localStorage.getItem('desps_accounts')||'{}'); }catch(e){}
+  var ids = Object.keys(accounts);
+  ids.forEach(function(id){
+    var acc = accounts[id]; if(!acc) return;
+    if(id === currentUser.login) return; // pas à soi-même
+    if(!acc.active) return;              // exclure comptes désactivés
+    // Règle : un utilisateur (rôle 'user') ne peut écrire qu'aux admins
+    // Sinon (admin/directeur/sousdirecteur), on peut écrire à tout le monde
+    if(currentUser.role === 'user' && acc.role !== 'admin') return;
+    var name = acc.name || id;
+    var rl = roleLabel(acc.role);
+    var opt = document.createElement('option');
+    opt.value = id;
+    opt.textContent = name + ' ('+ rl.ico +' '+ rl.label +')';
+    sel.appendChild(opt);
+  });
+}
+
+// Affichage des onglets
+function crrShowTab(tab){
+  CRR_TAB = tab;
+  ['inbox','sent','compose'].forEach(function(t){
+    var el = document.getElementById('crr-pane-'+t);
+    var lab = document.getElementById('crr-tab-'+t);
+    if(el) el.style.display = (t===tab) ? '' : 'none';
+    if(lab) lab.classList.toggle('active', t===tab);
+  });
+  if(tab==='compose'){ crrPopulateRecipients(); }
+  if(tab==='inbox' || tab==='sent') crrRender();
+}
+
+// Rendu des listes inbox / sent
+function crrRender(){
+  if(!currentUser) return;
+  var meId = currentUser.login;
+  var inbox = COURRIERS.filter(function(c){ return c.toId === meId && !c.deletedFor || (c.toId===meId && (c.deletedFor||[]).indexOf(meId)===-1); });
+  var sent  = COURRIERS.filter(function(c){ return c.fromId === meId && (c.deletedFor||[]).indexOf(meId)===-1; });
+  // tri par date desc
+  inbox.sort(function(a,b){ return (b.sentAt||'').localeCompare(a.sentAt||''); });
+  sent.sort(function(a,b){ return (b.sentAt||'').localeCompare(a.sentAt||''); });
+
+  var inEl = document.getElementById('crr-pane-inbox');
+  var outEl = document.getElementById('crr-pane-sent');
+  if(inEl){
+    if(!inbox.length){
+      inEl.innerHTML = '<div class="crr-empty"><div class="ico">📥</div>Aucun courrier reçu</div>';
+    }else{
+      inEl.innerHTML = inbox.map(function(c){ return crrItemHTML(c, 'inbox'); }).join('');
+    }
+  }
+  if(outEl){
+    if(!sent.length){
+      outEl.innerHTML = '<div class="crr-empty"><div class="ico">📤</div>Aucun courrier envoyé</div>';
+    }else{
+      outEl.innerHTML = sent.map(function(c){ return crrItemHTML(c, 'sent'); }).join('');
+    }
+  }
+}
+
+function crrItemHTML(c, mode){
+  var name = (mode==='inbox') ? (c.fromName||c.fromId||'?') : (c.toName||c.toId||'?');
+  var who  = (mode==='inbox') ? (c.fromRole||'user') : (c.toRole||'user');
+  var rl = roleLabel(who);
+  var initial = (name||'?').charAt(0).toUpperCase();
+  var prio = c.priority||'normale';
+  var prioBdg = {haute:'b-prio-haute',normale:'b-prio-normale',basse:'b-prio-basse'}[prio]||'b-prio-normale';
+  var prioIco = {haute:'🔴',normale:'⚪',basse:'🔵'}[prio]||'⚪';
+  var unread = (mode==='inbox' && !c.read) ? 'unread' : '';
+  var d = c.sentAt ? new Date(c.sentAt) : null;
+  var dStr = d ? (d.toLocaleDateString('fr-FR') + ' ' + d.toTimeString().slice(0,5)) : '';
+  var preview = (c.body||'').replace(/\s+/g,' ').slice(0,80);
+  // Avatar style direct (couleur selon rôle)
+  var avatarStyle = 'background:'+rl.bg.replace('0.15','0.25')+';color:'+rl.color+';';
+  return '<div class="crr-item '+unread+'" onclick="crrOpen(\''+c._fbid+'\')">'
+    + '<div class="crr-avatar" style="'+avatarStyle+'">'+initial+'</div>'
+    + '<div class="crr-meta">'
+      + '<div class="crr-from">'+(mode==='inbox'?'De : ':'À : ')+escapeHtml(name)+' <span style="font-size:10px;color:var(--txt3);">'+rl.ico+' '+rl.label+'</span></div>'
+      + '<div class="crr-subject">'+escapeHtml(c.subject||'(sans objet)')+'</div>'
+      + '<div class="crr-preview">'+escapeHtml(preview)+(preview.length>=80?'…':'')+'</div>'
+    + '</div>'
+    + '<div class="crr-date">'
+      + '<span>'+dStr+'</span>'
+      + '<span class="badge '+prioBdg+'">'+prioIco+' '+prio+'</span>'
+    + '</div>'
+  + '</div>';
+}
+
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});
+}
+
+// Compteur de courriers non-lus dans la sidebar
+function crrUpdateBadge(){
+  if(!currentUser) return;
+  var meId = currentUser.login;
+  var n = COURRIERS.filter(function(c){ return c.toId===meId && !c.read && (c.deletedFor||[]).indexOf(meId)===-1; }).length;
+  var bdg = document.getElementById('nb-courrier');
+  var bdg2 = document.getElementById('crr-bdg-unread');
+  if(bdg){ bdg.style.display = n>0 ? '' : 'none'; bdg.textContent = n; }
+  if(bdg2){ bdg2.style.display = n>0 ? '' : 'none'; bdg2.textContent = n; }
+}
+
+// Envoyer un courrier
+function crrSend(){
+  if(!currentUser){ notif('Veuillez vous reconnecter','err'); return; }
+  var toId   = document.getElementById('crr-to').value;
+  var subject= document.getElementById('crr-subject').value.trim();
+  var body   = document.getElementById('crr-body').value.trim();
+  var ref    = document.getElementById('crr-ref').value.trim();
+  var prioEl = document.querySelector('input[name="crr-prio"]:checked');
+  var prio   = prioEl ? prioEl.value : 'normale';
+
+  if(!toId){ notif('⚠️ Choisissez un destinataire','err'); return; }
+  if(!subject){ notif('⚠️ Veuillez saisir un objet','err'); return; }
+  if(!body){ notif('⚠️ Veuillez saisir un message','err'); return; }
+
+  // Récupérer le nom et rôle du destinataire
+  var accounts = {};
+  try{ accounts = JSON.parse(localStorage.getItem('desps_accounts')||'{}'); }catch(e){}
+  var dest = accounts[toId] || {name:toId, role:'user'};
+
+  var id = 'c_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+  var courrier = {
+    _fbid: id,
+    fromId: currentUser.login,
+    fromName: currentUser.name || currentUser.login,
+    fromRole: currentUser.role,
+    toId: toId,
+    toName: dest.name || toId,
+    toRole: dest.role || 'user',
+    subject: subject,
+    body: body,
+    ref: ref,
+    priority: prio,
+    sentAt: new Date().toISOString(),
+    read: false,
+    deletedFor: []
+  };
+  COURRIERS.unshift(courrier);
+  crrSaveOne(courrier);
+  notif('✅ Courrier envoyé à ' + (dest.name||toId), 'ok');
+  crrResetCompose();
+  crrShowTab('sent');
+  crrRender();
+  CRR_REPLY_TO = null;
+}
+
+function crrResetCompose(){
+  var to=document.getElementById('crr-to'); if(to) to.value='';
+  var s=document.getElementById('crr-subject'); if(s) s.value='';
+  var b=document.getElementById('crr-body'); if(b) b.value='';
+  var r=document.getElementById('crr-ref'); if(r) r.value='';
+  var n=document.querySelector('input[name="crr-prio"][value="normale"]'); if(n) n.checked=true;
+}
+
+// Ouverture (lecture) d'un courrier
+function crrOpen(id){
+  var c = COURRIERS.find(function(x){ return x._fbid===id; });
+  if(!c){ notif('Courrier introuvable','err'); return; }
+  CRR_CURRENT = c;
+  // Marquer comme lu si je suis le destinataire
+  if(currentUser && c.toId === currentUser.login && !c.read){
+    c.read = true;
+    crrSaveOne(c);
+    crrUpdateBadge();
+  }
+  // Remplir le modal
+  document.getElementById('m-crr-title').textContent = '📬 ' + (c.subject||'(sans objet)');
+  document.getElementById('m-crr-from').textContent = (c.fromName||c.fromId) + ' — ' + roleLabel(c.fromRole).label;
+  document.getElementById('m-crr-to').textContent   = (c.toName||c.toId) + ' — ' + roleLabel(c.toRole).label;
+  var d = c.sentAt ? new Date(c.sentAt) : null;
+  document.getElementById('m-crr-date').textContent = d ? d.toLocaleString('fr-FR') : '—';
+  var prioMap = {haute:'🔴 Haute', normale:'⚪ Normale', basse:'🔵 Basse'};
+  document.getElementById('m-crr-prio').textContent = prioMap[c.priority||'normale'];
+  document.getElementById('m-crr-ref').textContent = c.ref || '—';
+  document.getElementById('m-crr-subject').textContent = c.subject || '(sans objet)';
+  document.getElementById('m-crr-body').textContent = c.body || '';
+  // Le bouton "Répondre" n'a de sens que si je ne suis pas l'expéditeur
+  var actEl = document.getElementById('m-crr-actions');
+  if(actEl){
+    var btns = actEl.querySelectorAll('button');
+    if(btns[1]) btns[1].style.display = (currentUser && c.fromId===currentUser.login) ? 'none' : '';
+  }
+  crrRender();
+  openMod('m-courrier-read');
+}
+
+// Répondre
+function crrReply(){
+  if(!CRR_CURRENT) return;
+  CRR_REPLY_TO = CRR_CURRENT;
+  closeMod('m-courrier-read');
+  crrShowTab('compose');
+  setTimeout(function(){
+    var sel=document.getElementById('crr-to');
+    if(sel){
+      // Le destinataire de la réponse est l'expéditeur du message original
+      sel.value = CRR_CURRENT.fromId;
+      // Si l'option n'existait pas (cas où l'expéditeur n'est pas dans la liste filtrée), on la rajoute
+      if(sel.value !== CRR_CURRENT.fromId){
+        var opt = document.createElement('option');
+        opt.value = CRR_CURRENT.fromId;
+        var rl = roleLabel(CRR_CURRENT.fromRole);
+        opt.textContent = (CRR_CURRENT.fromName||CRR_CURRENT.fromId)+' ('+rl.ico+' '+rl.label+')';
+        sel.appendChild(opt);
+        sel.value = CRR_CURRENT.fromId;
+      }
+    }
+    var subj = document.getElementById('crr-subject');
+    if(subj) subj.value = (CRR_CURRENT.subject||'').indexOf('Re:')===0 ? CRR_CURRENT.subject : 'Re: ' + (CRR_CURRENT.subject||'');
+    var bd = document.getElementById('crr-body');
+    if(bd){
+      var sep = '\n\n— Le ' + new Date(CRR_CURRENT.sentAt).toLocaleString('fr-FR') + ', ' + (CRR_CURRENT.fromName||CRR_CURRENT.fromId) + ' a écrit :\n> ';
+      bd.value = sep + (CRR_CURRENT.body||'').split('\n').join('\n> ');
+      // Placer le curseur au début
+      bd.focus(); bd.setSelectionRange(0,0); bd.scrollTop = 0;
+    }
+  },80);
+}
+
+// Suppression côté utilisateur (suppression complète si plus personne ne le voit)
+function crrDelete(){
+  if(!CRR_CURRENT) return;
+  if(!confirm('Supprimer ce courrier ?')) return;
+  var c = CRR_CURRENT;
+  c.deletedFor = c.deletedFor || [];
+  if(c.deletedFor.indexOf(currentUser.login) === -1) c.deletedFor.push(currentUser.login);
+  // Si à la fois expéditeur et destinataire l'ont supprimé → suppression définitive
+  var bothDeleted = c.deletedFor.indexOf(c.fromId)!==-1 && c.deletedFor.indexOf(c.toId)!==-1;
+  if(bothDeleted){
+    var idx = COURRIERS.findIndex(function(x){return x._fbid===c._fbid;});
+    if(idx>=0) COURRIERS.splice(idx,1);
+    crrSaveLocal();
+    crrDeleteFb(c._fbid);
+  }else{
+    crrSaveOne(c);
+  }
+  notif('🗑 Courrier supprimé','info');
+  closeMod('m-courrier-read');
+  CRR_CURRENT = null;
+  crrRender();
+  crrUpdateBadge();
+}
+
+// ──────────── IMPRESSION OFFICIELLE ────────────
+function crrPrintCurrent(){
+  if(!CRR_CURRENT) return;
+  var c = CRR_CURRENT;
+  // Récupérer les images base64 institutionnelles depuis le DOM principal (sidebar)
+  var armImg = document.querySelector('.sb-armoirie') || document.querySelector('.logo-armoirie');
+  var dspImg = document.querySelector('.logo-desps') || document.querySelector('.logo-desps-sm');
+  var pp = document.getElementById('crr-print-page');
+  var ppArm = document.getElementById('crr-pp-armoirie');
+  var ppDsp = document.getElementById('crr-pp-desps');
+  if(armImg && armImg.src && ppArm) ppArm.src = armImg.src;
+  if(dspImg && dspImg.src && ppDsp) ppDsp.src = dspImg.src;
+
+  // Numéro de référence
+  document.getElementById('crr-pp-num').textContent = c.ref || ('DESPS/'+ new Date(c.sentAt).getFullYear() +'/'+ c._fbid.slice(-6).toUpperCase());
+  // Date
+  var d = new Date(c.sentAt);
+  var months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  document.getElementById('crr-pp-date').textContent = d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+  // Émetteur / destinataire
+  document.getElementById('crr-pp-from').textContent = (c.fromName||c.fromId) + ' — ' + roleLabel(c.fromRole).label;
+  document.getElementById('crr-pp-to').textContent   = (c.toName||c.toId) + ' — ' + roleLabel(c.toRole).label;
+  document.getElementById('crr-pp-objet').textContent = c.subject || '(sans objet)';
+  document.getElementById('crr-pp-corps').textContent = c.body || '';
+  document.getElementById('crr-pp-sign-name').textContent = (c.fromName||c.fromId).toUpperCase();
+  document.getElementById('crr-pp-sign-role').textContent = roleLabel(c.fromRole).label + ' — DESPS';
+
+  // Lancer l'impression
+  setTimeout(function(){ window.print(); }, 100);
+}
+// ════════════════════════════════════════════════════════════════════════
+// FIN MODULE COURRIER
+// ════════════════════════════════════════════════════════════════════════
+
 function notif(msg,type) {
   var cls={ok:'n-ok',err:'n-err',info:'n-info'}[type]||'n-info';
   var el=document.createElement('div'); el.className='notif '+cls; el.textContent=msg;
