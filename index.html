@@ -9,6 +9,7 @@
 <title>DESPS · Parc Informatique MENAET</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1202,7 +1203,10 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
             <!-- TOUT EXPORTER -->
             <button class="btn btn-gold" onclick="exportAll()" style="width:100%;justify-content:center;padding:12px;font-size:14px;margin-top:14px;">
-              📦 Tout exporter (CSV + XLSX + JSON)
+              📦 Tout exporter — XLSX multi-onglets + JSON
+            </button>
+            <button class="btn btn-sec" onclick="exportAllWord()" style="width:100%;justify-content:center;padding:10px;font-size:13px;margin-top:8px;">
+              📄 Tout exporter en Word (4 fichiers)
             </button>
           </div>
 
@@ -3673,33 +3677,236 @@ function exportCSV(type) {
   dlFile('﻿'+csv,'DESPS_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
   notif('⬇ Export CSV téléchargé','ok');
 }
-function exportAll(){ ['bureau','portables','imprimantes','tablettes'].forEach(function(t,i){setTimeout(function(){exportCSV(t);},i*400);}); }
 
-// ==================== EXPORT EXCEL (CSV) + WORD ====================
-function exportTableExcel(type) {
-  var data = getFiltered(type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes'));
-  if (type.startsWith('drena-')) data = data.filter(function(r){return isDrena(r);});
-  if(!data.length){notif('⚠️ Aucune donnée','err');return;}
-  var keys=Object.keys(data[0]).filter(function(k){return k!=='_source';});
-  var csv=keys.map(function(k){return LABELS[k]||k;}).join(';')+'\n';
-  data.forEach(function(r){csv+=keys.map(function(k){return '"'+((r[k]||'').toString().replace(/"/g,'""'))+'"';}).join(';')+'\n';});
-  dlFile('﻿'+csv,'DESPS_'+type+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
-  notif('⬇ Export Excel téléchargé','ok');
+
+// ══════════════════════════════════════════════════════════════════
+// MODULE EXPORT XLSX (SheetJS) + WORD ENRICHI v2
+// ══════════════════════════════════════════════════════════════════
+
+/** Noms humains des catégories */
+var CAT_LABELS = {
+  bureau:'Ordinateurs Bureaux', portables:'Ordinateurs Portables',
+  imprimantes:'Imprimantes', tablettes:'Tablettes',
+  'drena-bureau':'DRENAET — Bureaux', 'drena-portables':'DRENAET — Portables'
+};
+
+/** Couleurs de catégorie pour l'export Word */
+var CAT_COLORS = {
+  bureau:'#1a5fc8', portables:'#009A44', imprimantes:'#F5841F', tablettes:'#8B5CF6',
+  'drena-bureau':'#e63946', 'drena-portables':'#F4B942'
+};
+
+/**
+ * Prépare un tableau {headers, rows} pour l'export, en excluant les clés internes.
+ */
+function _buildExportData(type) {
+  var baseType = type.replace('drena-','');
+  // Normaliser : 'drena-bureau' → 'bureau'
+  var realBase = baseType.replace('impr','imprimantes').replace(/^tab$/,'tablettes');
+  var arr = ['bureau','portables','imprimantes','tablettes'].indexOf(realBase) >= 0 ? realBase : baseType;
+  var data = getFiltered(arr);
+  if (type.startsWith('drena-')) data = data.filter(function(r){ return isDrena(r); });
+  var SKIP = {_fbid:1,_source:1,genre:1};
+  var keys = data.length ? Object.keys(data[0]).filter(function(k){ return !SKIP[k]; }) : [];
+  return { data: data, keys: keys, headers: keys.map(function(k){ return LABELS[k]||k; }) };
 }
+
+/**
+ * exportTableExcel(type) — génère un vrai .xlsx avec SheetJS.
+ * Fallback CSV si SheetJS n'est pas disponible (hors-ligne).
+ */
+function exportTableExcel(type) {
+  var ex = _buildExportData(type);
+  if (!ex.data.length) { notif('⚠️ Aucune donnée à exporter','err'); return; }
+  var dateStr = new Date().toISOString().slice(0,10);
+  var fname   = 'DESPS_' + type + '_' + dateStr;
+
+  if (typeof XLSX !== 'undefined') {
+    // ── Mode XLSX réel ──
+    var wsData = [ex.headers];
+    ex.data.forEach(function(r){
+      wsData.push(ex.keys.map(function(k){ return r[k]||''; }));
+    });
+    var ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Largeurs de colonnes automatiques
+    var colWidths = ex.headers.map(function(h, ci) {
+      var maxLen = h.length;
+      ex.data.forEach(function(r) {
+        var v = (r[ex.keys[ci]]||'').toString();
+        if (v.length > maxLen) maxLen = v.length;
+      });
+      return { wch: Math.min(maxLen + 2, 40) };
+    });
+    ws['!cols'] = colWidths;
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, (CAT_LABELS[type]||type).slice(0,30));
+    XLSX.writeFile(wb, fname + '.xlsx');
+    notif('⬇ Export XLSX téléchargé (' + ex.data.length + ' lignes)', 'ok');
+
+    // Log Firebase
+    _logExportFirebase(type, 'xlsx', ex.data.length);
+  } else {
+    // ── Fallback CSV ──
+    var csv = ex.headers.join(';') + '\n';
+    ex.data.forEach(function(r){
+      csv += ex.keys.map(function(k){ return '"' + ((r[k]||'').toString().replace(/"/g,'""')) + '"'; }).join(';') + '\n';
+    });
+    dlFile('﻿' + csv, fname + '.csv', 'text/csv;charset=utf-8;');
+    notif('⬇ Export CSV téléchargé (SheetJS hors-ligne — fallback CSV)', 'ok');
+    _logExportFirebase(type, 'csv_fallback', ex.data.length);
+  }
+}
+
+/**
+ * exportAllExcel() — exporte toutes les catégories en un seul fichier multi-onglets.
+ */
+function exportAllExcel() {
+  var cats = ['bureau','portables','imprimantes','tablettes'];
+  var dateStr = new Date().toISOString().slice(0,10);
+
+  if (typeof XLSX !== 'undefined') {
+    var wb = XLSX.utils.book_new();
+    var totalRows = 0;
+    cats.forEach(function(type) {
+      var ex = _buildExportData(type);
+      if (!ex.data.length) return;
+      var wsData = [ex.headers];
+      ex.data.forEach(function(r){ wsData.push(ex.keys.map(function(k){ return r[k]||''; })); });
+      var ws = XLSX.utils.aoa_to_sheet(wsData);
+      ws['!cols'] = ex.headers.map(function(h, ci) {
+        var maxLen = h.length;
+        ex.data.forEach(function(r){ var v=(r[ex.keys[ci]]||'').toString(); if(v.length>maxLen) maxLen=v.length; });
+        return { wch: Math.min(maxLen+2,40) };
+      });
+      XLSX.utils.book_append_sheet(wb, ws, (CAT_LABELS[type]||type).slice(0,30));
+      totalRows += ex.data.length;
+    });
+    XLSX.writeFile(wb, 'DESPS_ParcInformatique_Complet_' + dateStr + '.xlsx');
+    notif('📦 Export XLSX complet — ' + totalRows + ' équipements, 4 onglets', 'ok');
+    _logExportFirebase('all', 'xlsx_multi', totalRows);
+  } else {
+    // Fallback : export CSV séparé pour chaque catégorie
+    cats.forEach(function(type, i){
+      setTimeout(function(){ exportTableExcel(type); }, i * 500);
+    });
+    notif('📦 Export CSV (4 fichiers) — SheetJS hors-ligne', 'ok');
+  }
+}
+
+/**
+ * exportTableWord(type) — génère un .doc HTML enrichi avec en-tête MENAET,
+ * tableau coloré et pied de page institutionnel.
+ */
 function exportTableWord(type) {
-  var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
-  var data = getFiltered(baseType);
-  if (type.startsWith('drena-')) data = data.filter(function(r){return isDrena(r);});
-  if(!data.length){notif('⚠️ Aucune donnée','err');return;}
-  var keys=Object.keys(data[0]).filter(function(k){return k!=='_source';});
-  var hdrs=keys.map(function(k){return LABELS[k]||k;});
-  var rows=data.map(function(r){return '<tr>'+keys.map(function(k){return '<td style="border:1px solid #ccc;padding:5px 8px;font-size:11px;">'+(r[k]||'')+'</td>';}).join('')+'</tr>';}).join('');
-  var doc='<html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;}h2{font-size:14px;}table{border-collapse:collapse;width:100%;}th{background:#1a5fc8;color:white;padding:6px 8px;font-size:11px;text-align:left;border:1px solid #ccc;}</style></head><body>'
-    +'<h2>DESPS — Parc Informatique : '+type.toUpperCase()+'</h2>'
-    +'<p style="font-size:11px;">Éditée le '+new Date().toLocaleDateString('fr-FR')+'</p>'
-    +'<table><thead><tr>'+hdrs.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+rows+'</tbody></table></body></html>';
-  dlFile(doc,'DESPS_'+type+'_'+new Date().toISOString().slice(0,10)+'.doc','application/msword');
-  notif('⬇ Export Word téléchargé','ok');
+  var ex = _buildExportData(type);
+  if (!ex.data.length) { notif('⚠️ Aucune donnée à exporter','err'); return; }
+  var dateStr   = new Date().toISOString().slice(0,10);
+  var dateHuman = new Date().toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'});
+  var catLabel  = CAT_LABELS[type] || type.toUpperCase();
+  var color     = CAT_COLORS[type] || '#1a5fc8';
+  var lightColor = color + '18';  // ~10% opacity hex trick (approximation)
+
+  var thead = '<tr>' + ex.headers.map(function(h){
+    return '<th style="background:'+color+';color:#fff;padding:7px 9px;font-size:10.5px;text-align:left;border:1px solid #ccc;white-space:nowrap;">' + h + '</th>';
+  }).join('') + '</tr>';
+
+  var tbody = ex.data.map(function(r, i){
+    var bg = i%2===0 ? '#ffffff' : '#f5f8ff';
+    return '<tr>' + ex.keys.map(function(k){
+      return '<td style="border:1px solid #dde3ef;padding:5px 8px;font-size:10px;background:'+bg+';">' + (r[k]||'') + '</td>';
+    }).join('') + '</tr>';
+  }).join('');
+
+  var doc = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + '<style>'
+    + 'body{font-family:Arial,sans-serif;font-size:11px;color:#1a2a4a;margin:0;padding:0;}'
+    + '.header{background:linear-gradient(135deg,#040E24,#071428);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;border-bottom:4px solid #F5841F;}'
+    + '.header .logo-area{display:flex;flex-direction:column;align-items:center;gap:6px;}'
+    + '.header .title-area{flex:1;}'
+    + '.header .rep{font-size:8px;color:#F5841F;letter-spacing:2px;text-transform:uppercase;font-weight:700;}'
+    + '.header .min{font-size:9px;color:#94a3b8;margin-top:2px;}'
+    + '.header h1{font-size:15px;font-weight:700;margin:6px 0 2px;color:#fff;}'
+    + '.header .sub{font-size:10px;color:#5ba3f0;}'
+    + '.triband{height:4px;background:linear-gradient(90deg,#F5841F 33%,#fff 33%,#fff 66%,#009A44 66%);}'
+    + '.meta{padding:10px 24px;background:#f0f4fa;border-bottom:1px solid #dde3ef;font-size:10.5px;color:#4a5568;display:flex;gap:24px;flex-wrap:wrap;}'
+    + '.meta strong{color:#1a2a4a;}'
+    + '.content{padding:16px 24px;}'
+    + '.cat-badge{display:inline-block;background:'+color+';color:#fff;padding:3px 12px;border-radius:12px;font-size:9.5px;font-weight:700;margin-bottom:10px;}'
+    + 'table{border-collapse:collapse;width:100%;margin-top:8px;}'
+    + '.footer{margin-top:20px;padding:10px 24px;background:#f0f4fa;border-top:2px solid '+color+';font-size:9px;color:#64748b;display:flex;justify-content:space-between;}'
+    + '</style></head><body>'
+    // En-tête MENAET
+    + '<div class="header">'
+    + '<div class="logo-area">'
+    + '<div style="font-size:9px;color:#F5841F;font-weight:700;text-align:center;">MINISTÈRE</div>'
+    + '<div style="font-size:8px;color:#94a3b8;text-align:center;">ÉDUCATION NATIONALE</div>'
+    + '</div>'
+    + '<div class="title-area">'
+    + '<div class="rep">RÉPUBLIQE DE CÔTE D\'IVOIRE — Un Peuple · Une Foi · Une Paix</div>'
+    + '<div class="min">Ministère de l\'Éducation Nationale et de l\'Alphabétisation (MENAET)</div>'
+    + '<h1>DESPS — Parc Informatique</h1>'
+    + '<div class="sub">Direction des Études, de la Performance et des Statistiques</div>'
+    + '</div></div>'
+    + '<div class="triband"></div>'
+    // Métadonnées
+    + '<div class="meta">'
+    + '<span><strong>Catégorie :</strong> ' + catLabel + '</span>'
+    + '<span><strong>Effectif :</strong> ' + ex.data.length + ' équipement' + (ex.data.length>1?'s':'') + '</span>'
+    + '<span><strong>Date d\'édition :</strong> ' + dateHuman + '</span>'
+    + '<span><strong>Service :</strong> DESPS / MENAET</span>'
+    + '</div>'
+    // Contenu
+    + '<div class="content">'
+    + '<div class="cat-badge">' + catLabel + '</div>'
+    + '<table><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table>'
+    + '</div>'
+    // Pied de page
+    + '<div class="footer">'
+    + '<span>DESPS — Parc Informatique MENAET · Édité le ' + dateHuman + '</span>'
+    + '<span>Document officiel — Usage interne · Total : ' + ex.data.length + ' enregistrement' + (ex.data.length>1?'s':'') + '</span>'
+    + '</div>'
+    + '</body></html>';
+
+  dlFile(doc, 'DESPS_' + type + '_' + dateStr + '.doc', 'application/msword');
+  notif('⬇ Export Word enrichi téléchargé (' + ex.data.length + ' lignes)', 'ok');
+}
+
+/**
+ * exportAllWord() — exporte les 4 catégories en série (délai 600ms entre chaque).
+ */
+function exportAllWord() {
+  var cats = ['bureau','portables','imprimantes','tablettes'];
+  cats.forEach(function(type, i){
+    setTimeout(function(){ exportTableWord(type); }, i * 600);
+  });
+  notif('📄 Export Word — 4 fichiers en cours de génération...', 'ok');
+}
+
+/**
+ * exportAll() — exporte tout : XLSX multi-onglets + JSON.
+ */
+function exportAll() {
+  exportAllExcel();
+  setTimeout(function(){ exportJSON(); }, 800);
+}
+
+/** Log un export dans Firestore parc_exports */
+function _logExportFirebase(target, format, rows) {
+  if (!window.FB_OK) return;
+  try {
+    var logId = 'exp_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    var doc = {
+      target: target,
+      format: format,
+      rows: rows,
+      operator: currentUser ? currentUser.login : '?',
+      timestamp: new Date().toISOString()
+    };
+    window.FB.setDoc(window.FB.doc(window.FB.db, 'parc_exports', logId), doc)
+      .catch(function(e){ console.warn('Log export Firebase:', e.message); });
+  } catch(e){ console.warn('_logExportFirebase:', e.message); }
 }
 
 // ==================== RAPPORT ====================
@@ -4800,11 +5007,20 @@ function setImportMode(mode) {
 
 function handleDrop(e) {
   e.preventDefault();
-  document.getElementById('dropzone-label').classList.remove('drag-over');
-  var files=e.dataTransfer.files;
-  if(files.length>0){
-    var fakeInput={files:files};
-    handleImport(fakeInput);
+  var dz = document.getElementById('dropzone-label');
+  if (dz) dz.classList.remove('drag-over');
+  var files = e.dataTransfer.files;
+  if (files.length > 0) {
+    // Remettre dans l'input file pour cohérence
+    var fi = document.getElementById('file-import');
+    if (fi) {
+      try {
+        var dt = new DataTransfer();
+        dt.items.add(files[0]);
+        fi.files = dt.files;
+      } catch(ex){}
+    }
+    handleImport({ files: files });
   }
 }
 
@@ -5245,44 +5461,352 @@ function emptyTrash() {
 }
 
 // ==================== IMPORT ====================
-function handleImport(input) {
-  var file=input.files[0]; if(!file) return;
-  if(!can('import')){notif('⛔ Import réservé aux administrateurs et directeurs','err');return;}
-  var res=document.getElementById('import-res'); var target=v('import-target');
-  if(!file.name.match(/\.csv$/i)){res.innerHTML='<p style="color:var(--orange);margin-top:10px;">⚠️ Veuillez importer un fichier CSV.</p>';return;}
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var text=e.target.result, lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(function(l){return l.trim();});
-    var sep=text.includes(';')?';':',';
-    var hi=0;
-    var kwds=['nom','serie','marque','projet'];
-    for(var i=0;i<Math.min(lines.length,10);i++){var low=lines[i].toLowerCase();if(kwds.filter(function(k){return low.includes(k);}).length>=3){hi=i;break;}}
-    var headers=lines[hi].split(sep).map(function(h){return h.replace(/"/g,'').trim();});
-    var parsed=[];
-    for(var i=hi+1;i<lines.length;i++){var vals=lines[i].split(sep).map(function(v){return v.replace(/"/g,'').trim();});if(!vals.some(function(v){return v.trim();}))continue;var obj={};headers.forEach(function(h,j){obj[h]=vals[j]||'';});parsed.push(obj);}
-    var existS=new Set((DB[target]||[]).map(function(r){return (r.num_serie||'').toUpperCase().trim();}));
-    var toAdd=[],dupes=[];
-    parsed.forEach(function(r){var k=(r.num_serie||r['N° DE SERIE']||r['N° Série']||'').toUpperCase().trim();if(k&&existS.has(k)){dupes.push(r);}else{if(k)existS.add(k);r.genre=detectGenre(r.nom||'');toAdd.push(r);}});
-    window._importBuf=toAdd; window._importTgt=target;
-    res.innerHTML='<div style="margin-top:10px;background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.2);border-radius:8px;padding:12px;">'
-      +'<div style="display:flex;gap:10px;margin-bottom:8px;">'
-      +'<span style="color:var(--accent);font-weight:700;">✅ '+toAdd.length+' nouveaux</span>'
-      +'<span style="color:var(--orange);">⚠️ '+dupes.length+' doublons ignorés</span>'
-      +'</div>'
-      +(toAdd.length>0?'<button onclick="confirmImport()" style="background:var(--accent);color:#032a22;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">Confirmer l\'import — '+toAdd.length+' entrée'+(toAdd.length>1?'s':'')+'</button>':'<p style="color:var(--txt2);font-size:12px;">Tous les enregistrements sont déjà présents.</p>')
-      +'</div>';
-  };
-  reader.readAsText(file,'UTF-8');
+// ══════════════════════════════════════════════════════════════════
+// MODULE IMPORT CSV ROBUSTE v2
+// ══════════════════════════════════════════════════════════════════
+
+/**
+ * Détecte le séparateur (;  ou ,) et découpe une ligne CSV en tenant
+ * compte des guillemets (les virgules/point-virgules dans des cellules
+ * entre guillemets ne sont PAS traités comme séparateurs).
+ */
+function _splitCSVLine(line, sep) {
+  var cells = [], cur = '', inQ = false;
+  for (var i = 0; i < line.length; i++) {
+    var c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }   // guillemet échappé ""
+      else inQ = !inQ;
+    } else if (c === sep && !inQ) {
+      cells.push(cur.trim()); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  cells.push(cur.trim());
+  return cells;
 }
+
+/**
+ * Normalise automatiquement les noms de colonnes vers les clés internes.
+ * Gère les variantes : "N° SERIE", "SN", "num_serie", "N° de Série", etc.
+ */
+function _normalizeRow(rawObj) {
+  var MAP = {
+    // num_serie
+    'num_serie':1,'n° de serie':1,'n° serie':1,'n°serie':1,'n° de série':1,
+    'no serie':1,'numero serie':1,'sn':1,'serial':1,'serial number':1,'numéro de série':1,
+    // nom
+    'nom':1,'nom & prénoms':1,'nom et prénoms':1,'nom_prenom':1,'nom prenom':1,'agent':1,
+    // marque
+    'marque':1,'marque & modèle':1,'marque_modele':1,'marque et modele':1,'modele':1,'modèle':1,
+    // etat
+    'etat':1,'état':1,'statut':1,'condition':1,
+    // projet
+    'projet':1,'project':1,
+    // service
+    'service':1,'direction':1,'sous-direction':1,'service/sous-direction':1,
+    // bureau
+    'bureau':1,'bureau/étage/porte':1,'emplacement':1,'localisation':1,
+    // cpu, ram, stockage
+    'cpu':1,'processeur':1,'processeur (cpu)':1,
+    'ram':1,'mémoire':1,'mémoire ram':1,
+    'stockage':1,'disque':1,'disque dur':1,
+    // téléphone / email
+    'telephone':1,'téléphone':1,'tel':1,'tél':1,'mobile':1,'phone':1,
+    'email':1,'e-mail':1,'mail':1,'courriel':1,
+    // dates
+    'date_obtention':1,'date obtention':1,'date d\'obtention':1,'date acquisition':1,
+    'date_restitution':1,'date restitution':1,'date de restitution':1,
+    'date_remise':1,'date remise':1,'date de remise':1,
+    // autres
+    'caracteristiques':1,'caractéristiques':1,'specs':1,'specifications':1,
+    'type_machine':1,'type machine':1,'type':1,'catégorie':1,
+    'num_ordre':1,'n° ordre':1,'n°ordre':1,'id':1,'numéro':1,
+  };
+
+  // Table de mapping alias → clé interne
+  var ALIAS = {
+    'n° de serie':'num_serie','n° serie':'num_serie','n°serie':'num_serie',
+    'n° de série':'num_serie','no serie':'num_serie','numero serie':'num_serie',
+    'sn':'num_serie','serial':'num_serie','serial number':'num_serie','numéro de série':'num_serie',
+    'nom & prénoms':'nom','nom et prénoms':'nom','nom_prenom':'nom','nom prenom':'nom','agent':'nom',
+    'marque & modèle':'marque','marque_modele':'marque','marque et modele':'marque',
+    'modele':'marque','modèle':'marque',
+    'état':'etat','condition':'etat',
+    'project':'projet',
+    'direction':'service','sous-direction':'service','service/sous-direction':'service',
+    'bureau/étage/porte':'bureau','emplacement':'bureau','localisation':'bureau',
+    'processeur':'cpu','processeur (cpu)':'cpu',
+    'mémoire':'ram','mémoire ram':'ram',
+    'disque':'stockage','disque dur':'stockage',
+    'téléphone':'telephone','tel':'telephone','tél':'telephone','mobile':'telephone','phone':'telephone',
+    'e-mail':'email','mail':'email','courriel':'email',
+    'date obtention':'date_obtention',"date d'obtention":'date_obtention','date acquisition':'date_obtention',
+    'date restitution':'date_restitution','date de restitution':'date_restitution',
+    'date remise':'date_remise','date de remise':'date_remise',
+    'caractéristiques':'caracteristiques','specs':'caracteristiques','specifications':'caracteristiques',
+    'type machine':'type_machine','type':'type_machine','catégorie':'type_machine',
+    'n° ordre':'num_ordre','n°ordre':'num_ordre','id':'num_ordre','numéro':'num_ordre',
+  };
+
+  var out = {};
+  Object.keys(rawObj).forEach(function(raw) {
+    var key = raw.toLowerCase().replace(/[_\-\s]+/g,' ').trim();
+    var mapped = ALIAS[key] || (MAP[key] ? raw.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/__+/g,'_').replace(/^_|_$/g,'') : raw);
+    out[mapped] = rawObj[raw];
+  });
+  return out;
+}
+
+/**
+ * Parse un texte CSV complet en tableau d'objets normalisés.
+ * Robuste : guillemets, séparateur ; ou ,, détection auto de la ligne d'en-tête.
+ */
+function _processCSVText(text) {
+  var lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n').filter(function(l){return l.trim();});
+  // Détecter séparateur dominant
+  var semiCount = (text.match(/;/g)||[]).length;
+  var commaCount = (text.match(/,/g)||[]).length;
+  var sep = semiCount >= commaCount ? ';' : ',';
+
+  // Trouver la ligne d'en-tête (contient au moins 3 mots-clés)
+  var kwds = ['nom','serie','marque','projet','service','email','telephone','etat','type','bureau'];
+  var hi = 0;
+  for (var i = 0; i < Math.min(lines.length, 15); i++) {
+    var low = lines[i].toLowerCase();
+    var score = kwds.filter(function(k){ return low.includes(k); }).length;
+    if (score >= 2) { hi = i; break; }
+  }
+
+  var headers = _splitCSVLine(lines[hi], sep);
+  var parsed = [];
+  for (var j = hi + 1; j < lines.length; j++) {
+    var vals = _splitCSVLine(lines[j], sep);
+    if (!vals.some(function(v){ return v.trim(); })) continue;
+    var raw = {};
+    headers.forEach(function(h, idx){ raw[h] = vals[idx] || ''; });
+    var norm = _normalizeRow(raw);
+    parsed.push(norm);
+  }
+  return parsed;
+}
+
+/**
+ * Applique le mode import (add / update / replace) sur DB[target].
+ * Retourne {added, updated, dupes, total}
+ */
+function _processRows(parsed, target, mode) {
+  var existing = DB[target] || [];
+  var added = 0, updated = 0, dupes = 0;
+
+  if (mode === 'replace') {
+    // Remplacer tout
+    var enriched = parsed.map(function(r){
+      r.genre = r.genre || detectGenre(r.nom||'');
+      return r;
+    });
+    DB[target] = enriched;
+    added = enriched.length;
+  } else {
+    // Construire un index par N° série pour recherche rapide
+    var idx = {};
+    existing.forEach(function(r, i){
+      var k = (r.num_serie||'').toUpperCase().trim();
+      if (k) idx[k] = i;
+    });
+
+    parsed.forEach(function(r) {
+      r.genre = r.genre || detectGenre(r.nom||'');
+      var k = (r.num_serie||'').toUpperCase().trim();
+
+      if (k && idx.hasOwnProperty(k)) {
+        if (mode === 'update') {
+          // Mettre à jour : fusionner (les nouvelles valeurs écrasent les anciennes)
+          Object.assign(existing[idx[k]], r);
+          updated++;
+        } else {
+          // mode add : ignorer les doublons
+          dupes++;
+        }
+      } else {
+        existing.push(r);
+        if (k) idx[k] = existing.length - 1;
+        added++;
+      }
+    });
+    DB[target] = existing;
+  }
+  return { added: added, updated: updated, dupes: dupes, total: parsed.length };
+}
+
+// ── Point d'entrée principal ──────────────────────────────────────
+function handleImport(input) {
+  var file = input.files[0]; if (!file) return;
+  if (!can('import')) { notif('⛔ Import réservé aux administrateurs','err'); return; }
+  var res    = document.getElementById('import-res');
+  var target = v('import-target') || 'bureau';
+
+  var isCSV  = /\.(csv|txt)$/i.test(file.name);
+  var isXLSX = /\.(xlsx|xlsm|xls)$/i.test(file.name);
+
+  if (!isCSV && !isXLSX) {
+    res.innerHTML = '<p style="color:var(--orange);margin-top:10px;">⚠️ Format non supporté. Utilisez un fichier <strong>.csv</strong> ou <strong>.xlsx</strong>.</p>';
+    return;
+  }
+
+  // ── Afficher un indicateur de chargement ──
+  res.innerHTML = '<p style="color:var(--txt2);margin-top:10px;">⏳ Analyse du fichier en cours…</p>';
+
+  if (isXLSX && typeof XLSX !== 'undefined') {
+    // ── Lecture XLSX via SheetJS ──
+    var xlsReader = new FileReader();
+    xlsReader.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, {type:'array'});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        // Normaliser chaque ligne
+        var parsed = rows.map(function(r){ return _normalizeRow(r); });
+        _showImportPreview(parsed, target, res);
+      } catch(err) {
+        res.innerHTML = '<p style="color:var(--red);">❌ Erreur lecture XLSX : ' + err.message + '</p>';
+      }
+    };
+    xlsReader.readAsArrayBuffer(file);
+  } else {
+    // ── Lecture CSV ──
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var parsed = _processCSVText(e.target.result);
+        _showImportPreview(parsed, target, res);
+      } catch(err) {
+        res.innerHTML = '<p style="color:var(--red);">❌ Erreur analyse CSV : ' + err.message + '</p>';
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+}
+
+/** Affiche la prévisualisation et le bouton Confirmer */
+function _showImportPreview(parsed, target, res) {
+  if (!parsed || !parsed.length) {
+    res.innerHTML = '<p style="color:var(--red);">⚠️ Aucune ligne valide détectée dans le fichier.</p>';
+    return;
+  }
+
+  var existing = DB[target] || [];
+  var existSet = new Set(existing.map(function(r){ return (r.num_serie||'').toUpperCase().trim(); }));
+  var wouldAdd = 0, wouldUpdate = 0, wouldDupe = 0;
+  parsed.forEach(function(r) {
+    var k = (r.num_serie||'').toUpperCase().trim();
+    if (k && existSet.has(k)) {
+      if (_importMode === 'update') wouldUpdate++;
+      else wouldDupe++;
+    } else {
+      wouldAdd++;
+    }
+  });
+
+  // Stocker dans window (accessible globalement)
+  window._importBuf = parsed;
+  window._importTgt = target;
+
+  var modeColors = {add:'var(--accent)',update:'var(--blue-light)',replace:'var(--red)'};
+  var modeLabel  = {add:'➕ Ajouter',update:'🔄 Mettre à jour',replace:'♻️ Remplacer tout'};
+  var mc  = modeColors[_importMode] || 'var(--accent)';
+  var mlb = modeLabel[_importMode]  || '➕ Ajouter';
+  var cols = Object.keys(parsed[0]).filter(function(k){ return k && k!=='_fbid'; }).join(', ');
+
+  res.innerHTML =
+    '<div style="margin-top:10px;background:rgba(0,201,167,0.07);border:1px solid rgba(0,201,167,0.2);border-radius:10px;padding:14px;">'
+    +'<div style="font-size:11.5px;font-weight:700;color:'+mc+';margin-bottom:10px;">Mode : '+mlb+'</div>'
+    +'<div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;">'
+    +'<span style="color:var(--accent);font-weight:700;">✅ '+wouldAdd+' à ajouter</span>'
+    +(_importMode==='update'?'<span style="color:var(--blue-light);font-weight:700;">🔄 '+wouldUpdate+' à mettre à jour</span>':'')
+    +(_importMode==='add'?'<span style="color:var(--orange);">⚠️ '+wouldDupe+' doublons ignorés</span>':'')
+    +(_importMode==='replace'?'<span style="color:var(--red);">♻️ '+existing.length+' existant(s) remplacé(s)</span>':'')
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--txt3);margin-bottom:12px;">'
+    + parsed.length+' lignes analysées · Colonnes détectées : <em>'+cols+'</em></div>'
+    +'<button id="btn-confirm-import" onclick="confirmImport()" style="background:'+mc
+    +';color:'+(_importMode==='replace'?'#fff':'#032a22')
+    +';border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;display:inline-block;">'
+    +'Confirmer — '+parsed.length+' enregistrement'+(parsed.length>1?'s':'')+'</button>'
+    +'</div>';
+}
+
 function confirmImport() {
-  var records=window._importBuf||[], target=window._importTgt||'bureau';
-  var existing=new Set((DB[target]||[]).map(function(r){return (r.num_serie||'').toUpperCase().trim();}));
-  var added=0;
-  records.forEach(function(r){var k=(r.num_serie||'').toUpperCase().trim();if(k&&existing.has(k))return;if(k)existing.add(k);DB[target].push(r);added++;});
-  save(target); updateBadges(); updateStats(); renderTbl(target);
-  notif('✅ '+added+' enregistrement'+(added>1?'s':'')+' importé'+(added>1?'s':''),'ok');
-  document.getElementById('import-res').innerHTML='<p style="color:var(--accent);margin-top:8px;font-weight:600;">✅ Import réussi — '+added+' ajouté'+(added>1?'s':'')+'.</p>';
-  window._importBuf=[];
+  var parsed = window._importBuf;
+  var target = window._importTgt || 'bureau';
+
+  // Sécurité : vérifier que le buffer est bien rempli
+  if (!parsed || !Array.isArray(parsed) || parsed.length === 0) {
+    notif('⚠️ Aucun enregistrement en mémoire — rechargez le fichier','err');
+    return;
+  }
+
+  // Désactiver le bouton pour éviter double-clic
+  var btn = document.getElementById('btn-confirm-import');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Import en cours…'; }
+
+  try {
+    var result = _processRows(parsed, target, _importMode);
+
+    // Persistance locale
+    try { save(target); } catch(e){ console.warn('save():', e); }
+
+    // Rafraîchir l'interface
+    try { updateBadges(); } catch(e){}
+    try { updateStats(); } catch(e){}
+    try { buildCharts(); } catch(e){}
+    try { buildDashTable(); } catch(e){}
+    try { renderTbl(target); } catch(e){ console.warn('renderTbl:', e); }
+
+    // Log Firebase (non-bloquant)
+    _logImportFirebase(target, result, _importMode);
+
+    var msg = '✅ Import réussi — ' + result.added + ' ajouté' + (result.added>1?'s':'');
+    if (result.updated) msg += ', ' + result.updated + ' mis à jour';
+    if (result.dupes)   msg += ', ' + result.dupes + ' doublon' + (result.dupes>1?'s':'') + ' ignoré' + (result.dupes>1?'s':'');
+    notif(msg, 'ok');
+
+    var resEl = document.getElementById('import-res');
+    if (resEl) resEl.innerHTML =
+      '<div style="margin-top:8px;background:rgba(0,201,167,0.1);border:1px solid rgba(0,201,167,0.25);border-radius:8px;padding:12px;">'
+      +'<div style="font-weight:700;color:var(--accent);margin-bottom:4px;">'+msg+'</div>'
+      +'<div style="font-size:11px;color:var(--txt3);">Destination : '+target+' · Mode : '+_importMode+'</div>'
+      +'</div>';
+
+    window._importBuf = [];
+    window._importTgt = null;
+
+  } catch(err) {
+    notif('❌ Erreur lors de l\'import : ' + err.message, 'err');
+    if (btn) { btn.disabled = false; btn.textContent = 'Réessayer'; }
+    console.error('confirmImport error:', err);
+  }
+}
+
+/** Log un import réussi dans Firestore parc_imports */
+function _logImportFirebase(target, result, mode) {
+  if (!window.FB_OK) return;
+  try {
+    var logId = 'imp_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    var doc = {
+      target: target,
+      mode: mode,
+      added: result.added,
+      updated: result.updated||0,
+      dupes: result.dupes||0,
+      total: result.total||0,
+      operator: currentUser ? currentUser.login : '?',
+      timestamp: new Date().toISOString()
+    };
+    window.FB.setDoc(window.FB.doc(window.FB.db, 'parc_imports', logId), doc)
+      .catch(function(e){ console.warn('Log import Firebase:', e.message); });
+  } catch(e){ console.warn('_logImportFirebase:', e.message); }
 }
 
 // ==================== UTILS ====================
