@@ -1090,22 +1090,24 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       <!-- ===== DRENA pages (filtered) ===== -->
       <div id="pg-drena-bureau" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>N°</th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-bureau"></div><div class="pag-btns" id="pb-drena-bureau"></div></div></div>
       </div>
       <div id="pg-drena-portables" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-portables')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-portables',this)"></th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-portables"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-portables"></div><div class="pag-btns" id="pb-drena-portables"></div></div></div>
       </div>
       <div id="pg-drena-impr" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-impr')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-impr')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-impr')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div>
+        <div class="pag"><div class="pag-info" id="pi-drena-impr"></div><div class="pag-btns" id="pb-drena-impr"></div></div></div>
       </div>
       <div id="pg-drena-tab" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-tab')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-tab')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-tab')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div>
+        <div class="pag"><div class="pag-info" id="pi-drena-tab"></div><div class="pag-btns" id="pb-drena-tab"></div></div></div>
       </div>
 
       <!-- ===== MATÉRIEL EN MAINTENANCE : 4 pages ===== -->
@@ -2650,10 +2652,14 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
   <div class="modal" onclick="event.stopPropagation()">
     <div class="mhd"><h3 id="m-add-title">&#43; Ajouter</h3><button class="mclose" onclick="closeMod('m-add')">&#10005;</button></div>
     <div class="mbody">
-      <div style="margin-bottom:12px;"><select class="flt" id="add-type" onchange="buildForm()" style="width:100%;padding:9px;font-size:14px;">
+      <select id="add-type" style="display:none;" onchange="buildForm()">
         <option value="bureau">💻 PC Bureau</option><option value="portables">🖥️ PC Portable</option>
         <option value="imprimantes">🖨️ Imprimante</option><option value="tablettes">📱 Tablette</option>
-      </select></div>
+        <option value="drena-bureau">💻 PC Bureau (DRENAET)</option>
+        <option value="drena-portables">🖥️ PC Portable (DRENAET)</option>
+        <option value="drena-impr">🖨️ Imprimante (DRENAET)</option>
+        <option value="drena-tab">📱 Tablette (DRENAET)</option>
+      </select>
       <div class="mform" id="add-form"></div>
     </div>
     <div class="mfoot"><button class="btn btn-sec" onclick="closeMod('m-add')">Annuler</button><button class="btn btn-primary" onclick="saveRecord()">💾 Enregistrer</button></div>
@@ -3490,16 +3496,19 @@ function nav(page) {
 
 // ==================== STATS ====================
 function updateBadges() {
-  document.getElementById('nb-bureau').textContent = DB.bureau.length;
-  document.getElementById('nb-portables').textContent = DB.portables.length;
-  document.getElementById('nb-impr').textContent = DB.imprimantes.length;
-  document.getElementById('nb-tab').textContent = DB.tablettes.length;
+  var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
+  document.getElementById('nb-bureau').textContent    = DB.bureau.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-portables').textContent = DB.portables.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-impr').textContent      = DB.imprimantes.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-tab').textContent       = DB.tablettes.filter(function(r){return !isDrenaRec(r);}).length;
 }
 function updateStats() {
-  var drenaB = DB.bureau.filter(isDrena).length;
-  var drenaP = DB.portables.filter(isDrena).length;
-  var drenaI = DB.imprimantes.filter(isDrena).length;
-  var drenaT = DB.tablettes.filter(isDrena).length;
+  // Filtre DRENAET cohérent avec getFiltered : _source:'DRENAET' OU isDrena() pour les anciens enregistrements
+  var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
+  var drenaB = DB.bureau.filter(isDrenaRec).length;
+  var drenaP = DB.portables.filter(isDrenaRec).length;
+  var drenaI = DB.imprimantes.filter(isDrenaRec).length;
+  var drenaT = DB.tablettes.filter(isDrenaRec).length;
   document.getElementById('s-bureau').textContent = DB.bureau.length - drenaB;
   document.getElementById('s-port').textContent = DB.portables.length - drenaP;
   document.getElementById('s-impr').textContent = DB.imprimantes.length - drenaI;
@@ -3682,11 +3691,15 @@ function getFiltered(type) {
   var baseType = isDrenaType ? type.replace('drena-','').replace('bureau','bureau').replace('portables','portables').replace('impr','imprimantes').replace('tab','tablettes') : type;
   var d = (DB[baseType]||[]).slice();
   if (isDrenaType) {
-    d = d.filter(function(r){ return isDrena(r); });
-  } else if (gSearch) {
-    d = d.filter(function(r){ return JSON.stringify(r).toLowerCase().includes(gSearch.toLowerCase()); });
-  }
-  if (!isDrenaType) {
+    // Priorité : marqueur _source explicite (ajouts via le formulaire DRENAET)
+    // Fallback : anciens enregistrements filtrés par mots-clés dans le service (données importées)
+    d = d.filter(function(r){ return r._source === 'DRENAET' || isDrena(r); });
+  } else {
+    // Vue CENTRALE DESPS : exclure les enregistrements tagués DRENAET
+    d = d.filter(function(r){ return r._source !== 'DRENAET' && !isDrena(r); });
+    if (gSearch) {
+      d = d.filter(function(r){ return JSON.stringify(r).toLowerCase().includes(gSearch.toLowerCase()); });
+    }
     if (type==='bureau')      { var fp=v('f-b-proj'),fs=v('f-b-svc'),fe=v('f-b-etat'),fd=v('f-b-date'); if(fp)d=d.filter(function(r){return r.projet===fp;}); if(fs)d=d.filter(function(r){return r.service===fs;}); if(fe)d=d.filter(function(r){return r.etat===fe;}); if(fd)d=d.filter(function(r){return (r.date_obtention||'').includes(fd)||fd.split('-').reverse().join('/').includes(r.date_obtention||'');} ); }
     if (type==='portables')   { var fp=v('f-p-proj'),fs=v('f-p-svc'),fe=v('f-p-etat'),fg=v('f-p-genre'),fd=v('f-p-date'); if(fp)d=d.filter(function(r){return r.projet===fp;}); if(fs)d=d.filter(function(r){return r.service===fs;}); if(fe)d=d.filter(function(r){return r.etat===fe;}); if(fg)d=d.filter(function(r){return detectGenre(r.nom)===fg;}); if(fd)d=d.filter(function(r){return (r.date_obtention||'').includes(fd);}); }
     if (type==='imprimantes') { var fe=v('f-i-etat'); if(fe)d=d.filter(function(r){return r.etat===fe;}); }
@@ -3773,24 +3786,56 @@ function clearSearch(){ document.getElementById('g-search').value=''; globalSear
 // ==================== CRUD ====================
 function openAdd(type) {
   if (!can('add')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
-  editIdx=null; editType=type||'bureau';
-  document.getElementById('add-type').value=editType;
-  document.getElementById('m-add-title').textContent='＋ Ajouter un équipement';
-  buildForm(); document.getElementById('m-add').classList.add('on');
+  editIdx = null; editType = type || 'bureau';
+  // Forcer la valeur du select masqué — c'est la source de vérité pour saveRecord()
+  var sel = document.getElementById('add-type');
+  sel.value = editType;
+  // Si la valeur n'est pas dans le select, ajouter l'option dynamiquement
+  if (sel.value !== editType) {
+    var opt = document.createElement('option');
+    opt.value = editType; opt.textContent = editType;
+    sel.appendChild(opt); sel.value = editType;
+  }
+  var isDrena = editType.startsWith('drena-');
+  var typeLabels = {
+    'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
+    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+  };
+  var label = typeLabels[editType] || editType;
+  document.getElementById('m-add-title').textContent = isDrena
+    ? '＋ Ajouter — DRENAET › ' + label
+    : '＋ Ajouter — Centrale › ' + label;
+  buildForm();
+  document.getElementById('m-add').classList.add('on');
 }
 function editRec(type, idx) {
   if (!can('edit')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
-  editIdx=idx; editType=type;
-  document.getElementById('add-type').value=type;
-  document.getElementById('m-add-title').textContent='✏️ Modifier';
+  editIdx = idx; editType = type;
+  var sel = document.getElementById('add-type');
+  sel.value = type;
+  if (sel.value !== type) {
+    var opt = document.createElement('option');
+    opt.value = type; opt.textContent = type;
+    sel.appendChild(opt); sel.value = type;
+  }
+  var isDrena = type.startsWith('drena-');
+  var typeLabels = {
+    'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
+    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+  };
+  var label = typeLabels[type] || type;
+  document.getElementById('m-add-title').textContent = (isDrena ? '✏️ Modifier — DRENAET › ' : '✏️ Modifier — Centrale › ') + label;
   buildForm();
-  var r=DB[type][idx];
+  var dbKey = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+  var r=(DB[dbKey]||DB[type]||[])[idx];
+  if(!r) return;
   Object.keys(r).forEach(function(k){ var el=document.getElementById('fld-'+k); if(el) el.value=r[k]||''; });
   document.getElementById('m-add').classList.add('on');
 }
 function buildForm() {
   var type=document.getElementById('add-type').value;
-  // Lire depuis PARAMS mis à jour via l'onglet Paramètres
+  // Résoudre les alias DRENAET vers le type de base pour les champs du formulaire
+  var baseType = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
   loadParams();
   var svcList = (PARAMS.services && PARAMS.services.length > 0)
     ? PARAMS.services.map(function(s){ return s.abrev||s.nom; })
@@ -3801,7 +3846,7 @@ function buildForm() {
   var svcs = '<option value="">— Sélectionner —</option>'+svcList.map(function(s){return '<option>'+s+'</option>';}).join('');
   var projs = '<option value="">— Sélectionner —</option>'+projList.map(function(p){return '<option>'+p+'</option>';}).join('');
   var etats=['Nouvel PC','Ancien PC','Ancien PC (Restitué)','Ancien PC (Non Restitué)','En Maintenance'].map(function(e){return '<option>'+e+'</option>';}).join('');
-  var fields = type==='bureau' ? [
+  var fields = baseType==='bureau' ? [
     {id:'id',l:'N° Ordre',ph:'001'},{id:'nom',l:'Nom & Prénoms',ph:'NOM PRENOM',f:true},
     {id:'bureau',l:'Bureau/Porte',ph:'23è porte 18'},{id:'telephone',l:'Téléphone',ph:'0707000000'},
     {id:'email',l:'Email',ph:'nom@gmail.com'},{id:'projet',l:'Projet',sel:projs},
@@ -3809,7 +3854,7 @@ function buildForm() {
     {id:'num_serie',l:'N° Série',ph:'5CD337...'},{id:'cpu',l:'CPU',ph:'2,8 GHz'},
     {id:'ram',l:'RAM',ph:'16 Go'},{id:'stockage',l:'Stockage',ph:'512 Go'},
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
-  ] : type==='portables' ? [
+  ] : baseType==='portables' ? [
     {id:'nom',l:'Nom & Prénoms',ph:'NOM PRENOM',f:true},
     {id:'bureau',l:'Bureau/Porte',ph:'23è porte 18'},{id:'telephone',l:'Téléphone',ph:'0707000000'},
     {id:'email',l:'Email',ph:'nom@gmail.com'},{id:'projet',l:'Projet',sel:projs},
@@ -3817,7 +3862,7 @@ function buildForm() {
     {id:'num_serie',l:'N° Série',ph:'5CD337...'},{id:'cpu',l:'CPU',ph:'Intel i7'},
     {id:'ram',l:'RAM',ph:'16 Go'},{id:'stockage',l:'Stockage',ph:'512 Go'},
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
-  ] : type==='imprimantes' ? [
+  ] : baseType==='imprimantes' ? [
     {id:'id',l:'N° Ordre',ph:'001'},{id:'nom',l:'Nom utilisateur',ph:'NOM',f:true},
     {id:'num_serie',l:'N° Série',ph:'CZ165...'},{id:'marque',l:'Marque',ph:'HP LaserJet'},
     {id:'caracteristiques',l:'Caractéristiques',ph:'Multi-fonction'},{id:'projet',l:'Projet',sel:projs},
@@ -3831,23 +3876,48 @@ function buildForm() {
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
   ];
   document.getElementById('add-form').innerHTML = fields.map(function(f){
-    return '<div class="fg '+(f.f?'full':'')+'"><label>'+f.l+'</label>'
+    return '<div class="fg '+(f.f?'full':'')+'" ><label>'+f.l+'</label>'
       +(f.sel?'<select id="fld-'+f.id+'">'+f.sel+'</select>'
              :'<input type="text" id="fld-'+f.id+'" placeholder="'+(f.ph||'')+'">');
   }).join('');
 }
 function saveRecord() {
-  var type=document.getElementById('add-type').value;
-  var rec={};
-  document.getElementById('add-form').querySelectorAll('input,select').forEach(function(el){
-    rec[el.id.replace('fld-','')]=el.value.trim()||'';
+  var type = document.getElementById('add-type').value;
+  // Résoudre le type DRENAET vers la clé DB réelle (ex: 'drena-impr' → 'imprimantes')
+  var dbKey = type.replace('drena-', '').replace(/^impr$/, 'imprimantes').replace(/^tab$/, 'tablettes');
+  if (!DB[dbKey]) DB[dbKey] = [];
+
+  // Collecter les valeurs du formulaire
+  var rec = {};
+  document.getElementById('add-form').querySelectorAll('input,select').forEach(function(el) {
+    rec[el.id.replace('fld-', '')] = el.value.trim() || '';
   });
-  rec.genre=detectGenre(rec.nom||'');
-  if(editIdx!==null){ DB[type][editIdx]=Object.assign({},DB[type][editIdx],rec); notif('✅ Modifié','ok'); }
-  else { DB[type].unshift(rec); notif('✅ Ajouté','ok'); }
-  save(type); closeMod('m-add');
-  updateBadges(); updateStats(); buildCharts(); buildDashTable();
-  populateFilters(type); renderTbl(type);
+  rec.genre = detectGenre(rec.nom || '');
+  if (type.startsWith('drena-')) rec._source = 'DRENAET';
+
+  if (editIdx !== null) {
+    // Modification : editIdx est l'index RÉEL dans DB[dbKey] (passé par buildRow via indexOf)
+    if (DB[dbKey][editIdx]) {
+      DB[dbKey][editIdx] = Object.assign({}, DB[dbKey][editIdx], rec);
+      notif('✅ Modifié', 'ok');
+    } else {
+      DB[dbKey].unshift(rec);
+      notif('✅ Ajouté (nouvel)', 'ok');
+    }
+  } else {
+    DB[dbKey].unshift(rec);
+    notif('✅ Ajouté', 'ok');
+  }
+
+  save(dbKey);
+  closeMod('m-add');
+  updateBadges();
+  updateStats();
+  try { buildCharts(); } catch(e) {}
+  try { buildDashTable(); } catch(e) {}
+  // populateFilters attend une clé DB directe — lui passer la clé résolue
+  try { populateFilters(dbKey); } catch(e) {}
+  renderTbl(type);
 }
 function viewRec(type, idx) {
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
