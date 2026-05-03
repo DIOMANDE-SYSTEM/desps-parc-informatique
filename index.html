@@ -641,7 +641,10 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
     </div>
     <div class="login-field">
       <label>Mot de passe</label>
-      <input type="password" id="login-pw" placeholder="Entrez votre mot de passe" autocomplete="current-password">
+      <div style="position:relative;display:flex;align-items:center;">
+        <input type="password" id="login-pw" placeholder="Entrez votre mot de passe" autocomplete="current-password" style="flex:1;padding-right:38px;">
+        <button type="button" onclick="togglePwVis('login-pw')" title="Afficher / masquer" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;color:var(--txt3);font-size:16px;padding:0;line-height:1;" id="login-pw-eye">👁</button>
+      </div>
     </div>
     <div class="login-field">
       <label>Espace</label>
@@ -1090,22 +1093,24 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       <!-- ===== DRENA pages (filtered) ===== -->
       <div id="pg-drena-bureau" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>N°</th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-bureau"></div><div class="pag-btns" id="pb-drena-bureau"></div></div></div>
       </div>
       <div id="pg-drena-portables" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-portables')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-portables',this)"></th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-portables"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-portables"></div><div class="pag-btns" id="pb-drena-portables"></div></div></div>
       </div>
       <div id="pg-drena-impr" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-impr')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-impr')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-impr')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div>
+        <div class="pag"><div class="pag-info" id="pi-drena-impr"></div><div class="pag-btns" id="pb-drena-impr"></div></div></div>
       </div>
       <div id="pg-drena-tab" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div></div>
+        <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-tab')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-tab')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-tab')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div>
+        <div class="pag"><div class="pag-info" id="pi-drena-tab"></div><div class="pag-btns" id="pb-drena-tab"></div></div></div>
       </div>
 
       <!-- ===== MATÉRIEL EN MAINTENANCE : 4 pages ===== -->
@@ -2646,14 +2651,69 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 </div>
 
 <!-- ===== MODAL ADD/EDIT ===== -->
+<!-- ===== MODAL MODIFIER COMPTE UTILISATEUR ===== -->
+<div class="overlay" id="m-edit-user" onclick="closeMod('m-edit-user',event)">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div class="mhd">
+      <h3 id="edit-user-modal-title">✏️ Modifier le compte</h3>
+      <button class="mclose" onclick="closeMod('m-edit-user')">✕</button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="edit-user-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="fg full">
+          <label>Nom complet *</label>
+          <input type="text" id="edit-user-name" placeholder="NOM PRÉNOM">
+        </div>
+        <div class="fg">
+          <label>Service / Direction</label>
+          <input type="text" id="edit-user-svc" placeholder="ex: SDGFNE">
+        </div>
+        <div class="fg">
+          <label>Rôle</label>
+          <select id="edit-user-role">
+            <option value="user">🔷 Utilisateur DESPS</option>
+            <option value="sousdirecteur">🔵 Sous-Directeur</option>
+            <option value="directeur">🟡 Directeur DESPS</option>
+            <option value="admin">👑 Administrateur</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Nouveau mot de passe <span style="color:var(--txt3);font-size:10px;">(vide = inchangé)</span></label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="password" id="edit-user-pw" placeholder="Nouveau mot de passe" style="flex:1;">
+            <button type="button" id="edit-user-pw-eye" onclick="togglePwVis('edit-user-pw');this.textContent=document.getElementById('edit-user-pw').type==='text'?'🙈':'👁'" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 8px;cursor:pointer;color:var(--txt2);font-size:14px;">👁</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Confirmer mot de passe</label>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <input type="password" id="edit-user-pw2" placeholder="Répéter le mot de passe" style="flex:1;">
+            <button type="button" id="edit-user-pw2-eye" onclick="togglePwVis('edit-user-pw2');this.textContent=document.getElementById('edit-user-pw2').type==='text'?'🙈':'👁'" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 8px;cursor:pointer;color:var(--txt2);font-size:14px;">👁</button>
+          </div>
+        </div>
+      </div>
+      <div id="edit-user-msg" style="display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;"></div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-sec" onclick="closeMod('m-edit-user')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveEditUser()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="m-add" onclick="closeMod('m-add',event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="mhd"><h3 id="m-add-title">&#43; Ajouter</h3><button class="mclose" onclick="closeMod('m-add')">&#10005;</button></div>
     <div class="mbody">
-      <div style="margin-bottom:12px;"><select class="flt" id="add-type" onchange="buildForm()" style="width:100%;padding:9px;font-size:14px;">
+      <select id="add-type" style="display:none;" onchange="buildForm()">
         <option value="bureau">💻 PC Bureau</option><option value="portables">🖥️ PC Portable</option>
         <option value="imprimantes">🖨️ Imprimante</option><option value="tablettes">📱 Tablette</option>
-      </select></div>
+        <option value="drena-bureau">💻 PC Bureau (DRENAET)</option>
+        <option value="drena-portables">🖥️ PC Portable (DRENAET)</option>
+        <option value="drena-impr">🖨️ Imprimante (DRENAET)</option>
+        <option value="drena-tab">📱 Tablette (DRENAET)</option>
+      </select>
       <div class="mform" id="add-form"></div>
     </div>
     <div class="mfoot"><button class="btn btn-sec" onclick="closeMod('m-add')">Annuler</button><button class="btn btn-primary" onclick="saveRecord()">💾 Enregistrer</button></div>
@@ -3035,76 +3095,79 @@ function doLogin() {
     return;
   }
 
-  // ── Mode Firebase (online) ──
-  if (window.FB_OK) {
-    if(btn){btn.textContent='Connexion…';btn.disabled=true;}
-    errEl.style.display='none';
-    var email = id + '@desps.ci';
+  // ══ PRIORITÉ : vérification locale (localStorage) ══
+  // C'est la source de vérité : un mot de passe modifié dans l'interface
+  // est toujours immédiatement valide, même si Firebase n'est pas synchro.
+  var accounts = loadUsers();
+  var acc = accounts[id] || null;
 
-    // Essai connexion directe
-    window.FB.signInWithEmailAndPassword(window.FB.auth, email, pw)
-      .then(function(){
-        return window.FB.getDoc(window.FB.doc(window.FB.db,'users',id));
-      })
-      .then(function(snap){
-        if(btn){btn.textContent='Se connecter';btn.disabled=false;}
-        var acc = snap.exists() ? snap.data() : getDefaultAccount(id);
-        if(acc.role !== role){
-          window.FB.signOut(window.FB.auth);
-          errEl.style.display='block';
-          errEl.textContent='Ce compte a le rôle "'+acc.role+'". Sélectionnez le bon espace.';
-          return;
-        }
-        // Sauvegarder le profil dans Firestore s'il n'existait pas
-        if(!snap.exists()){
-          window.FB.setDoc(window.FB.doc(window.FB.db,'users',id), acc).catch(function(){});
-        }
-        loginSuccess(id, acc);
-      })
-      .catch(function(err){
-        console.warn('Firebase signIn:', err.code);
-        if(btn){btn.textContent='Se connecter';btn.disabled=false;}
+  // Compte inconnu → vérifier les comptes par défaut
+  if (!acc) {
+    var defaults = {
+      admin:         {password:'desps@2026', role:'admin',         name:'DIOMANDE YAYA',    service:'SERVICE DIGITALISATION', active:true, locked:false, attempts:0},
+      directeur:     {password:'desps2026',  role:'directeur',     name:'Directeur DESPS',  service:'DIRECTION DESPS',         active:true, locked:false, attempts:0},
+      sousdirecteur: {password:'desps2026',  role:'sousdirecteur', name:'Sous-Directeur',   service:'SOUS-DIRECTION',          active:true, locked:false, attempts:0},
+      user:          {password:'desps2026',  role:'user',          name:'Utilisateur DESPS',service:'DESPS',                   active:true, locked:false, attempts:0}
+    };
+    acc = defaults[id] || null;
+  }
 
-        // Si compte inexistant → le créer automatiquement
-        if(err.code==='auth/user-not-found' || err.code==='auth/invalid-credential' || err.code==='auth/invalid-email'){
-          // Vérifier d'abord que le mot de passe local est correct
-          var acc = getDefaultAccount(id);
-          if(!acc || acc.password !== pw){
-            errEl.style.display='block';
-            errEl.textContent='Mot de passe incorrect.';
-            return;
-          }
-          if(acc.role !== role){
-            errEl.style.display='block';
-            errEl.textContent='Ce compte a le rôle "'+acc.role+'". Sélectionnez le bon espace.';
-            return;
-          }
-          // Créer le compte Firebase automatiquement
-          notif('Premier accès : création du compte en ligne…','info');
-          window.FB.createUserWithEmailAndPassword(window.FB.auth, email, pw)
-            .then(function(){
-              // Enregistrer le profil dans Firestore
-              return window.FB.setDoc(window.FB.doc(window.FB.db,'users',id), acc);
-            })
-            .then(function(){
-              notif('✅ Compte créé et connecté en ligne !','ok');
-              loginSuccess(id, acc);
-            })
-            .catch(function(e2){
-              console.warn('Création compte:', e2.code);
-              // Fallback local si création échoue aussi
-              loginLocal(id, pw, role, errEl);
-            });
-        } else {
-          // Autre erreur (mauvais mot de passe, réseau...) → mode local
-          loginLocal(id, pw, role, errEl);
-        }
-      });
+  if (!acc) {
+    errEl.style.display='block';
+    errEl.textContent='Identifiant inconnu. Contactez votre administrateur.';
+    return;
+  }
+  if (!acc.active) {
+    errEl.style.display='block';
+    errEl.textContent='Ce compte est désactivé. Contactez l\'administrateur.';
+    return;
+  }
+  if (acc.locked) {
+    errEl.style.display='block';
+    errEl.textContent='Compte verrouillé. Contactez l\'administrateur.';
+    return;
+  }
+  if (acc.role !== role) {
+    errEl.style.display='block';
+    errEl.textContent='Ce compte a le rôle "'+acc.role+'". Sélectionnez le bon espace.';
     return;
   }
 
-  // ── Mode local (hors-ligne) ──
-  loginLocal(id, pw, role, errEl);
+  // Vérification du mot de passe : texte clair OU hash (les deux sont acceptés)
+  var pwOk = (acc.password === pw) || (acc.passwordHash && acc.passwordHash === hashPw(pw));
+  if (!pwOk) {
+    acc.attempts = (acc.attempts||0) + 1;
+    var MAX = parseInt(localStorage.getItem('desps_sec_maxattempts')||'5');
+    if (acc.attempts >= MAX) acc.locked = true;
+    accounts[id] = acc; saveUsers(accounts);
+    errEl.style.display='block';
+    errEl.textContent = acc.locked
+      ? 'Compte verrouillé après '+MAX+' échecs. Contactez l\'administrateur.'
+      : 'Mot de passe incorrect. '+(MAX - acc.attempts)+' tentative(s) restante(s).';
+    return;
+  }
+
+  // ✅ Mot de passe local correct → connexion immédiate
+  errEl.style.display='none';
+  loginSuccess(id, acc);
+
+  // ── Synchronisation Firebase en arrière-plan (non-bloquante) ──
+  if (window.FB_OK) {
+    var email = id + '@desps.ci';
+    window.FB.signInWithEmailAndPassword(window.FB.auth, email, pw)
+      .catch(function(err) {
+        // Si le compte Firebase n'existe pas ou mot de passe différent → re-créer silencieusement
+        if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+          // Tenter de mettre à jour le mot de passe Firebase (nécessite d'être connecté)
+          // Si impossible, créer le compte Firebase
+          window.FB.createUserWithEmailAndPassword(window.FB.auth, email, pw)
+            .then(function() {
+              return window.FB.setDoc(window.FB.doc(window.FB.db,'users',id), acc);
+            })
+            .catch(function() { /* silencieux — la connexion locale a déjà réussi */ });
+        }
+      });
+  }
 }
 
 function getDefaultAccount(id) {
@@ -3224,20 +3287,27 @@ function refreshUsersList() {
     var rl = roleLabel(a.role);
     var lockBadge = a.locked ? '<span class="badge b-red" style="margin-left:6px;">🔒 Verrouillé</span>' : '';
     var activeBadge = !a.active ? '<span class="badge b-gray" style="margin-left:6px;">Désactivé</span>' : '';
+    var pwId = 'pw-vis-'+id;
+    var pwMasked = (a.password||'').replace(/./g,'●');
     html2 += '<div class="user-card">'
-      + '<div class="uc-avatar" style="background:'+rl.bg+';color:'+rl.color+';">'+(a.name||id).charAt(0)+'</div>'
-      + '<div class="uc-info">'
+      + '<div class="uc-avatar" style="background:'+rl.bg+';color:'+rl.color+';">'+( a.name||id).charAt(0)+'</div>'
+      + '<div class="uc-info" style="flex:1;min-width:0;">'
         + '<div class="uc-name">'+(a.name||id)+' <span class="badge" style="background:'+rl.bg+';color:'+rl.color+';font-size:10px;">'+rl.ico+' '+rl.label+'</span>'+lockBadge+activeBadge+'</div>'
         + '<div class="uc-meta">ID : <strong>'+id+'</strong> &nbsp;|&nbsp; Service : '+(a.service||'—')
           +'&nbsp;|&nbsp; Créé : '+(a.createdAt||'—')
           +(a.lastLogin?' &nbsp;|&nbsp; Dernière connexion : '+new Date(a.lastLogin).toLocaleString('fr-FR'):'')
           +'&nbsp;|&nbsp; Tentatives : '+(a.attempts||0)+'/5'+'</div>'
+        + '<div style="display:flex;align-items:center;gap:6px;margin-top:5px;">'
+          + '<span style="font-size:11px;color:var(--txt3);">🔑</span>'
+          + '<span id="'+pwId+'" data-pw="'+encodeURIComponent(a.password||'')+'" data-show="0" style="font-family:IBM Plex Mono,monospace;font-size:12px;color:var(--accent);letter-spacing:2px;">'+pwMasked+'</span>'
+          + '<button class="btn btn-sec btn-sm" style="padding:2px 8px;font-size:13px;" title="Voir/masquer le mot de passe" onclick="togglePwCard(this,\''+pwId+'\')" >👁</button>'
+        + '</div>'
       + '</div>'
       + '<div class="uc-actions">'
-        + (id!=='admin'?'<button class="btn btn-sec btn-sm" onclick="editUserModal(\''+id+'\')">✏️</button>':'')
-        + (a.locked?'<button class="btn btn-sec btn-sm" onclick="unlockUser(\''+id+'\')">🔓</button>':'')
-        + (a.active?'<button class="btn btn-danger btn-sm" onclick="toggleUserActive(\''+id+'\',false)">⛔</button>':'<button class="btn btn-sec btn-sm" onclick="toggleUserActive(\''+id+'\',true)">✅</button>')
-        + (SYSTEM_ACCOUNTS.indexOf(id)===-1?'<button class="btn btn-danger btn-sm" onclick="deleteUser(\''+id+'\')">🗑</button>':'')
+        + '<button class="btn btn-sec btn-sm" onclick="openEditUserModal(\''+id+'\')" title="Modifier">✏️</button>'
+        + (a.locked?'<button class="btn btn-sec btn-sm" onclick="unlockUser(\''+id+'\')" title="Déverrouiller">🔓</button>':'')
+        + (a.active?'<button class="btn btn-danger btn-sm" onclick="toggleUserActive(\''+id+'\',false)" title="Désactiver">⛔</button>':'<button class="btn btn-sec btn-sm" onclick="toggleUserActive(\''+id+'\',true)" title="Activer">✅</button>')
+        + (SYSTEM_ACCOUNTS.indexOf(id)===-1?'<button class="btn btn-danger btn-sm" onclick="deleteUser(\''+id+'\')" title="Supprimer">🗑</button>':'')
       + '</div>'
     + '</div>';
   });
@@ -3273,7 +3343,7 @@ function createUserAccount() {
   if (accounts[login]) { showMsg('Cet identifiant existe déjà.', false); return; }
 
   accounts[login] = {
-    password:pw, role:role, name:name.toUpperCase(), service:service,
+    password:pw, passwordHash:hashPw(pw), role:role, name:name.toUpperCase(), service:service,
     createdAt:new Date().toISOString().slice(0,10),
     active:true, locked:false, attempts:0
   };
@@ -3286,22 +3356,78 @@ function createUserAccount() {
   notif('✅ Compte '+login+' créé !','ok');
 }
 
-function editUserModal(id) {
+// ── Afficher/masquer le mot de passe dans la user-card ──
+function togglePwCard(btn, pwId) {
+  var span = document.getElementById(pwId);
+  if (!span) return;
+  var showing = span.getAttribute('data-show') === '1';
+  if (showing) {
+    var raw = decodeURIComponent(span.getAttribute('data-pw')||'');
+    span.textContent = raw.replace(/./g,'\u25cf');
+    span.setAttribute('data-show','0');
+    btn.textContent = '\ud83d\udc41'; // 👁
+    btn.title = 'Voir le mot de passe';
+  } else {
+    span.textContent = decodeURIComponent(span.getAttribute('data-pw')||'');
+    span.setAttribute('data-show','1');
+    btn.textContent = '\ud83d\ude48'; // 🙈
+    btn.title = 'Masquer le mot de passe';
+  }
+}
+
+// ── Ouvrir le modal de modification d\'un compte ──
+function openEditUserModal(id) {
   var accounts = loadUsers();
-  var a = accounts[id]; if(!a) return;
-  var newPw = prompt('Nouveau mot de passe pour "'+id+'" (laisser vide pour ne pas changer) :','');
-  if (newPw === null) return;
-  if (newPw && newPw.length < 4) { notif('Mot de passe trop court','err'); return; }
-  if (newPw) { a.password = newPw; a.passwordHash = hashPw(newPw); }
-  var newName = prompt('Nouveau nom complet :', a.name);
-  if (newName === null) return;
-  if (newName) a.name = newName.toUpperCase();
+  var a = accounts[id]; if (!a) return;
+  document.getElementById('edit-user-id').value    = id;
+  document.getElementById('edit-user-name').value  = a.name || '';
+  document.getElementById('edit-user-svc').value   = a.service || '';
+  document.getElementById('edit-user-role').value  = a.role || 'user';
+  document.getElementById('edit-user-pw').value    = '';
+  document.getElementById('edit-user-pw2').value   = '';
+  document.getElementById('edit-user-pw').type     = 'password';
+  document.getElementById('edit-user-pw2').type    = 'password';
+  document.getElementById('edit-user-pw-eye').textContent  = '\ud83d\udc41';
+  document.getElementById('edit-user-pw2-eye').textContent = '\ud83d\udc41';
+  document.getElementById('edit-user-msg').style.display = 'none';
+  document.getElementById('edit-user-modal-title').textContent = '\u270f\ufe0f Modifier \u2014 ' + id;
+  openMod('m-edit-user');
+}
+
+function saveEditUser() {
+  var id      = document.getElementById('edit-user-id').value;
+  var name    = document.getElementById('edit-user-name').value.trim();
+  var service = document.getElementById('edit-user-svc').value.trim();
+  var role    = document.getElementById('edit-user-role').value;
+  var pw      = document.getElementById('edit-user-pw').value;
+  var pw2     = document.getElementById('edit-user-pw2').value;
+  var msgEl   = document.getElementById('edit-user-msg');
+  function showEditMsg(msg, ok) {
+    msgEl.style.display='block';
+    msgEl.style.background = ok?'rgba(0,201,167,0.1)':'rgba(230,57,70,0.1)';
+    msgEl.style.border = '1px solid '+(ok?'rgba(0,201,167,0.3)':'rgba(230,57,70,0.3)');
+    msgEl.style.color = ok?'var(--accent)':'var(--red)';
+    msgEl.textContent = msg;
+  }
+  if (!name) { showEditMsg('Le nom est obligatoire.', false); return; }
+  if (pw && pw.length < 4) { showEditMsg('Mot de passe trop court (min 4 car.).', false); return; }
+  if (pw && pw !== pw2) { showEditMsg('Les mots de passe ne correspondent pas.', false); return; }
+  var accounts = loadUsers();
+  var a = accounts[id]; if (!a) return;
+  a.name = name.toUpperCase();
+  a.service = service;
+  if (id !== 'admin') a.role = role;
+  if (pw) { a.password = pw; a.passwordHash = hashPw(pw); }
   accounts[id] = a;
   saveUsers(accounts);
-  addLog('Compte modifié : '+id+' par admin');
-  notif('✅ Compte '+id+' mis à jour','ok');
+  addLog('Compte modifié : '+id+(pw?' (+ mdp)':'')+' par admin');
+  notif('\u2705 Compte "'+id+'" mis à jour','ok');
+  closeMod('m-edit-user');
   refreshUsersList();
 }
+
+// Compatibilité : editUserModal pointe vers le nouveau modal
+function editUserModal(id) { openEditUserModal(id); }
 
 function deleteUser(id) {
   if (id==='admin') { notif('Impossible de supprimer le compte admin','err'); return; }
@@ -3490,16 +3616,19 @@ function nav(page) {
 
 // ==================== STATS ====================
 function updateBadges() {
-  document.getElementById('nb-bureau').textContent = DB.bureau.length;
-  document.getElementById('nb-portables').textContent = DB.portables.length;
-  document.getElementById('nb-impr').textContent = DB.imprimantes.length;
-  document.getElementById('nb-tab').textContent = DB.tablettes.length;
+  var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
+  document.getElementById('nb-bureau').textContent    = DB.bureau.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-portables').textContent = DB.portables.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-impr').textContent      = DB.imprimantes.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('nb-tab').textContent       = DB.tablettes.filter(function(r){return !isDrenaRec(r);}).length;
 }
 function updateStats() {
-  var drenaB = DB.bureau.filter(isDrena).length;
-  var drenaP = DB.portables.filter(isDrena).length;
-  var drenaI = DB.imprimantes.filter(isDrena).length;
-  var drenaT = DB.tablettes.filter(isDrena).length;
+  // Filtre DRENAET cohérent avec getFiltered : _source:'DRENAET' OU isDrena() pour les anciens enregistrements
+  var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
+  var drenaB = DB.bureau.filter(isDrenaRec).length;
+  var drenaP = DB.portables.filter(isDrenaRec).length;
+  var drenaI = DB.imprimantes.filter(isDrenaRec).length;
+  var drenaT = DB.tablettes.filter(isDrenaRec).length;
   document.getElementById('s-bureau').textContent = DB.bureau.length - drenaB;
   document.getElementById('s-port').textContent = DB.portables.length - drenaP;
   document.getElementById('s-impr').textContent = DB.imprimantes.length - drenaI;
@@ -3682,11 +3811,15 @@ function getFiltered(type) {
   var baseType = isDrenaType ? type.replace('drena-','').replace('bureau','bureau').replace('portables','portables').replace('impr','imprimantes').replace('tab','tablettes') : type;
   var d = (DB[baseType]||[]).slice();
   if (isDrenaType) {
-    d = d.filter(function(r){ return isDrena(r); });
-  } else if (gSearch) {
-    d = d.filter(function(r){ return JSON.stringify(r).toLowerCase().includes(gSearch.toLowerCase()); });
-  }
-  if (!isDrenaType) {
+    // Priorité : marqueur _source explicite (ajouts via le formulaire DRENAET)
+    // Fallback : anciens enregistrements filtrés par mots-clés dans le service (données importées)
+    d = d.filter(function(r){ return r._source === 'DRENAET' || isDrena(r); });
+  } else {
+    // Vue CENTRALE DESPS : exclure les enregistrements tagués DRENAET
+    d = d.filter(function(r){ return r._source !== 'DRENAET' && !isDrena(r); });
+    if (gSearch) {
+      d = d.filter(function(r){ return JSON.stringify(r).toLowerCase().includes(gSearch.toLowerCase()); });
+    }
     if (type==='bureau')      { var fp=v('f-b-proj'),fs=v('f-b-svc'),fe=v('f-b-etat'),fd=v('f-b-date'); if(fp)d=d.filter(function(r){return r.projet===fp;}); if(fs)d=d.filter(function(r){return r.service===fs;}); if(fe)d=d.filter(function(r){return r.etat===fe;}); if(fd)d=d.filter(function(r){return (r.date_obtention||'').includes(fd)||fd.split('-').reverse().join('/').includes(r.date_obtention||'');} ); }
     if (type==='portables')   { var fp=v('f-p-proj'),fs=v('f-p-svc'),fe=v('f-p-etat'),fg=v('f-p-genre'),fd=v('f-p-date'); if(fp)d=d.filter(function(r){return r.projet===fp;}); if(fs)d=d.filter(function(r){return r.service===fs;}); if(fe)d=d.filter(function(r){return r.etat===fe;}); if(fg)d=d.filter(function(r){return detectGenre(r.nom)===fg;}); if(fd)d=d.filter(function(r){return (r.date_obtention||'').includes(fd);}); }
     if (type==='imprimantes') { var fe=v('f-i-etat'); if(fe)d=d.filter(function(r){return r.etat===fe;}); }
@@ -3773,24 +3906,56 @@ function clearSearch(){ document.getElementById('g-search').value=''; globalSear
 // ==================== CRUD ====================
 function openAdd(type) {
   if (!can('add')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
-  editIdx=null; editType=type||'bureau';
-  document.getElementById('add-type').value=editType;
-  document.getElementById('m-add-title').textContent='＋ Ajouter un équipement';
-  buildForm(); document.getElementById('m-add').classList.add('on');
+  editIdx = null; editType = type || 'bureau';
+  // Forcer la valeur du select masqué — c'est la source de vérité pour saveRecord()
+  var sel = document.getElementById('add-type');
+  sel.value = editType;
+  // Si la valeur n'est pas dans le select, ajouter l'option dynamiquement
+  if (sel.value !== editType) {
+    var opt = document.createElement('option');
+    opt.value = editType; opt.textContent = editType;
+    sel.appendChild(opt); sel.value = editType;
+  }
+  var isDrena = editType.startsWith('drena-');
+  var typeLabels = {
+    'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
+    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+  };
+  var label = typeLabels[editType] || editType;
+  document.getElementById('m-add-title').textContent = isDrena
+    ? '＋ Ajouter — DRENAET › ' + label
+    : '＋ Ajouter — Centrale › ' + label;
+  buildForm();
+  document.getElementById('m-add').classList.add('on');
 }
 function editRec(type, idx) {
   if (!can('edit')) { notif('⛔ Action non autorisée pour votre rôle','err'); return; }
-  editIdx=idx; editType=type;
-  document.getElementById('add-type').value=type;
-  document.getElementById('m-add-title').textContent='✏️ Modifier';
+  editIdx = idx; editType = type;
+  var sel = document.getElementById('add-type');
+  sel.value = type;
+  if (sel.value !== type) {
+    var opt = document.createElement('option');
+    opt.value = type; opt.textContent = type;
+    sel.appendChild(opt); sel.value = type;
+  }
+  var isDrena = type.startsWith('drena-');
+  var typeLabels = {
+    'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
+    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+  };
+  var label = typeLabels[type] || type;
+  document.getElementById('m-add-title').textContent = (isDrena ? '✏️ Modifier — DRENAET › ' : '✏️ Modifier — Centrale › ') + label;
   buildForm();
-  var r=DB[type][idx];
+  var dbKey = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+  var r=(DB[dbKey]||DB[type]||[])[idx];
+  if(!r) return;
   Object.keys(r).forEach(function(k){ var el=document.getElementById('fld-'+k); if(el) el.value=r[k]||''; });
   document.getElementById('m-add').classList.add('on');
 }
 function buildForm() {
   var type=document.getElementById('add-type').value;
-  // Lire depuis PARAMS mis à jour via l'onglet Paramètres
+  // Résoudre les alias DRENAET vers le type de base pour les champs du formulaire
+  var baseType = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
   loadParams();
   var svcList = (PARAMS.services && PARAMS.services.length > 0)
     ? PARAMS.services.map(function(s){ return s.abrev||s.nom; })
@@ -3801,7 +3966,7 @@ function buildForm() {
   var svcs = '<option value="">— Sélectionner —</option>'+svcList.map(function(s){return '<option>'+s+'</option>';}).join('');
   var projs = '<option value="">— Sélectionner —</option>'+projList.map(function(p){return '<option>'+p+'</option>';}).join('');
   var etats=['Nouvel PC','Ancien PC','Ancien PC (Restitué)','Ancien PC (Non Restitué)','En Maintenance'].map(function(e){return '<option>'+e+'</option>';}).join('');
-  var fields = type==='bureau' ? [
+  var fields = baseType==='bureau' ? [
     {id:'id',l:'N° Ordre',ph:'001'},{id:'nom',l:'Nom & Prénoms',ph:'NOM PRENOM',f:true},
     {id:'bureau',l:'Bureau/Porte',ph:'23è porte 18'},{id:'telephone',l:'Téléphone',ph:'0707000000'},
     {id:'email',l:'Email',ph:'nom@gmail.com'},{id:'projet',l:'Projet',sel:projs},
@@ -3809,7 +3974,7 @@ function buildForm() {
     {id:'num_serie',l:'N° Série',ph:'5CD337...'},{id:'cpu',l:'CPU',ph:'2,8 GHz'},
     {id:'ram',l:'RAM',ph:'16 Go'},{id:'stockage',l:'Stockage',ph:'512 Go'},
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
-  ] : type==='portables' ? [
+  ] : baseType==='portables' ? [
     {id:'nom',l:'Nom & Prénoms',ph:'NOM PRENOM',f:true},
     {id:'bureau',l:'Bureau/Porte',ph:'23è porte 18'},{id:'telephone',l:'Téléphone',ph:'0707000000'},
     {id:'email',l:'Email',ph:'nom@gmail.com'},{id:'projet',l:'Projet',sel:projs},
@@ -3817,7 +3982,7 @@ function buildForm() {
     {id:'num_serie',l:'N° Série',ph:'5CD337...'},{id:'cpu',l:'CPU',ph:'Intel i7'},
     {id:'ram',l:'RAM',ph:'16 Go'},{id:'stockage',l:'Stockage',ph:'512 Go'},
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
-  ] : type==='imprimantes' ? [
+  ] : baseType==='imprimantes' ? [
     {id:'id',l:'N° Ordre',ph:'001'},{id:'nom',l:'Nom utilisateur',ph:'NOM',f:true},
     {id:'num_serie',l:'N° Série',ph:'CZ165...'},{id:'marque',l:'Marque',ph:'HP LaserJet'},
     {id:'caracteristiques',l:'Caractéristiques',ph:'Multi-fonction'},{id:'projet',l:'Projet',sel:projs},
@@ -3831,23 +3996,48 @@ function buildForm() {
     {id:'etat',l:'État',sel:etats},{id:'date_obtention',l:'Date obtention',ph:'20/04/2025'},
   ];
   document.getElementById('add-form').innerHTML = fields.map(function(f){
-    return '<div class="fg '+(f.f?'full':'')+'"><label>'+f.l+'</label>'
+    return '<div class="fg '+(f.f?'full':'')+'" ><label>'+f.l+'</label>'
       +(f.sel?'<select id="fld-'+f.id+'">'+f.sel+'</select>'
              :'<input type="text" id="fld-'+f.id+'" placeholder="'+(f.ph||'')+'">');
   }).join('');
 }
 function saveRecord() {
-  var type=document.getElementById('add-type').value;
-  var rec={};
-  document.getElementById('add-form').querySelectorAll('input,select').forEach(function(el){
-    rec[el.id.replace('fld-','')]=el.value.trim()||'';
+  var type = document.getElementById('add-type').value;
+  // Résoudre le type DRENAET vers la clé DB réelle (ex: 'drena-impr' → 'imprimantes')
+  var dbKey = type.replace('drena-', '').replace(/^impr$/, 'imprimantes').replace(/^tab$/, 'tablettes');
+  if (!DB[dbKey]) DB[dbKey] = [];
+
+  // Collecter les valeurs du formulaire
+  var rec = {};
+  document.getElementById('add-form').querySelectorAll('input,select').forEach(function(el) {
+    rec[el.id.replace('fld-', '')] = el.value.trim() || '';
   });
-  rec.genre=detectGenre(rec.nom||'');
-  if(editIdx!==null){ DB[type][editIdx]=Object.assign({},DB[type][editIdx],rec); notif('✅ Modifié','ok'); }
-  else { DB[type].unshift(rec); notif('✅ Ajouté','ok'); }
-  save(type); closeMod('m-add');
-  updateBadges(); updateStats(); buildCharts(); buildDashTable();
-  populateFilters(type); renderTbl(type);
+  rec.genre = detectGenre(rec.nom || '');
+  if (type.startsWith('drena-')) rec._source = 'DRENAET';
+
+  if (editIdx !== null) {
+    // Modification : editIdx est l'index RÉEL dans DB[dbKey] (passé par buildRow via indexOf)
+    if (DB[dbKey][editIdx]) {
+      DB[dbKey][editIdx] = Object.assign({}, DB[dbKey][editIdx], rec);
+      notif('✅ Modifié', 'ok');
+    } else {
+      DB[dbKey].unshift(rec);
+      notif('✅ Ajouté (nouvel)', 'ok');
+    }
+  } else {
+    DB[dbKey].unshift(rec);
+    notif('✅ Ajouté', 'ok');
+  }
+
+  save(dbKey);
+  closeMod('m-add');
+  updateBadges();
+  updateStats();
+  try { buildCharts(); } catch(e) {}
+  try { buildDashTable(); } catch(e) {}
+  // populateFilters attend une clé DB directe — lui passer la clé résolue
+  try { populateFilters(dbKey); } catch(e) {}
+  renderTbl(type);
 }
 function viewRec(type, idx) {
   var baseType = type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes');
