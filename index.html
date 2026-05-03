@@ -731,6 +731,21 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         <span class="nav-ico">📱</span><span>Tablettes &amp; Autres</span>
       </div>
 
+      <!-- ── MATÉRIEL EN MAINTENANCE ── -->
+      <div class="nav-grp-label"><span class="grp-icon">🔧</span> Mat. en Maintenance</div>
+      <div class="nav-item nav-sub" onclick="nav('maint-bureau')">
+        <span class="nav-ico">🖥️</span><span>Ordinateurs Bureaux</span>
+      </div>
+      <div class="nav-item nav-sub" onclick="nav('maint-portables')">
+        <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
+      </div>
+      <div class="nav-item nav-sub" onclick="nav('maint-imprimantes')">
+        <span class="nav-ico">🖨️</span><span>Imprimantes</span>
+      </div>
+      <div class="nav-item nav-sub" onclick="nav('maint-tablettes')">
+        <span class="nav-ico">📱</span><span>Tablettes &amp; Autres</span>
+      </div>
+
       <!-- ── STATISTIQUES (tous) ── -->
       <div class="nav-grp-label"><span class="grp-icon">📊</span> Statistiques</div>
 
@@ -1093,6 +1108,123 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div></div>
       </div>
 
+      <!-- ===== MATÉRIEL EN MAINTENANCE : 4 pages ===== -->
+      <!-- Page : Bureaux en Maintenance -->
+      <div id="pg-maint-bureau" class="page" style="display:none;">
+        <div class="tcard">
+          <div class="tcard-head">
+            <h3>🔧 Ordinateurs Bureaux — <span style="color:var(--gold);">En Maintenance</span></h3>
+            <div class="tcard-actions">
+              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAddMaintItem('bureau')">➕ Ajouter</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItems('bureau')">⬇ CSV</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsExcel('bureau')">⬇ Excel</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsWord('bureau')">⬇ Word</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <input class="flt" type="text" id="maint-bureau-search" placeholder="🔍 N° série, marque, service..." oninput="renderMaintItems('bureau')" style="min-width:220px;">
+            <select class="flt" id="maint-bureau-statut" onchange="renderMaintItems('bureau')">
+              <option value="">— Statut —</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+              <option value="En attente pièce">En attente pièce</option>
+            </select>
+          </div>
+          <div class="scroll"><table><thead><tr>
+            <th>N°</th><th>Date entrée</th><th>N° Série</th><th>Marque</th><th>Service</th>
+            <th>Panne / Motif</th><th>Technicien</th><th>Statut</th><th>Date résolution</th><th>Observations</th><th>Actions</th>
+          </tr></thead><tbody id="tbl-maint-bureau"></tbody></table></div>
+          <div id="maint-bureau-count" style="padding:8px 4px;font-size:12px;color:var(--txt3);">0 fiche(s)</div>
+        </div>
+      </div>
+
+      <!-- Page : Portables en Maintenance -->
+      <div id="pg-maint-portables" class="page" style="display:none;">
+        <div class="tcard">
+          <div class="tcard-head">
+            <h3>🔧 Ordinateurs Portables — <span style="color:var(--gold);">En Maintenance</span></h3>
+            <div class="tcard-actions">
+              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAddMaintItem('portables')">➕ Ajouter</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItems('portables')">⬇ CSV</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsExcel('portables')">⬇ Excel</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsWord('portables')">⬇ Word</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <input class="flt" type="text" id="maint-portables-search" placeholder="🔍 N° série, marque, service..." oninput="renderMaintItems('portables')" style="min-width:220px;">
+            <select class="flt" id="maint-portables-statut" onchange="renderMaintItems('portables')">
+              <option value="">— Statut —</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+              <option value="En attente pièce">En attente pièce</option>
+            </select>
+          </div>
+          <div class="scroll"><table><thead><tr>
+            <th>N°</th><th>Date entrée</th><th>N° Série</th><th>Marque</th><th>Service</th>
+            <th>Panne / Motif</th><th>Technicien</th><th>Statut</th><th>Date résolution</th><th>Observations</th><th>Actions</th>
+          </tr></thead><tbody id="tbl-maint-portables"></tbody></table></div>
+          <div id="maint-portables-count" style="padding:8px 4px;font-size:12px;color:var(--txt3);">0 fiche(s)</div>
+        </div>
+      </div>
+
+      <!-- Page : Imprimantes en Maintenance -->
+      <div id="pg-maint-imprimantes" class="page" style="display:none;">
+        <div class="tcard">
+          <div class="tcard-head">
+            <h3>🔧 Imprimantes — <span style="color:var(--gold);">En Maintenance</span></h3>
+            <div class="tcard-actions">
+              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAddMaintItem('imprimantes')">➕ Ajouter</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItems('imprimantes')">⬇ CSV</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsExcel('imprimantes')">⬇ Excel</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsWord('imprimantes')">⬇ Word</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <input class="flt" type="text" id="maint-imprimantes-search" placeholder="🔍 N° série, marque, service..." oninput="renderMaintItems('imprimantes')" style="min-width:220px;">
+            <select class="flt" id="maint-imprimantes-statut" onchange="renderMaintItems('imprimantes')">
+              <option value="">— Statut —</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+              <option value="En attente pièce">En attente pièce</option>
+            </select>
+          </div>
+          <div class="scroll"><table><thead><tr>
+            <th>N°</th><th>Date entrée</th><th>N° Série</th><th>Marque</th><th>Service</th>
+            <th>Panne / Motif</th><th>Technicien</th><th>Statut</th><th>Date résolution</th><th>Observations</th><th>Actions</th>
+          </tr></thead><tbody id="tbl-maint-imprimantes"></tbody></table></div>
+          <div id="maint-imprimantes-count" style="padding:8px 4px;font-size:12px;color:var(--txt3);">0 fiche(s)</div>
+        </div>
+      </div>
+
+      <!-- Page : Tablettes en Maintenance -->
+      <div id="pg-maint-tablettes" class="page" style="display:none;">
+        <div class="tcard">
+          <div class="tcard-head">
+            <h3>🔧 Tablettes &amp; Autres — <span style="color:var(--gold);">En Maintenance</span></h3>
+            <div class="tcard-actions">
+              <button class="btn btn-primary btn-sm admin-gate-flex" onclick="openAddMaintItem('tablettes')">➕ Ajouter</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItems('tablettes')">⬇ CSV</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsExcel('tablettes')">⬇ Excel</button>
+              <button class="btn btn-sec btn-sm" onclick="exportMaintItemsWord('tablettes')">⬇ Word</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <input class="flt" type="text" id="maint-tablettes-search" placeholder="🔍 N° série, marque, service..." oninput="renderMaintItems('tablettes')" style="min-width:220px;">
+            <select class="flt" id="maint-tablettes-statut" onchange="renderMaintItems('tablettes')">
+              <option value="">— Statut —</option>
+              <option value="En cours">En cours</option>
+              <option value="Terminé">Terminé</option>
+              <option value="En attente pièce">En attente pièce</option>
+            </select>
+          </div>
+          <div class="scroll"><table><thead><tr>
+            <th>N°</th><th>Date entrée</th><th>N° Série</th><th>Marque</th><th>Service</th>
+            <th>Panne / Motif</th><th>Technicien</th><th>Statut</th><th>Date résolution</th><th>Observations</th><th>Actions</th>
+          </tr></thead><tbody id="tbl-maint-tablettes"></tbody></table></div>
+          <div id="maint-tablettes-count" style="padding:8px 4px;font-size:12px;color:var(--txt3);">0 fiche(s)</div>
+        </div>
+      </div>
+
       <!-- ===== IMPORT/EXPORT ===== -->
       <div id="pg-import" class="page">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
@@ -1193,6 +1325,48 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             </div>
             <div class="import-row" onclick="exportTableWord('portables')">
               <span class="import-row-ico">💻</span> PC Portables — <span class="import-ext">.doc</span>
+            </div>
+
+
+            <!-- MATÉRIEL EN MAINTENANCE -->
+            <div class="import-section-label" style="margin-top:14px;">🔧 Matériel en Maintenance — CSV</div>
+            <div class="import-row" onclick="exportMaintItems('bureau')">
+              <span class="import-row-ico">🖥️</span> Bureaux en maintenance — <span class="import-ext">.csv</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItems('portables')">
+              <span class="import-row-ico">💻</span> Portables en maintenance — <span class="import-ext">.csv</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItems('imprimantes')">
+              <span class="import-row-ico">🖨️</span> Imprimantes en maintenance — <span class="import-ext">.csv</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItems('tablettes')">
+              <span class="import-row-ico">📱</span> Tablettes en maintenance — <span class="import-ext">.csv</span>
+            </div>
+            <div class="import-section-label" style="margin-top:14px;">🔧 Matériel en Maintenance — Excel (.xlsx)</div>
+            <div class="import-row" onclick="exportMaintItemsExcel('bureau')">
+              <span class="import-row-ico">🖥️</span> Bureaux en maintenance — <span class="import-ext">.xlsx</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsExcel('portables')">
+              <span class="import-row-ico">💻</span> Portables en maintenance — <span class="import-ext">.xlsx</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsExcel('imprimantes')">
+              <span class="import-row-ico">🖨️</span> Imprimantes en maintenance — <span class="import-ext">.xlsx</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsExcel('tablettes')">
+              <span class="import-row-ico">📱</span> Tablettes en maintenance — <span class="import-ext">.xlsx</span>
+            </div>
+            <div class="import-section-label" style="margin-top:14px;">🔧 Matériel en Maintenance — Word (.doc)</div>
+            <div class="import-row" onclick="exportMaintItemsWord('bureau')">
+              <span class="import-row-ico">🖥️</span> Bureaux en maintenance — <span class="import-ext">.doc</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsWord('portables')">
+              <span class="import-row-ico">💻</span> Portables en maintenance — <span class="import-ext">.doc</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsWord('imprimantes')">
+              <span class="import-row-ico">🖨️</span> Imprimantes en maintenance — <span class="import-ext">.doc</span>
+            </div>
+            <div class="import-row" onclick="exportMaintItemsWord('tablettes')">
+              <span class="import-row-ico">📱</span> Tablettes en maintenance — <span class="import-ext">.doc</span>
             </div>
 
             <!-- SAUVEGARDE -->
@@ -2272,6 +2446,46 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
   </div>
 </div>
 
+<!-- ===== MODAL MATÉRIEL EN MAINTENANCE ===== -->
+<div class="overlay" id="m-maint-item" onclick="closeMod('m-maint-item',event)">
+  <div class="modal" style="max-width:680px;">
+    <div class="mhd"><h3 id="m-maint-item-title">🔧 Fiche Matériel en Maintenance</h3><button class="mclose" onclick="closeMod('m-maint-item')">✕</button></div>
+    <div class="mbody">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="fg"><label>Type de matériel</label>
+          <select id="mi-type" class="flt" style="width:100%;padding:9px;border-radius:8px;background:var(--surface);border:1px solid var(--border2);color:var(--txt);">
+            <option value="bureau">🖥️ Ordinateur Bureau</option>
+            <option value="portables">💻 Ordinateur Portable</option>
+            <option value="imprimantes">🖨️ Imprimante</option>
+            <option value="tablettes">📱 Tablette & Autre</option>
+          </select>
+        </div>
+        <div class="fg"><label>Date d'entrée en maintenance</label><input type="date" id="mi-date"></div>
+        <div class="fg"><label>N° Série</label><input type="text" id="mi-serie" placeholder="Ex: SN12345678"></div>
+        <div class="fg"><label>Marque / Modèle</label><input type="text" id="mi-marque" placeholder="Ex: HP EliteBook 840"></div>
+        <div class="fg"><label>Service / Direction</label><input type="text" id="mi-service" placeholder="Ex: SDEPMI"></div>
+        <div class="fg"><label>Bureau / Étage</label><input type="text" id="mi-bureau" placeholder="Ex: 23ème étage"></div>
+        <div class="fg" style="grid-column:span 2;"><label>Panne / Motif d'entrée</label><textarea id="mi-panne" rows="2" style="width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--txt);border-radius:8px;padding:9px;font-family:Outfit,sans-serif;font-size:13px;resize:vertical;" placeholder="Décrire la panne ou le motif de la mise en maintenance..."></textarea></div>
+        <div class="fg"><label>Technicien responsable</label><input type="text" id="mi-technicien" placeholder="Nom du technicien"></div>
+        <div class="fg"><label>Statut</label>
+          <select id="mi-statut" class="flt" style="width:100%;padding:9px;border-radius:8px;background:var(--surface);border:1px solid var(--border2);color:var(--txt);">
+            <option value="En cours">🔄 En cours</option>
+            <option value="En attente pièce">⏳ En attente pièce</option>
+            <option value="Terminé">✅ Terminé</option>
+          </select>
+        </div>
+        <div class="fg"><label>Date de résolution</label><input type="date" id="mi-date-resolution"></div>
+        <div class="fg"><label>Pièces / Logiciels remplacés</label><input type="text" id="mi-pieces" placeholder="Ex: Batterie, RAM 8Go"></div>
+        <div class="fg" style="grid-column:span 2;"><label>Observations</label><textarea id="mi-obs" rows="2" style="width:100%;background:var(--surface);border:1px solid var(--border2);color:var(--txt);border-radius:8px;padding:9px;font-family:Outfit,sans-serif;font-size:13px;resize:vertical;" placeholder="Observations complémentaires..."></textarea></div>
+      </div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-sec" onclick="closeMod('m-maint-item')">Annuler</button>
+      <button class="btn btn-primary" onclick="saveMaintItem()">💾 Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MODAL MAINTENANCE / SUIVI MAINTENANCE ===== -->
 <div class="overlay" id="m-maintenance" onclick="closeMod('m-maintenance',event)">
   <div class="modal" style="width:760px;" onclick="event.stopPropagation()">
@@ -3172,7 +3386,11 @@ function nav(page) {
     'stats-genre':'👥 Statistiques par Genre',
     'stats-drenaet':'🏫 Statistiques DRENAET',
     'stats-etat':'⚙️ État du Parc',
-    'courrier':'📬 Courrier interne'
+    'courrier':'📬 Courrier interne',
+    'maint-bureau':'🔧 Bureaux en Maintenance',
+    'maint-portables':'🔧 Portables en Maintenance',
+    'maint-imprimantes':'🔧 Imprimantes en Maintenance',
+    'maint-tablettes':'🔧 Tablettes en Maintenance'
   };
   document.getElementById('page-title').textContent = titles[page]||page;
   if (page === 'rapport') buildRapport();
@@ -6255,6 +6473,202 @@ function updateFbBadge(){
 }
 document.addEventListener('fb-ready', updateFbBadge);
 document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateFbBadge,800); });
+
+
+// ==================== MODULE MATÉRIEL EN MAINTENANCE ====================
+// Clé localStorage par type
+function maintItemsKey(type){ return 'desps_maint_items_'+type; }
+function loadMaintItems(type){ var s=localStorage.getItem(maintItemsKey(type)); return s?JSON.parse(s):[]; }
+function saveMaintItemsData(type,data){ localStorage.setItem(maintItemsKey(type),JSON.stringify(data)); }
+
+var editMaintItemIdx=null;
+var editMaintItemType=null;
+
+var MAINT_TYPE_LABELS={
+  'bureau':'Ordinateur Bureau','portables':'Ordinateur Portable',
+  'imprimantes':'Imprimante','tablettes':'Tablette & Autre'
+};
+
+function openAddMaintItem(type){
+  editMaintItemIdx=null; editMaintItemType=type;
+  document.getElementById('m-maint-item-title').textContent='🔧 Nouvelle fiche — '+MAINT_TYPE_LABELS[type];
+  document.getElementById('mi-type').value=type;
+  document.getElementById('mi-date').value=new Date().toISOString().slice(0,10);
+  ['mi-serie','mi-marque','mi-service','mi-bureau','mi-panne','mi-technicien','mi-pieces','mi-obs','mi-date-resolution'].forEach(function(id){
+    var el=document.getElementById(id); if(el)el.value='';
+  });
+  document.getElementById('mi-statut').value='En cours';
+  openMod('m-maint-item');
+}
+
+function editMaintItemRec(type,idx){
+  var data=loadMaintItems(type); var d=data[idx];
+  editMaintItemIdx=idx; editMaintItemType=type;
+  document.getElementById('m-maint-item-title').textContent='✏️ Modifier fiche — '+MAINT_TYPE_LABELS[type];
+  document.getElementById('mi-type').value=type;
+  document.getElementById('mi-date').value=d.date||'';
+  document.getElementById('mi-serie').value=d.serie||'';
+  document.getElementById('mi-marque').value=d.marque||'';
+  document.getElementById('mi-service').value=d.service||'';
+  document.getElementById('mi-bureau').value=d.bureau||'';
+  document.getElementById('mi-panne').value=d.panne||'';
+  document.getElementById('mi-technicien').value=d.technicien||'';
+  document.getElementById('mi-statut').value=d.statut||'En cours';
+  document.getElementById('mi-date-resolution').value=d.dateResolution||'';
+  document.getElementById('mi-pieces').value=d.pieces||'';
+  document.getElementById('mi-obs').value=d.obs||'';
+  openMod('m-maint-item');
+}
+
+function saveMaintItem(){
+  var type=document.getElementById('mi-type').value;
+  var data=loadMaintItems(type);
+  var rec={
+    date:document.getElementById('mi-date').value,
+    serie:document.getElementById('mi-serie').value.trim(),
+    marque:document.getElementById('mi-marque').value.trim(),
+    service:document.getElementById('mi-service').value.trim(),
+    bureau:document.getElementById('mi-bureau').value.trim(),
+    panne:document.getElementById('mi-panne').value.trim(),
+    technicien:document.getElementById('mi-technicien').value.trim(),
+    statut:document.getElementById('mi-statut').value,
+    dateResolution:document.getElementById('mi-date-resolution').value,
+    pieces:document.getElementById('mi-pieces').value.trim(),
+    obs:document.getElementById('mi-obs').value.trim(),
+    createdAt:new Date().toISOString()
+  };
+  if(!rec.date||!rec.panne){notif('Date et motif obligatoires','err');return;}
+  if(editMaintItemIdx!==null && editMaintItemType===type){
+    data[editMaintItemIdx]=rec;
+  } else {
+    data.push(rec);
+  }
+  saveMaintItemsData(type,data);
+  closeMod('m-maint-item');
+  renderMaintItems(type);
+  notif('✅ Fiche enregistrée','ok');
+}
+
+function deleteMaintItemRec(type,idx){
+  if(!confirm('Supprimer cette fiche de maintenance ?'))return;
+  var data=loadMaintItems(type);
+  data.splice(idx,1);
+  saveMaintItemsData(type,data);
+  renderMaintItems(type);
+  notif('🗑 Supprimé','ok');
+}
+
+var STATUT_COLORS={'En cours':'var(--gold)','Terminé':'var(--accent)','En attente pièce':'var(--orange)'};
+
+function renderMaintItems(type){
+  var data=loadMaintItems(type);
+  var search=(document.getElementById('maint-'+type+'-search')||{}).value||'';
+  var statut=(document.getElementById('maint-'+type+'-statut')||{}).value||'';
+  search=search.toLowerCase();
+  var filtered=data.filter(function(d){
+    var matchS=!search||(d.serie||'').toLowerCase().includes(search)||(d.marque||'').toLowerCase().includes(search)||(d.service||'').toLowerCase().includes(search)||(d.panne||'').toLowerCase().includes(search);
+    var matchSt=!statut||d.statut===statut;
+    return matchS&&matchSt;
+  });
+  var tbody=document.getElementById('tbl-maint-'+type);
+  if(!tbody)return;
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--txt3);">📦 Aucun enregistrement. Cliquez « + Ajouter » pour créer la première fiche.</td></tr>';
+  } else {
+    tbody.innerHTML=filtered.map(function(d,i){
+      var clr=STATUT_COLORS[d.statut]||'var(--txt2)';
+      return '<tr>'
+        +'<td>'+(i+1)+'</td>'
+        +'<td>'+(d.date||'—')+'</td>'
+        +'<td style="font-family:\'IBM Plex Mono\',monospace;font-size:12px;">'+(d.serie||'—')+'</td>'
+        +'<td>'+(d.marque||'—')+'</td>'
+        +'<td>'+(d.service||'—')+'</td>'
+        +'<td style="max-width:160px;white-space:normal;">'+(d.panne||'—')+'</td>'
+        +'<td>'+(d.technicien||'—')+'</td>'
+        +'<td><span style="background:'+clr+'20;color:'+clr+';border:1px solid '+clr+'40;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">'+(d.statut||'—')+'</span></td>'
+        +'<td>'+(d.dateResolution||'—')+'</td>'
+        +'<td style="max-width:130px;white-space:normal;font-size:12px;">'+(d.obs||'—')+'</td>'
+        +'<td style="white-space:nowrap;">'
+          +'<button class="btn btn-sec btn-sm admin-gate" onclick="editMaintItemRec(\''+type+'\','+data.indexOf(d)+')" style="padding:3px 8px;font-size:11px;">✏️</button> '
+          +'<button class="btn btn-sm delete-gate" onclick="deleteMaintItemRec(\''+type+'\','+data.indexOf(d)+')" style="padding:3px 8px;font-size:11px;background:rgba(230,57,70,0.15);color:var(--red);">🗑</button>'
+        +'</td>'
+      +'</tr>';
+    }).join('');
+  }
+  var cnt=document.getElementById('maint-'+type+'-count');
+  if(cnt) cnt.textContent=filtered.length+' fiche(s) ('+data.length+' total)';
+}
+
+// === Export CSV ===
+function exportMaintItems(type){
+  var data=loadMaintItems(type);
+  var rows=[['N°','Date entrée','N° Série','Marque','Service','Bureau','Panne/Motif','Technicien','Statut','Date résolution','Pièces','Observations']];
+  data.forEach(function(d,i){
+    rows.push([i+1,d.date,d.serie,d.marque,d.service,d.bureau,d.panne,d.technicien,d.statut,d.dateResolution||'',d.pieces||'',d.obs]);
+  });
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+(c||'').toString().replace(/"/g,'""')+'"';}).join(';');}).join('\n');
+  var label=MAINT_TYPE_LABELS[type]||type;
+  dlFile('\uFEFF'+csv,'DESPS_Maintenance_'+label.replace(/ /g,'_')+'_'+new Date().toISOString().slice(0,10)+'.csv','text/csv;charset=utf-8;');
+  notif('⬇ Export CSV téléchargé','ok');
+}
+
+// === Export Excel ===
+function exportMaintItemsExcel(type){
+  var data=loadMaintItems(type);
+  var label=MAINT_TYPE_LABELS[type]||type;
+  var rows=[['N°','Date entrée','N° Série','Marque / Modèle','Service','Bureau','Panne / Motif','Technicien','Statut','Date résolution','Pièces / Logiciels','Observations']];
+  data.forEach(function(d,i){ rows.push([i+1,d.date,d.serie,d.marque,d.service,d.bureau,d.panne,d.technicien,d.statut,d.dateResolution||'',d.pieces||'',d.obs]); });
+  if(typeof XLSX!=='undefined'){
+    var wb=XLSX.utils.book_new();
+    var ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:4},{wch:12},{wch:16},{wch:18},{wch:20},{wch:14},{wch:30},{wch:18},{wch:14},{wch:14},{wch:20},{wch:25}];
+    XLSX.utils.book_append_sheet(wb,ws,'Maintenance '+label.slice(0,28));
+    XLSX.writeFile(wb,'DESPS_Maintenance_'+label.replace(/ /g,'_')+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+    notif('⬇ Export Excel téléchargé','ok');
+  } else { exportMaintItems(type); }
+}
+
+// === Export Word ===
+function exportMaintItemsWord(type){
+  var data=loadMaintItems(type);
+  var label=MAINT_TYPE_LABELS[type]||type;
+  var rows=data.map(function(d,i){
+    return '<tr style="background:'+(i%2===0?'#f5f8ff':'white')+'">'
+      +'<td>'+(i+1)+'</td><td>'+(d.date||'')+'</td><td>'+(d.serie||'')+'</td>'
+      +'<td>'+(d.marque||'')+'</td><td>'+(d.service||'')+'</td>'
+      +'<td>'+(d.panne||'')+'</td><td>'+(d.technicien||'')+'</td>'
+      +'<td>'+(d.statut||'')+'</td><td>'+(d.dateResolution||'')+'</td>'
+      +'<td>'+(d.obs||'')+'</td></tr>';
+  }).join('');
+  var html='<html><head><meta charset="UTF-8"><title>Maintenance '+label+'</title>'
+    +'<style>body{font-family:Arial,sans-serif;font-size:11px;}'
+    +'h2{color:#1a3066;}table{width:100%;border-collapse:collapse;}'
+    +'th{background:#1a3066;color:white;padding:6px;font-size:10px;}'
+    +'td{border:1px solid #ccc;padding:5px;vertical-align:top;}'
+    +'</style></head><body>'
+    +'<h2>DESPS — Matériel en Maintenance : '+label+'</h2>'
+    +'<p style="font-size:10px;color:#666;">SERVICE DIGITALISATION, EXPLOITATION DES PLATEFORMES ET MAINTENANCE INFORMATIQUE — Édité le '+new Date().toLocaleDateString('fr-FR')+'</p>'
+    +'<table><thead><tr><th>N°</th><th>Date</th><th>N° Série</th><th>Marque</th><th>Service</th><th>Panne/Motif</th><th>Technicien</th><th>Statut</th><th>Résolution</th><th>Observations</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table></body></html>';
+  var blob=new Blob(['\ufeff'+html],{type:'application/msword;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='DESPS_Maintenance_'+label.replace(/ /g,'_')+'_'+new Date().toISOString().slice(0,10)+'.doc';
+  a.click();
+  notif('⬇ Export Word téléchargé','ok');
+}
+
+// Re-render on nav to maintenance pages
+(function(){
+  var origNav=window.nav;
+  window.nav=function(page){
+    origNav(page);
+    if(['maint-bureau','maint-portables','maint-imprimantes','maint-tablettes'].indexOf(page)>-1){
+      var type=page.replace('maint-','');
+      setTimeout(function(){ renderMaintItems(type); },80);
+    }
+  };
+})();
 
 </script>
 
