@@ -723,30 +723,38 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <div class="nav-grp-label"><span class="grp-icon">🏫</span> DRENAET</div>
       <div class="nav-item nav-sub" onclick="nav('drena-bureau')">
         <span class="nav-ico">🖥️</span><span>Ordinateurs Bureaux</span>
+        <span class="nav-bdg" id="nb-drena-bureau" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('drena-portables')">
         <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
+        <span class="nav-bdg" id="nb-drena-portables" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('drena-impr')">
         <span class="nav-ico">🖨️</span><span>Imprimantes</span>
+        <span class="nav-bdg" id="nb-drena-impr" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('drena-tab')">
         <span class="nav-ico">📱</span><span>Tablettes &amp; Autres</span>
+        <span class="nav-bdg" id="nb-drena-tab" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
       </div>
 
       <!-- ── MATÉRIEL EN MAINTENANCE ── -->
       <div class="nav-grp-label"><span class="grp-icon">🔧</span> Mat. en Maintenance</div>
       <div class="nav-item nav-sub" onclick="nav('maint-bureau')">
         <span class="nav-ico">🖥️</span><span>Ordinateurs Bureaux</span>
+        <span class="nav-bdg" id="nb-maint-bureau" style="background:rgba(245,132,31,0.2);color:var(--orange);border-color:rgba(245,132,31,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('maint-portables')">
         <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
+        <span class="nav-bdg" id="nb-maint-portables" style="background:rgba(245,132,31,0.2);color:var(--orange);border-color:rgba(245,132,31,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('maint-imprimantes')">
         <span class="nav-ico">🖨️</span><span>Imprimantes</span>
+        <span class="nav-bdg" id="nb-maint-imprimantes" style="background:rgba(245,132,31,0.2);color:var(--orange);border-color:rgba(245,132,31,0.3);">—</span>
       </div>
       <div class="nav-item nav-sub" onclick="nav('maint-tablettes')">
         <span class="nav-ico">📱</span><span>Tablettes &amp; Autres</span>
+        <span class="nav-bdg" id="nb-maint-tablettes" style="background:rgba(245,132,31,0.2);color:var(--orange);border-color:rgba(245,132,31,0.3);">—</span>
       </div>
 
       <!-- ── STATISTIQUES (tous) ── -->
@@ -3617,10 +3625,24 @@ function nav(page) {
 // ==================== STATS ====================
 function updateBadges() {
   var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
+
+  // ── Centrale DESPS (bleu) ──
   document.getElementById('nb-bureau').textContent    = DB.bureau.filter(function(r){return !isDrenaRec(r);}).length;
   document.getElementById('nb-portables').textContent = DB.portables.filter(function(r){return !isDrenaRec(r);}).length;
   document.getElementById('nb-impr').textContent      = DB.imprimantes.filter(function(r){return !isDrenaRec(r);}).length;
   document.getElementById('nb-tab').textContent       = DB.tablettes.filter(function(r){return !isDrenaRec(r);}).length;
+
+  // ── DRENAET (or/gold) ──
+  document.getElementById('nb-drena-bureau').textContent    = DB.bureau.filter(isDrenaRec).length;
+  document.getElementById('nb-drena-portables').textContent = DB.portables.filter(isDrenaRec).length;
+  document.getElementById('nb-drena-impr').textContent      = DB.imprimantes.filter(isDrenaRec).length;
+  document.getElementById('nb-drena-tab').textContent       = DB.tablettes.filter(isDrenaRec).length;
+
+  // ── Matériel en Maintenance (orange) ──
+  document.getElementById('nb-maint-bureau').textContent       = loadMaintItems('bureau').length;
+  document.getElementById('nb-maint-portables').textContent    = loadMaintItems('portables').length;
+  document.getElementById('nb-maint-imprimantes').textContent  = loadMaintItems('imprimantes').length;
+  document.getElementById('nb-maint-tablettes').textContent    = loadMaintItems('tablettes').length;
 }
 function updateStats() {
   // Filtre DRENAET cohérent avec getFiltered : _source:'DRENAET' OU isDrena() pour les anciens enregistrements
