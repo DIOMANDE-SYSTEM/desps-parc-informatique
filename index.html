@@ -943,9 +943,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         <div class="stats-section-label drenaet">🏫 &nbsp;DRENAET</div>
         <div class="stats-grid-8" style="margin-bottom:18px;">
           <div class="stat-card" style="border-color:rgba(244,185,66,0.3);background:rgba(244,185,66,0.06);">
-            <div class="stat-ico">💻</div>
+            <div class="stat-ico">🖥️</div>
             <div class="stat-val" id="s-drena-bureau" style="color:var(--gold);">—</div>
-            <div class="stat-lbl" style="color:var(--txt2);">PC Portables</div>
+            <div class="stat-lbl" style="color:var(--txt2);">PC Bureaux</div>
             <div class="stat-sub">DRENAET</div>
           </div>
           <div class="stat-card" style="border-color:rgba(244,185,66,0.3);background:rgba(244,185,66,0.06);">
@@ -5723,7 +5723,7 @@ function buildStatPanel(tab) {
         +kpi(neufsB,'Neufs (Bureau)','var(--accent)',Math.round(neufsB/Math.max(b.length,1)*100)+'% du parc bureau')
         +kpi(ancsB,'Anciens (Bureau)','var(--orange)',Math.round(ancsB/Math.max(b.length,1)*100)+'% du parc bureau')
         +kpi(femmesP,'Femmes (Portables)','var(--red)',Math.round(femmesP/Math.max(p.length,1)*100)+'% des portables')
-        +kpi(drenaB,'DRENAET (Portables)','var(--gold)','vs Centrale : '+centraleB)
+        +kpi(drenaB,'DRENAET (Bureaux)','var(--gold)','vs Centrale : '+centraleB)
       +'</div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
         +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Top 5 projets</h3></div><div style="padding:14px;">'
@@ -5899,7 +5899,7 @@ function buildStatPanel(tab) {
     var dTotal=dB.length+dP.length+dI.length+dT.length;
     el.innerHTML =
       '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(dB.length,'PC Portables DRENAET','var(--gold)')
+        +kpi(dB.length,'PC Bureaux DRENAET','var(--gold)')
         +kpi(dP.length,'Portables DRENAET','var(--gold)')
         +kpi(dI.length,'Imprimantes DRENAET','var(--gold)')
         +kpi(dTotal,'Total DRENAET','var(--gold)','Directions Régionales')
