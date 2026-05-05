@@ -721,6 +721,10 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       <!-- ── DRENAET ── -->
       <div class="nav-grp-label"><span class="grp-icon">🏫</span> DRENAET</div>
+      <div class="nav-item nav-sub" onclick="nav('drena-pc')">
+        <span class="nav-ico">🖥️</span><span>Ordinateurs Bureaux</span>
+        <span class="nav-bdg" id="nb-drena-pc" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
+      </div>
       <div class="nav-item nav-sub" onclick="nav('drena-bureau')">
         <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
         <span class="nav-bdg" id="nb-drena-bureau" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
@@ -1097,6 +1101,11 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       </div>
 
       <!-- ===== DRENA pages (filtered) ===== -->
+      <div id="pg-drena-pc" class="page">
+        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-pc')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-pc')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-pc')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-pc" onclick="deleteSelected('drena-pc')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-pc">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-pc',this)"></th><th>N°</th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-pc"></tbody></table></div>
+        <div class="pag"><div class="pag-info" id="pi-drena-pc"></div><div class="pag-btns" id="pb-drena-pc"></div></div></div>
+      </div>
       <div id="pg-drena-bureau" class="page">
         <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
@@ -1252,7 +1261,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
                   <option value="tablettes">📱 Tablettes &amp; Autres</option>
                 </optgroup>
                 <optgroup label="🏫 DRENAET">
-                  <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
+                  <option value="drena-pc">🖥️ PC Bureaux (DRENAET)</option>
+                  <option value="drena-pc">🖥️ PC Bureaux (DRENAET)</option>
+        <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
                   <option value="drena-impr">🖨️ Imprimantes</option>
                   <option value="drena-tab">📱 Tablettes &amp; Autres</option>
                 </optgroup>
@@ -1367,6 +1378,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             </div>
 
             <div class="import-section-label" style="margin-top:10px;">CSV</div>
+            <div class="import-row" onclick="exportCSV('drena-pc')">
+              <span class="import-row-ico">🖥️</span> PC Bureaux <span class="import-ext">.csv</span>
+            </div>
             <div class="import-row" onclick="exportCSV('drena-bureau')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.csv</span>
             </div>
@@ -1378,6 +1392,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             </div>
 
             <div class="import-section-label" style="margin-top:10px;">Excel (.xlsx)</div>
+            <div class="import-row" onclick="exportTableExcel('drena-pc')">
+              <span class="import-row-ico">🖥️</span> PC Bureaux <span class="import-ext">.xlsx</span>
+            </div>
             <div class="import-row" onclick="exportTableExcel('drena-bureau')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.xlsx</span>
             </div>
@@ -1389,6 +1406,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             </div>
 
             <div class="import-section-label" style="margin-top:10px;">Word (.doc)</div>
+            <div class="import-row" onclick="exportTableWord('drena-pc')">
+              <span class="import-row-ico">🖥️</span> PC Bureaux <span class="import-ext">.doc</span>
+            </div>
             <div class="import-row" onclick="exportTableWord('drena-bureau')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.doc</span>
             </div>
@@ -2700,6 +2720,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <select id="add-type" style="display:none;" onchange="buildForm()">
         <option value="bureau">💻 PC Bureau</option><option value="portables">🖥️ PC Portable</option>
         <option value="imprimantes">🖨️ Imprimante</option><option value="tablettes">📱 Tablette</option>
+        <option value="drena-pc">🖥️ PC Bureaux (DRENAET)</option>
         <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
         <option value="drena-portables">🖥️ PC Portable (DRENAET)</option>
         <option value="drena-impr">🖨️ Imprimante (DRENAET)</option>
@@ -2946,6 +2967,7 @@ var INIT = {
   bureau: [{"id":"00001","date_obtention":"2025-04-20","num_serie":"5CD337DG4V","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDESP","etat":"Nouvel PC","date_remise":"2025-04-20","date_restitution":null,"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":""},{"id":"00002","date_obtention":"2025-04-28","num_serie":"5CD337DFJX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDEPMI","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","email":""},{"id":"00003","date_obtention":"2025-04-28","num_serie":"5CD337DGQX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","email":"blangomail@gmail.com"},{"id":"00004","date_obtention":"2025-04-28","num_serie":"5CD337DF8T","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","email":"heurtache@yahoo.fr"},{"id":"00005","date_obtention":"2025-04-28","num_serie":"5CD336C52Q","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","email":"marietteaudreyca6@gmail.com"},{"id":"00006","date_obtention":"2025-04-28","num_serie":"5CD3359FBK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SICRE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","email":""},{"id":"00007","date_obtention":"2025-04-28","num_serie":"5CD337DFKX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","email":"sekabricecocobeu@gmail.com"},{"id":"00008","date_obtention":"2025-04-28","num_serie":"5CD32394MS","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","email":"traoreadama@gmail.com"},{"id":"00009","date_obtention":"2025-04-28","num_serie":"5CD337DFFQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KONAN KOUAME JEAN BOSCO","bureau":"23\u00e8me porte 34","telephone":"707074553","email":"jboscokonan@gmail.com"},{"id":"00010","date_obtention":"2025-04-28","num_serie":"5CD3368V75","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"AKA KOFFI CHRISTIAN FABRICE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00011","date_obtention":"2025-04-28","num_serie":"5CD336C59R","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY YOUSSOUF","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00012","date_obtention":"2025-04-28","num_serie":"5CD336C3XF","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"YAO KOFFI JEAN DESIRE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00013","date_obtention":"2025-04-28","num_serie":"5CD337DFQK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KOUADIO KONAN PARFAIT","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00014","date_obtention":"2025-04-28","num_serie":"5CD337DG7G","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"DIALLO NOUHOUN","bureau":"23\u00e8me porte 28","telephone":"","email":""},{"id":"00015","date_obtention":"2025-04-28","num_serie":"5CD336CKVK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00016","date_obtention":"2025-04-28","num_serie":"5CD337DG09","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SOUMAHORO LOSSENI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00017","date_obtention":"2025-05-06","num_serie":"5CD337DFR1","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"LOBA BI JEAN CLAUDE","bureau":"23\u00e8me porte 25","telephone":"0748597416","email":""},{"id":"00018","date_obtention":"2025-05-06","num_serie":"5CD3359FH7","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"DIOMANDE MARIAMA","bureau":"23\u00e8me porte 25","telephone":"0757350977","email":""},{"id":"00019","date_obtention":"2025-05-06","num_serie":"5CD337DFWQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"BOKA SOUMAHORO CHRISTIAN","bureau":"23\u00e8me porte 25","telephone":"0777501960","email":""},{"id":"00020","date_obtention":"2025-05-06","num_serie":"5CD337DFF3","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"GBAMAN KOUAME INNOCENT","bureau":"23\u00e8me porte 25","telephone":"0707700285","email":"gbamankouame@gmail.com"},{"num_ordre":"46","nom":"BOHOUSSOU AYA ISABELLE","bureau":"23\u00e8me Porte 42","telephone":"07 47 42 14 07","email":"","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00046"},{"num_ordre":"47","nom":"ANO CLAUDE FRANCOIS DE SALES","bureau":"23 \u00e8me Porte 40","telephone":"01 73 94 48 29","email":"claudeano@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00047"},{"num_ordre":"48","nom":"YOBOU JACOB WILLIAM","bureau":"23 \u00e8me Porte 40","telephone":"07 59 59 16 98","email":"yobouwilliamjacob@yahoo.fr","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00048"},{"num_ordre":"49","nom":"ZAOUI GUIE","bureau":"23 \u00e8me Porte 24","telephone":"07 07 00 87 99","email":"heurtache@yahoo,fr","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00049"},{"num_ordre":"50","nom":"DIOMANDE YAYA","bureau":"23 \u00e8me Porte 18","telephone":"01 40 99 58 77","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SDEPMI","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00050"},{"num_ordre":"51","nom":"BOMI FOUELOU","bureau":"23 \u00e8me Porte 35","telephone":"07 07 81 29 67","email":"Non renseigner","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00051"},{"num_ordre":"52","nom":"Mme AMANY AGATHE","bureau":"18 \u00e8me Porte  25","telephone":"07 07 44 48 67","email":"konan_amanyagathe@yahoo,fr","projet":"DESPS","service":"SDESP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00052"},{"num_ordre":"53","nom":"SILUE SALIFOU","bureau":"23\u00e8me Porte 35","telephone":"01 52 62 20 64","email":"saifeulis223@gmail.com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00053"},{"num_ordre":"54","nom":"M. YOBOUET SIMPLICE","bureau":"23 \u00e8me Porte 35","telephone":"07 08 21 31 33","email":"","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00054"},{"num_ordre":"55","nom":"ENOC KEFFA","bureau":"23 \u00e8me Porte 34","telephone":"07 79 36 70 79","email":"","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00055"},{"num_ordre":"56","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  Porte 19","telephone":"0505 39 08 62","email":"blangomail@gmail.com","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"DELL core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00056"},{"num_ordre":"57","nom":"BEUGRE Reine Felix","bureau":"23 \u00e8me  Porte 42","telephone":"07 47 14 62 52","email":"lobroreinefeliciebe@gmail.com","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00057"},{"num_ordre":"58","nom":"TRAORE ADAMA","bureau":"23 \u00e8me Porte 35","telephone":"07 47 47 20 11","email":"traoreadama@gmail,com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00058"}],
   portables: [{"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","projet":"CLEF","email":"","date_obtention":"2025-04-20","service":"SDESP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DG4V","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SDEPMI","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFJX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","projet":"CLEF","email":"blangomail@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DGQX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","projet":"CLEF","email":"heurtache@yahoo.fr","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DF8T","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","projet":"CLEF","email":"marietteaudreyca6@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD336C52Q","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SICRE","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD3359FBK","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","projet":"CLEF","email":"sekabricecocobeu@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFKX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","projet":"CLEF","email":"traoreadama@gmail.com","date_obtention":"2025-04-28","service":"SDPSEPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD32394MS","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"DIOMANDE YAYA","bureau":"23\u00e8 \u00c9tage porte 18","telephone":"0140995877","projet":"PATEB","email":"diomyaya28@gmail.com","date_obtention":"2025-08-26","service":"SERVICE DIGITALISATION","marque":"HP Probook","num_serie":"1H85100ZZVC","cpu":"Intel Ultra 7 155U","stockage":"1 To","ram":"16 Go","etat":"Nouveau","date_restitution":null},{"nom":"BEUGRE JOSEPH DIMITRI","bureau":"23EME ETAGE","telephone":"0707160929","projet":"PATEB","email":"dimitrijbeugre@gmail.com","date_obtention":"2025-11-06","service":"GESTION FNE SECONDAIRE","marque":"HP","num_serie":"1H84331W7Z","cpu":"INTEL","stockage":"1 TERRA","ram":"16G","etat":"Nouveau","date_restitution":null},{"num_ordre":"9","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"0707722000","email":"armandgbocli@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DH2J","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"10","nom":"KONE DASSE EMILIENNE","bureau":"23\u00e8me porte 25","telephone":"0707648904","email":"kdeg2010@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFLI","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"11","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52366","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"12","nom":"Mme GABOU Elisabeth","bureau":"23 \u00e8me  porte 19","telephone":"01O1298519","email":"Elloelisabeth@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52367","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"13","nom":"BOMI FOUEULO","bureau":"23 \u00e8me  porte 35","telephone":"707812967","email":"foueulobomi@gmail.com","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85101001C","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"14","nom":"LIGBET JEAN LEVIS","bureau":"18\u00e8me porte 24","telephone":"778746126","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7 PROBOOK 460 G11","num_serie":"1H85100ZZZC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"15","nom":"SILUE FONNIBEGUE SALIFOU","bureau":"23 \u00e8me  porte 35","telephone":"0152622064","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H8510100ZZY","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"16","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"PATEB","service":"SDPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZWC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"17","nom":"Mme KAMAGATE Matagar\u00e9 Epse OUATTARA","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZXC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"19","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831K7P","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"20","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831KRQ","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"21","nom":"S/D M, ALLODJI  Aymar","bureau":"23  \u00e8me Porte :  27","telephone":"747731154","email":"allodjiaymar@yahoo,fr","projet":"PIP","service":"SDGFNE","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC37","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"23","nom":"TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC61","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"24","nom":"Mr TRAORE ZAHANON","bureau":"18 \u00e8me \u00e9tage Porte : 34","telephone":"708480784","email":"zahabd2011@hotmail.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD45273ZX","cpu":"3,8 Ghz","stockage":"1 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"25","nom":"Mr ZENA BI","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"506790240","email":"biflazan@yahoo.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD452740H","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"27","nom":"Mr ZENA BI","bureau":"19 \u00e8me \u00e9tage Porte : 35","telephone":"506790241","email":"biflazan@yahoo.fr","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG81622SN","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Non Restitu\u00e9)","date_obtention":"26/08/2025","date_restitution":"05/09/2025","statut":"\u2713 Restitue"},{"num_ordre":"28","nom":"Mr KOFFI STEPHANE","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"747625950","email":"","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8364099","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"30","nom":"Mme KAMAGATE Matagar\u00e9","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"DESPS-KPD","service":"SDPSEP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8360M82","cpu":"2,4 Ghz","stockage":"256 Go","ram":"16 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"31","nom":"Mr TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5GCICC84981","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"33","nom":"M. TOURE SIE PECROWELE CHRISTOPHE","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"758559503","email":"","projet":"DESPS-FASFE","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core i7","num_serie":"CND3512477","cpu":"1,7 GHz","stockage":"500 Go","ram":"8 Go","etat":"Nouvel PC","date_obtention":"24/07/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"35","nom":"M. COULIBALY SIRIKI","bureau":"24\u00e8me - Porte 24","telephone":"0778129534","email":"sircoul@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VYJ","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"36","nom":"M. Traore Yacouba","bureau":"23\u00e8me \u00e9tage porte 26","telephone":"0748820043","email":"traoreyacoub@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331W49","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"37","nom":"M. KAN\u00c9 ADAMA","bureau":"23eme - Porte 41","telephone":"0575213280","email":"Kaneadama72@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQPC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"38","nom":"M. KONE POGBAN KATANGUI","bureau":"23\u00e8me - Porte 41","telephone":"0585893137","email":"rahimkatangui@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQXC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"39","nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":"","projet":"UNICEF","service":"SDESP","type_machine":"PC Portable","marque":"HUAWEI AMD RYZEN","num_serie":"M5EPM21106000418","cpu":"2,8 Ghz","stockage":"250 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"12/08/2024","date_restitution":"17/11/2025","statut":"\u2713 Restitue"},{"num_ordre":"40","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"1H85100ZZZ","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"20/10/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"41","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"42","nom":"M. MIAN","bureau":"23 \u00e8me porte","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"43","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"44","nom":"KOFFI AMENAN FLAVIE","bureau":"23 \u00e8me  porte 40","telephone":"708393996","email":"","projet":"UNICEF","service":"SCOURRIER","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"}],
   imprimantes: [{"id":"00001","date_obtention":"inconnue","num_serie":"023RTYU7680","marque":"HP1536","caracteristiques":"Multi-fonction","projet":"inconnu","service":"Coordination","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"Mr. KONE DOUFANGA","bureau":"23 \u00e8me \u00e9tage","telephone":"07 07 44 28 39","email":""},{"id":"00002","date_obtention":"inconnue","num_serie":"CZ165-90977","marque":"HP177","caracteristiques":"Multi-fonction","projet":"inconnu","service":"En maintenance","etat":"Ancienne Imprimante en Panne","date_remise":null,"date_restitution":null,"nom":"BOHOUSSOU AYA ISABELLE","bureau":"","telephone":"","email":""},{"id":"00004","date_obtention":null,"num_serie":"CN8171P33L","marque":"HP LaserJet","caracteristiques":"LaserJet Pro","projet":"DESPS","service":"SDGFNE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23 \u00e8me \u00e9tage porte 24","telephone":"","email":""},{"id":"00005","date_obtention":null,"num_serie":"VNB3G12567","marque":"HP LaserJet","caracteristiques":"LaserJet","projet":"DESPS","service":"SICRE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"KABLAN MALICK","bureau":"18 \u00e8me \u00e9tage","telephone":"","email":""},{"num_ordre":"45","nom":"KONE DOUFANGA","bureau":"23 \u00e8me  Porte 49","telephone":"07 07 44 28 39","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"Imprimante","marque":"HP1536","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00045"}],
+  pc: [],
   tablettes: [{"id":"0001","date_obtention":"2025-04-20","num_serie":"8677352032840883","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0002","date_obtention":"2025-04-20","num_serie":"8677352032840438","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0003","date_obtention":"2025-04-20","num_serie":"8677352032841241","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0004","date_obtention":"2025-04-20","num_serie":"8677352032841323","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DESP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0005","date_obtention":"2025-04-20","num_serie":"8677352032840766","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DESP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""}]
 };
 
@@ -3007,9 +3029,24 @@ function initApp() {
   for (var k of Object.keys(INIT)) {
     var stored = localStorage.getItem('desps26_'+k);
     DB[k] = stored ? JSON.parse(stored) : INIT[k].map(function(r){ return Object.assign({},r); });
+    // Charger aussi les DRENAET depuis leur clé séparée et fusionner
+    var drenaStored = localStorage.getItem('desps26_drena_'+k);
+    if (drenaStored) {
+      var drenaArr = JSON.parse(drenaStored);
+      // Ajouter uniquement ceux qui ne sont pas déjà dans DB[k]
+      var existingSerials = {};
+      DB[k].forEach(function(r){ if(r.num_serie) existingSerials[r.num_serie]=true; });
+      drenaArr.forEach(function(r){
+        r._source = 'DRENAET';
+        if (!r.genre) r.genre = detectGenre(r.nom||'');
+        if (!r.num_serie || !existingSerials[r.num_serie]) {
+          DB[k].push(r);
+          if(r.num_serie) existingSerials[r.num_serie] = true;
+        }
+      });
+    }
     DB[k].forEach(function(r){
       if (!r.genre) r.genre = detectGenre(r.nom||'');
-      // Tagger _source si le service contient DRENA (sans jamais supprimer)
       if (!r._source) {
         var svc = (r.service||'').toUpperCase();
         if (_drenaKw.some(function(kw){ return svc.includes(kw); })) r._source = 'DRENAET';
@@ -3049,23 +3086,20 @@ function fbSyncAll() {
             if(r._source==='DRENAET') return true;
             return _dKw.some(function(k){return (r.service||'').toUpperCase().includes(k);});
           };
-          // Garder les enregistrements DRENAET locaux (non présents dans Firebase)
-          var localRaw=localStorage.getItem('desps26_'+col);
-          var localDrena=[];
-          if(localRaw){
-            try{
-              localDrena=JSON.parse(localRaw).filter(_isD);
-            }catch(e){}
-          }
-          // Firebase contient uniquement la Centrale — fusionner avec DRENAET local
-          DB[col]=data.filter(function(r){return !_isD(r);}).concat(localDrena);
+          // Charger les DRENAET depuis leur clé séparée (jamais écrasée par Firebase)
+          var drenaRaw=localStorage.getItem('desps26_drena_'+col);
+          var localDrena=drenaRaw?JSON.parse(drenaRaw):[];
+          // DB = données Centrale (Firebase) + données DRENAET (localStorage séparé)
+          DB[col]=data.filter(function(r){return !_isD(r);});
           DB[col].forEach(function(r){
             if(!r.genre) r.genre=detectGenre(r.nom||'');
-            if(!r._source){
-              var svc=(r.service||'').toUpperCase();
-              if(_dKw.some(function(k){return svc.includes(k);})) r._source='DRENAET';
-            }
           });
+          // Fusionner DRENAET après Centrale
+          localDrena.forEach(function(r){
+            if(!r.genre) r.genre=detectGenre(r.nom||'');
+            r._source='DRENAET';
+          });
+          DB[col]=DB[col].concat(localDrena);
           localStorage.setItem('desps26_'+col,JSON.stringify(DB[col]));
           refreshUI();
         }
@@ -3088,17 +3122,23 @@ function fbSyncAll() {
 function fbStop(){ _fbUnsubs.forEach(function(u){try{u();}catch(e){}});_fbUnsubs=[]; }
 
 function save(k){
-  localStorage.setItem('desps26_'+k,JSON.stringify(DB[k]));
-  if(!window.FB_OK) return;
-  // N'envoyer à Firestore QUE les enregistrements Centrale DESPS (pas DRENAET)
-  // Les données DRENAET restent uniquement en localStorage pour éviter les conflits de sync
   var _dKw=['DRENA','DRENAET','REGIONAL','REGION'];
   var _isD=function(r){
     if(r._source==='DRENAET') return true;
     return _dKw.some(function(kw){return (r.service||'').toUpperCase().includes(kw);});
   };
+  var centrale=DB[k].filter(function(r){return !_isD(r);});
+  var drenaet=DB[k].filter(function(r){return _isD(r);});
+  // Sauvegarder Centrale + DRENAET ensemble dans la clé principale
+  localStorage.setItem('desps26_'+k,JSON.stringify(DB[k]));
+  // Sauvegarder DRENAET séparément dans sa propre clé (protégée de Firebase)
+  localStorage.setItem('desps26_drena_'+k,JSON.stringify(drenaet));
+  if(!window.FB_OK) return;
+  // N'envoyer à Firestore QUE la Centrale (pas DRENAET)
+  // Ne pas synchroniser 'pc' (Ordinateurs Bureaux DRENAET) vers Firestore
+  if(k==='pc') return;
   var batch=window.FB.writeBatch(window.FB.db);
-  var data=DB[k].filter(function(r){return !_isD(r);});
+  var data=centrale;
   data.forEach(function(rec){
     var id=rec._fbid||rec.num_serie||rec.id||('r'+Date.now()+Math.random().toString(36).slice(2,6));
     rec._fbid=id;
@@ -3608,7 +3648,7 @@ function nav(page) {
     portables:'🖥️ Ordinateurs Portables', imprimantes:'🖨️ Imprimantes',
     tablettes:'📱 Tablettes & Autres', import:'📥 Import / Export',
     rapport:'📊 Rapport d\'activité', print:'🖨️ Impression listes',
-    'drena-bureau':'💻 DRENAET — Portables',
+    'drena-pc':'🖥️ DRENAET — Bureaux','drena-bureau':'💻 DRENAET — Portables',
     'drena-impr':'🖨️ DRENAET — Imprimantes', 'drena-tab':'📱 DRENAET — Tablettes',
     guide:"📖 Guide d'utilisation", users:'👥 Comptes utilisateurs',
     stats:'📊 Statistiques', corbeille:'🗑️ Corbeille',
@@ -3651,7 +3691,9 @@ function updateBadges() {
   document.getElementById('nb-tab').textContent       = DB.tablettes.filter(function(r){return !isDrenaRec(r);}).length;
 
   // ── DRENAET (or/gold) ──
-  document.getElementById('nb-drena-bureau').textContent    = DB.bureau.filter(isDrenaRec).length;
+  // Compter DRENAET depuis DB séparés
+  document.getElementById('nb-drena-pc').textContent      = (DB['pc']||[]).length;
+  document.getElementById('nb-drena-bureau').textContent  = DB.bureau.filter(function(r){return r._source==='DRENAET'||isDrena(r);}).length;
   document.getElementById('nb-drena-impr').textContent      = DB.imprimantes.filter(isDrenaRec).length;
   document.getElementById('nb-drena-tab').textContent       = DB.tablettes.filter(isDrenaRec).length;
 
@@ -3828,6 +3870,9 @@ function buildDashTable() {
 function populateFilters(type) {
   var d = DB[type]; if(!d) return;
   var uniq = function(f){ return [...new Set(d.map(function(r){return r[f];}).filter(Boolean))].sort(); };
+  if (type==='drena-pc') {
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td>'+acts+'</tr>';
+  }
   if (type==='bureau') { fillSel('f-b-proj',uniq('projet')); fillSel('f-b-svc',uniq('service')); fillSel('f-b-etat',uniq('etat')); }
   else if (type==='portables') { fillSel('f-p-proj',uniq('projet')); fillSel('f-p-svc',uniq('service')); fillSel('f-p-etat',uniq('etat')); }
   else if (type==='imprimantes') { fillSel('f-i-etat',uniq('etat')); }
@@ -3847,7 +3892,7 @@ function v(id){ var e=document.getElementById(id); return e?e.value:''; }
 // ==================== TABLES ====================
 function getFiltered(type) {
   var isDrenaType = type.startsWith('drena-');
-  var baseType = isDrenaType ? type.replace('drena-','').replace('bureau','bureau').replace('portables','portables').replace('impr','imprimantes').replace('tab','tablettes') : type;
+  var baseType = isDrenaType ? (type==='drena-pc'?'pc':type==='drena-bureau'?'bureau':type.replace('drena-','').replace('impr','imprimantes').replace('tab','tablettes')) : type;
   var d = (DB[baseType]||[]).slice();
   if (isDrenaType) {
     // Priorité : marqueur _source explicite (ajouts via le formulaire DRENAET)
@@ -3895,6 +3940,9 @@ function buildRow(r, type, idx) {
   
   var genreIcon = detectGenre(r.nom||'') === 'F' ? '<span style="color:var(--red)">♀</span>' : '<span style="color:var(--blue-light)">♂</span>';
   
+  if (type==='drena-pc') {
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td>'+acts+'</tr>';
+  }
   if (type==='bureau') {
     return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+acts+'</tr>';
   }
@@ -3938,7 +3986,7 @@ function renderPag(type, total, pg) {
 function goPg(type, pg){ PG[type]=pg; renderTbl(type); }
 
 function renderDrenaTbls() {
-  ['drena-bureau','drena-impr','drena-tab'].forEach(function(t){ renderTbl(t); });
+  ['drena-pc','drena-bureau','drena-impr','drena-tab'].forEach(function(t){ renderTbl(t); });
 }
 
 // ==================== SEARCH ====================
@@ -3988,7 +4036,7 @@ function editRec(type, idx) {
   var label = typeLabels[type] || type;
   document.getElementById('m-add-title').textContent = (isDrena ? '✏️ Modifier — DRENAET › ' : '✏️ Modifier — Centrale › ') + label;
   buildForm();
-  var dbKey = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+  var dbKey = type === 'drena-pc' ? 'pc' : type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
   var r=(DB[dbKey]||DB[type]||[])[idx];
   if(!r) return;
   Object.keys(r).forEach(function(k){ var el=document.getElementById('fld-'+k); if(el) el.value=r[k]||''; });
@@ -3997,8 +4045,8 @@ function editRec(type, idx) {
 function buildForm() {
   var type=document.getElementById('add-type').value;
   // Résoudre les alias DRENAET vers le type de base pour les champs du formulaire
-  // drena-bureau = portables pour DRENAET
-  var baseType = type === 'drena-bureau' ? 'portables' : type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+  // drena-bureau = portables, drena-pc = bureau pour DRENAET
+  var baseType = type === 'drena-bureau' ? 'portables' : type === 'drena-pc' ? 'bureau' : type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
   loadParams();
   var svcList = (PARAMS.services && PARAMS.services.length > 0)
     ? PARAMS.services.map(function(s){ return s.abrev||s.nom; })
@@ -4046,8 +4094,9 @@ function buildForm() {
 }
 function saveRecord() {
   var type = document.getElementById('add-type').value;
-  // Résoudre le type DRENAET vers la clé DB réelle (ex: 'drena-impr' → 'imprimantes')
-  var dbKey = type.replace('drena-', '').replace(/^impr$/, 'imprimantes').replace(/^tab$/, 'tablettes');
+  // Résoudre le type DRENAET vers la clé DB réelle
+  // drena-pc → bureau, drena-bureau → bureau (portables DRENAET), drena-impr → imprimantes, drena-tab → tablettes
+  var dbKey = type === 'drena-pc' ? 'pc' : type.replace('drena-', '').replace(/^impr$/, 'imprimantes').replace(/^tab$/, 'tablettes');
   if (!DB[dbKey]) DB[dbKey] = [];
 
   // Collecter les valeurs du formulaire
