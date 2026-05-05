@@ -722,13 +722,10 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <!-- ── DRENAET ── -->
       <div class="nav-grp-label"><span class="grp-icon">🏫</span> DRENAET</div>
       <div class="nav-item nav-sub" onclick="nav('drena-bureau')">
-        <span class="nav-ico">🖥️</span><span>Ordinateurs Bureaux</span>
+        <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
         <span class="nav-bdg" id="nb-drena-bureau" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
       </div>
-      <div class="nav-item nav-sub" onclick="nav('drena-portables')">
-        <span class="nav-ico">💻</span><span>Ordinateurs Portables</span>
-        <span class="nav-bdg" id="nb-drena-portables" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
-      </div>
+
       <div class="nav-item nav-sub" onclick="nav('drena-impr')">
         <span class="nav-ico">🖨️</span><span>Imprimantes</span>
         <span class="nav-bdg" id="nb-drena-impr" style="background:rgba(244,185,66,0.2);color:var(--gold);border-color:rgba(244,185,66,0.3);">—</span>
@@ -942,9 +939,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         <div class="stats-section-label drenaet">🏫 &nbsp;DRENAET</div>
         <div class="stats-grid-8" style="margin-bottom:18px;">
           <div class="stat-card" style="border-color:rgba(244,185,66,0.3);background:rgba(244,185,66,0.06);">
-            <div class="stat-ico">🖥️</div>
+            <div class="stat-ico">💻</div>
             <div class="stat-val" id="s-drena-bureau" style="color:var(--gold);">—</div>
-            <div class="stat-lbl" style="color:var(--txt2);">PC Bureau</div>
+            <div class="stat-lbl" style="color:var(--txt2);">PC Portables</div>
             <div class="stat-sub">DRENAET</div>
           </div>
           <div class="stat-card" style="border-color:rgba(244,185,66,0.3);background:rgba(244,185,66,0.06);">
@@ -1101,15 +1098,11 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       <!-- ===== DRENA pages (filtered) ===== -->
       <div id="pg-drena-bureau" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>N°</th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
+        <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-bureau"></div><div class="pag-btns" id="pb-drena-bureau"></div></div></div>
       </div>
-      <div id="pg-drena-portables" class="page">
-        <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-portables')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-portables')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-portables')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-portables" onclick="deleteSelected('drena-portables')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-portables">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-portables',this)"></th><th>Nom</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-portables"></tbody></table></div>
-        <div class="pag"><div class="pag-info" id="pi-drena-portables"></div><div class="pag-btns" id="pb-drena-portables"></div></div></div>
-      </div>
+
       <div id="pg-drena-impr" class="page">
         <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-impr')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-impr')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-impr')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
         <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div>
@@ -1259,8 +1252,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
                   <option value="tablettes">📱 Tablettes &amp; Autres</option>
                 </optgroup>
                 <optgroup label="🏫 DRENAET">
-                  <option value="drena-bureau">🖥️ PC Bureau</option>
-                  <option value="drena-portables">💻 PC Portables</option>
+                  <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
                   <option value="drena-impr">🖨️ Imprimantes</option>
                   <option value="drena-tab">📱 Tablettes &amp; Autres</option>
                 </optgroup>
@@ -1376,9 +1368,6 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
             <div class="import-section-label" style="margin-top:10px;">CSV</div>
             <div class="import-row" onclick="exportCSV('drena-bureau')">
-              <span class="import-row-ico">🖥️</span> PC Bureau <span class="import-ext">.csv</span>
-            </div>
-            <div class="import-row" onclick="exportCSV('drena-portables')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.csv</span>
             </div>
             <div class="import-row" onclick="exportCSV('drena-impr')">
@@ -1390,9 +1379,6 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
             <div class="import-section-label" style="margin-top:10px;">Excel (.xlsx)</div>
             <div class="import-row" onclick="exportTableExcel('drena-bureau')">
-              <span class="import-row-ico">🖥️</span> PC Bureau <span class="import-ext">.xlsx</span>
-            </div>
-            <div class="import-row" onclick="exportTableExcel('drena-portables')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.xlsx</span>
             </div>
             <div class="import-row" onclick="exportTableExcel('drena-impr')">
@@ -1404,9 +1390,6 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
             <div class="import-section-label" style="margin-top:10px;">Word (.doc)</div>
             <div class="import-row" onclick="exportTableWord('drena-bureau')">
-              <span class="import-row-ico">🖥️</span> PC Bureau <span class="import-ext">.doc</span>
-            </div>
-            <div class="import-row" onclick="exportTableWord('drena-portables')">
               <span class="import-row-ico">💻</span> PC Portables <span class="import-ext">.doc</span>
             </div>
             <div class="import-row" onclick="exportTableWord('drena-impr')">
@@ -2717,7 +2700,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <select id="add-type" style="display:none;" onchange="buildForm()">
         <option value="bureau">💻 PC Bureau</option><option value="portables">🖥️ PC Portable</option>
         <option value="imprimantes">🖨️ Imprimante</option><option value="tablettes">📱 Tablette</option>
-        <option value="drena-bureau">💻 PC Bureau (DRENAET)</option>
+        <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
         <option value="drena-portables">🖥️ PC Portable (DRENAET)</option>
         <option value="drena-impr">🖨️ Imprimante (DRENAET)</option>
         <option value="drena-tab">📱 Tablette (DRENAET)</option>
@@ -3019,11 +3002,19 @@ window.onload = function() {
 };
 
 function initApp() {
-  // 1. Charger depuis cache local immédiatement
+  // 1. Charger depuis cache local
+  var _drenaKw = ['DRENA','DRENAET','REGIONAL','REGION'];
   for (var k of Object.keys(INIT)) {
     var stored = localStorage.getItem('desps26_'+k);
     DB[k] = stored ? JSON.parse(stored) : INIT[k].map(function(r){ return Object.assign({},r); });
-    DB[k].forEach(function(r){ if(!r.genre) r.genre=detectGenre(r.nom||''); });
+    DB[k].forEach(function(r){
+      if (!r.genre) r.genre = detectGenre(r.nom||'');
+      // Tagger _source si le service contient DRENA (sans jamais supprimer)
+      if (!r._source) {
+        var svc = (r.service||'').toUpperCase();
+        if (_drenaKw.some(function(kw){ return svc.includes(kw); })) r._source = 'DRENAET';
+      }
+    });
   }
   refreshUI();
   startClock();
@@ -3053,8 +3044,28 @@ function fbSyncAll() {
         var data=[];
         snap.forEach(function(d){ data.push(Object.assign({_fbid:d.id},d.data())); });
         if(data.length>0 || !snap.metadata.fromCache){
-          DB[col]=data;
-          DB[col].forEach(function(r){if(!r.genre)r.genre=detectGenre(r.nom||'');});
+          var _dKw=['DRENA','DRENAET','REGIONAL','REGION'];
+          var _isD=function(r){
+            if(r._source==='DRENAET') return true;
+            return _dKw.some(function(k){return (r.service||'').toUpperCase().includes(k);});
+          };
+          // Garder les enregistrements DRENAET locaux (non présents dans Firebase)
+          var localRaw=localStorage.getItem('desps26_'+col);
+          var localDrena=[];
+          if(localRaw){
+            try{
+              localDrena=JSON.parse(localRaw).filter(_isD);
+            }catch(e){}
+          }
+          // Firebase contient uniquement la Centrale — fusionner avec DRENAET local
+          DB[col]=data.filter(function(r){return !_isD(r);}).concat(localDrena);
+          DB[col].forEach(function(r){
+            if(!r.genre) r.genre=detectGenre(r.nom||'');
+            if(!r._source){
+              var svc=(r.service||'').toUpperCase();
+              if(_dKw.some(function(k){return svc.includes(k);})) r._source='DRENAET';
+            }
+          });
           localStorage.setItem('desps26_'+col,JSON.stringify(DB[col]));
           refreshUI();
         }
@@ -3079,8 +3090,15 @@ function fbStop(){ _fbUnsubs.forEach(function(u){try{u();}catch(e){}});_fbUnsubs
 function save(k){
   localStorage.setItem('desps26_'+k,JSON.stringify(DB[k]));
   if(!window.FB_OK) return;
+  // N'envoyer à Firestore QUE les enregistrements Centrale DESPS (pas DRENAET)
+  // Les données DRENAET restent uniquement en localStorage pour éviter les conflits de sync
+  var _dKw=['DRENA','DRENAET','REGIONAL','REGION'];
+  var _isD=function(r){
+    if(r._source==='DRENAET') return true;
+    return _dKw.some(function(kw){return (r.service||'').toUpperCase().includes(kw);});
+  };
   var batch=window.FB.writeBatch(window.FB.db);
-  var data=DB[k];
+  var data=DB[k].filter(function(r){return !_isD(r);});
   data.forEach(function(rec){
     var id=rec._fbid||rec.num_serie||rec.id||('r'+Date.now()+Math.random().toString(36).slice(2,6));
     rec._fbid=id;
@@ -3590,7 +3608,7 @@ function nav(page) {
     portables:'🖥️ Ordinateurs Portables', imprimantes:'🖨️ Imprimantes',
     tablettes:'📱 Tablettes & Autres', import:'📥 Import / Export',
     rapport:'📊 Rapport d\'activité', print:'🖨️ Impression listes',
-    'drena-bureau':'💻 DRENAET — Bureaux', 'drena-portables':'🖥️ DRENAET — Portables',
+    'drena-bureau':'💻 DRENAET — Portables',
     'drena-impr':'🖨️ DRENAET — Imprimantes', 'drena-tab':'📱 DRENAET — Tablettes',
     guide:"📖 Guide d'utilisation", users:'👥 Comptes utilisateurs',
     stats:'📊 Statistiques', corbeille:'🗑️ Corbeille',
@@ -3634,7 +3652,6 @@ function updateBadges() {
 
   // ── DRENAET (or/gold) ──
   document.getElementById('nb-drena-bureau').textContent    = DB.bureau.filter(isDrenaRec).length;
-  document.getElementById('nb-drena-portables').textContent = DB.portables.filter(isDrenaRec).length;
   document.getElementById('nb-drena-impr').textContent      = DB.imprimantes.filter(isDrenaRec).length;
   document.getElementById('nb-drena-tab').textContent       = DB.tablettes.filter(isDrenaRec).length;
 
@@ -3878,8 +3895,11 @@ function buildRow(r, type, idx) {
   
   var genreIcon = detectGenre(r.nom||'') === 'F' ? '<span style="color:var(--red)">♀</span>' : '<span style="color:var(--blue-light)">♂</span>';
   
-  if (type==='bureau'||type==='drena-bureau') {
+  if (type==='bureau') {
     return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+acts+'</tr>';
+  }
+  if (type==='drena-bureau') {
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+acts+'</tr>';
   }
   if (type==='portables'||type==='drena-portables') {
     return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+acts+'</tr>';
@@ -3918,7 +3938,7 @@ function renderPag(type, total, pg) {
 function goPg(type, pg){ PG[type]=pg; renderTbl(type); }
 
 function renderDrenaTbls() {
-  ['drena-bureau','drena-portables','drena-impr','drena-tab'].forEach(function(t){ renderTbl(t); });
+  ['drena-bureau','drena-impr','drena-tab'].forEach(function(t){ renderTbl(t); });
 }
 
 // ==================== SEARCH ====================
@@ -3941,7 +3961,7 @@ function openAdd(type) {
   var isDrena = editType.startsWith('drena-');
   var typeLabels = {
     'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
-    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+    'drena-bureau':'PC Portables','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
   };
   var label = typeLabels[editType] || editType;
   document.getElementById('m-add-title').textContent = isDrena
@@ -3963,7 +3983,7 @@ function editRec(type, idx) {
   var isDrena = type.startsWith('drena-');
   var typeLabels = {
     'bureau':'PC Bureau','portables':'PC Portables','imprimantes':'Imprimantes','tablettes':'Tablettes & Autres',
-    'drena-bureau':'PC Bureau','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
+    'drena-bureau':'PC Portables','drena-portables':'PC Portables','drena-impr':'Imprimantes','drena-tab':'Tablettes & Autres'
   };
   var label = typeLabels[type] || type;
   document.getElementById('m-add-title').textContent = (isDrena ? '✏️ Modifier — DRENAET › ' : '✏️ Modifier — Centrale › ') + label;
@@ -3977,7 +3997,8 @@ function editRec(type, idx) {
 function buildForm() {
   var type=document.getElementById('add-type').value;
   // Résoudre les alias DRENAET vers le type de base pour les champs du formulaire
-  var baseType = type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+  // drena-bureau = portables pour DRENAET
+  var baseType = type === 'drena-bureau' ? 'portables' : type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
   loadParams();
   var svcList = (PARAMS.services && PARAMS.services.length > 0)
     ? PARAMS.services.map(function(s){ return s.abrev||s.nom; })
@@ -4198,7 +4219,7 @@ function exportCSV(type) {
 var CAT_LABELS = {
   bureau:'Ordinateurs Bureaux', portables:'Ordinateurs Portables',
   imprimantes:'Imprimantes', tablettes:'Tablettes',
-  'drena-bureau':'DRENAET — Bureaux', 'drena-portables':'DRENAET — Portables'
+  'drena-bureau':'DRENAET — Portables', 'drena-portables':'DRENAET — Portables'
 };
 
 /** Couleurs de catégorie pour l'export Word */
@@ -5653,7 +5674,7 @@ function buildStatPanel(tab) {
         +kpi(neufsB,'Neufs (Bureau)','var(--accent)',Math.round(neufsB/Math.max(b.length,1)*100)+'% du parc bureau')
         +kpi(ancsB,'Anciens (Bureau)','var(--orange)',Math.round(ancsB/Math.max(b.length,1)*100)+'% du parc bureau')
         +kpi(femmesP,'Femmes (Portables)','var(--red)',Math.round(femmesP/Math.max(p.length,1)*100)+'% des portables')
-        +kpi(drenaB,'DRENAET (Bureau)','var(--gold)','vs Centrale : '+centraleB)
+        +kpi(drenaB,'DRENAET (Portables)','var(--gold)','vs Centrale : '+centraleB)
       +'</div>'
       +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">'
         +'<div class="tcard" style="margin-bottom:0;"><div class="tcard-head"><h3>Top 5 projets</h3></div><div style="padding:14px;">'
@@ -5829,7 +5850,7 @@ function buildStatPanel(tab) {
     var dTotal=dB.length+dP.length+dI.length+dT.length;
     el.innerHTML =
       '<div class="stats-full-grid" style="grid-template-columns:repeat(4,1fr);">'
-        +kpi(dB.length,'PC Bureau DRENAET','var(--gold)')
+        +kpi(dB.length,'PC Portables DRENAET','var(--gold)')
         +kpi(dP.length,'Portables DRENAET','var(--gold)')
         +kpi(dI.length,'Imprimantes DRENAET','var(--gold)')
         +kpi(dTotal,'Total DRENAET','var(--gold)','Directions Régionales')
@@ -6016,7 +6037,7 @@ function _normalizeRow(rawObj) {
     // projet
     'projet':1,'project':1,
     // service
-    'service':1,'direction':1,'sous-direction':1,'service/sous-direction':1,
+    'service':1,'direction':1,'sous-direction':1,'service/sous-direction':1,'service/sous direction':1,'sous direction':1,'service sous direction':1,
     // bureau
     'bureau':1,'bureau/étage/porte':1,'emplacement':1,'localisation':1,
     // cpu, ram, stockage
@@ -6046,7 +6067,7 @@ function _normalizeRow(rawObj) {
     'modele':'marque','modèle':'marque',
     'état':'etat','condition':'etat',
     'project':'projet',
-    'direction':'service','sous-direction':'service','service/sous-direction':'service',
+    'direction':'service','sous-direction':'service','service/sous-direction':'service','service/sous direction':'service','sous direction':'service','service sous direction':'service',
     'bureau/étage/porte':'bureau','emplacement':'bureau','localisation':'bureau',
     'processeur':'cpu','processeur (cpu)':'cpu',
     'mémoire':'ram','mémoire ram':'ram',
@@ -6063,8 +6084,22 @@ function _normalizeRow(rawObj) {
 
   var out = {};
   Object.keys(rawObj).forEach(function(raw) {
+    // Normalisation 1 : remplace tirets, underscores, espaces par espace
     var key = raw.toLowerCase().replace(/[_\-\s]+/g,' ').trim();
-    var mapped = ALIAS[key] || (MAP[key] ? raw.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/__+/g,'_').replace(/^_|_$/g,'') : raw);
+    // Normalisation 2 : conserve le tiret (pour 'service/sous-direction')
+    var key2 = raw.toLowerCase().replace(/[_\s]+/g,' ').trim();
+    // Chercher d'abord dans ALIAS (avec les deux normalisations)
+    var aliasVal = ALIAS[key] || ALIAS[key2] || ALIAS[raw.toLowerCase().trim()];
+    // Chercher dans MAP (avec les deux normalisations)
+    var inMap = MAP[key] || MAP[key2] || MAP[raw.toLowerCase().trim()];
+    var mapped;
+    if (aliasVal) {
+      mapped = aliasVal;
+    } else if (inMap) {
+      mapped = raw.toLowerCase().replace(/[^a-z0-9]/g,'_').replace(/__+/g,'_').replace(/^_|_$/g,'');
+    } else {
+      mapped = raw;
+    }
     out[mapped] = rawObj[raw];
   });
   return out;
@@ -6153,46 +6188,45 @@ function _processRows(parsed, target, mode) {
     return { added: added, updated: updated, dupes: dupes, total: parsed.length };
   }
 
-  // ── Cibles standard DB (bureau, portables, drena-*, etc.) ──
-  var existing = DB[target] || [];
+  // ── Résoudre drena-* → clé DB réelle ──
+  var isDrenaTarget = target.startsWith('drena-');
+  var dbKey = isDrenaTarget
+    ? target.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes')
+    : target;
+  if (!DB[dbKey]) DB[dbKey] = [];
+  var existing = DB[dbKey];
   var added = 0, updated = 0, dupes = 0;
 
   if (mode === 'replace') {
-    // Remplacer tout
     var enriched = parsed.map(function(r){
       r.genre = r.genre || detectGenre(r.nom||'');
+      if (isDrenaTarget) r._source = 'DRENAET';
       return r;
     });
-    DB[target] = enriched;
+    DB[dbKey] = enriched;
     added = enriched.length;
   } else {
-    // Construire un index par N° série pour recherche rapide
     var idx = {};
     existing.forEach(function(r, i){
       var k = (r.num_serie||'').toUpperCase().trim();
       if (k) idx[k] = i;
     });
-
     parsed.forEach(function(r) {
       r.genre = r.genre || detectGenre(r.nom||'');
+      if (isDrenaTarget) r._source = 'DRENAET';
       var k = (r.num_serie||'').toUpperCase().trim();
-
       if (k && idx.hasOwnProperty(k)) {
-        if (mode === 'update') {
-          Object.assign(existing[idx[k]], r);
-          updated++;
-        } else {
-          dupes++;
-        }
+        if (mode === 'update') { Object.assign(existing[idx[k]], r); updated++; }
+        else dupes++;
       } else {
         existing.push(r);
         if (k) idx[k] = existing.length - 1;
         added++;
       }
     });
-    DB[target] = existing;
+    DB[dbKey] = existing;
   }
-  return { added: added, updated: updated, dupes: dupes, total: parsed.length };
+  return { added: added, updated: updated, dupes: dupes, total: parsed.length, _dbKey: dbKey };
 }
 
 // ── Point d'entrée principal ──────────────────────────────────────
@@ -6259,7 +6293,13 @@ function _showImportPreview(parsed, target, res) {
     existing = loadMaintItems(maintMap[target]);
     existSet = new Set(existing.map(function(r){ return (r.serie||'').toUpperCase().trim(); }));
   } else {
-    existing = DB[target] || [];
+    var previewDbKey = target.startsWith('drena-')
+      ? target.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes')
+      : target;
+    existing = DB[previewDbKey] || [];
+    if (target.startsWith('drena-')) {
+      existing = existing.filter(function(r){ return r._source === 'DRENAET' || isDrena(r); });
+    }
     existSet = new Set(existing.map(function(r){ return (r.num_serie||'').toUpperCase().trim(); }));
   }
 
@@ -6324,7 +6364,8 @@ function confirmImport() {
     // Persistance locale (uniquement pour les cibles DB — maint-* sont déjà sauvegardées dans _processRows)
     var maintTargets = ['maint-bureau','maint-portables','maint-imprimantes','maint-tablettes'];
     if (maintTargets.indexOf(target) === -1) {
-      try { save(target); } catch(e){ console.warn('save():', e); }
+      var saveKey = (result && result._dbKey) ? result._dbKey : target;
+      try { save(saveKey); } catch(e){ console.warn('save():', e); }
     }
 
     // Rafraîchir l'interface
