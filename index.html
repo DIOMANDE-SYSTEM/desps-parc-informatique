@@ -1262,7 +1262,6 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
                 </optgroup>
                 <optgroup label="🏫 DRENAET">
                   <option value="drena-pc">🖥️ PC Bureaux (DRENAET)</option>
-                  <option value="drena-pc">🖥️ PC Bureaux (DRENAET)</option>
         <option value="drena-bureau">💻 PC Portables (DRENAET)</option>
                   <option value="drena-impr">🖨️ Imprimantes</option>
                   <option value="drena-tab">📱 Tablettes &amp; Autres</option>
@@ -3951,7 +3950,7 @@ function buildRow(r, type, idx) {
     return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+acts+'</tr>';
   }
   if (type==='drena-bureau') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+ebg+acts+'</tr>';
   }
   if (type==='portables'||type==='drena-portables') {
     return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+acts+'</tr>';
