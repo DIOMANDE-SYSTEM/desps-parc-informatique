@@ -3704,20 +3704,24 @@ function updateBadges() {
   document.getElementById('nb-maint-tablettes').textContent    = loadMaintItems('tablettes').length;
 }
 function updateStats() {
-  // Filtre DRENAET cohérent avec getFiltered : _source:'DRENAET' OU isDrena() pour les anciens enregistrements
+  // Filtre DRENAET cohérent avec getFiltered
   var isDrenaRec = function(r){ return r._source === 'DRENAET' || isDrena(r); };
-  var drenaB = DB.bureau.filter(isDrenaRec).length;
-  var drenaP = DB.portables.filter(isDrenaRec).length;
-  var drenaI = DB.imprimantes.filter(isDrenaRec).length;
-  var drenaT = DB.tablettes.filter(isDrenaRec).length;
-  document.getElementById('s-bureau').textContent = DB.bureau.length - drenaB;
-  document.getElementById('s-port').textContent = DB.portables.length - drenaP;
-  document.getElementById('s-impr').textContent = DB.imprimantes.length - drenaI;
-  document.getElementById('s-tab').textContent = DB.tablettes.length - drenaT;
-  document.getElementById('s-drena-bureau').textContent = drenaB;
-  document.getElementById('s-drena-port').textContent = drenaP;
-  document.getElementById('s-drena-impr').textContent = drenaI;
-  document.getElementById('s-drena-tab').textContent = drenaT;
+  // drena-bureau stocke les Portables DRENAET dans DB.bureau
+  // drena-pc stocke les Bureaux DRENAET dans DB['pc']
+  var drenaBUR = (DB['pc']||[]).length;                     // PC Bureaux DRENAET
+  var drenaPRT = DB.bureau.filter(isDrenaRec).length;       // PC Portables DRENAET
+  var drenaI   = DB.imprimantes.filter(isDrenaRec).length;
+  var drenaT   = DB.tablettes.filter(isDrenaRec).length;
+  // Centrale DESPS (sans DRENAET)
+  document.getElementById('s-bureau').textContent = DB.bureau.length - drenaPRT;
+  document.getElementById('s-port').textContent   = DB.portables.filter(function(r){return !isDrenaRec(r);}).length;
+  document.getElementById('s-impr').textContent   = DB.imprimantes.length - drenaI;
+  document.getElementById('s-tab').textContent    = DB.tablettes.length - drenaT;
+  // DRENAET
+  document.getElementById('s-drena-bureau').textContent = drenaBUR;   // PC Bureaux = DB['pc']
+  document.getElementById('s-drena-port').textContent   = drenaPRT;   // PC Portables = DB.bureau DRENAET
+  document.getElementById('s-drena-impr').textContent   = drenaI;
+  document.getElementById('s-drena-tab').textContent    = drenaT;
 }
 
 // ==================== CHARTS ====================
