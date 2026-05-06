@@ -3072,6 +3072,13 @@ function refreshUI() {
 
 var _fbUnsubs = [];
 function fbSyncAll() {
+  var _dKw=['DRENA','DRENAET','REGIONAL','REGION'];
+  var _isD=function(r){
+    if(r._source==='DRENAET') return true;
+    return _dKw.some(function(k){return (r.service||'').toUpperCase().includes(k);});
+  };
+
+  // ── Collections Centrale DESPS ──
   var cols = ['bureau','portables','imprimantes','tablettes'];
   cols.forEach(function(col){
     var u = window.FB.onSnapshot(
@@ -3080,25 +3087,12 @@ function fbSyncAll() {
         var data=[];
         snap.forEach(function(d){ data.push(Object.assign({_fbid:d.id},d.data())); });
         if(data.length>0 || !snap.metadata.fromCache){
-          var _dKw=['DRENA','DRENAET','REGIONAL','REGION'];
-          var _isD=function(r){
-            if(r._source==='DRENAET') return true;
-            return _dKw.some(function(k){return (r.service||'').toUpperCase().includes(k);});
-          };
-          // Charger les DRENAET depuis leur clé séparée (jamais écrasée par Firebase)
-          var drenaRaw=localStorage.getItem('desps26_drena_'+col);
-          var localDrena=drenaRaw?JSON.parse(drenaRaw):[];
-          // DB = données Centrale (Firebase) + données DRENAET (localStorage séparé)
+          // Données Centrale uniquement (sans DRENAET Firebase)
           DB[col]=data.filter(function(r){return !_isD(r);});
-          DB[col].forEach(function(r){
-            if(!r.genre) r.genre=detectGenre(r.nom||'');
-          });
-          // Fusionner DRENAET après Centrale
-          localDrena.forEach(function(r){
-            if(!r.genre) r.genre=detectGenre(r.nom||'');
-            r._source='DRENAET';
-          });
-          DB[col]=DB[col].concat(localDrena);
+          DB[col].forEach(function(r){ if(!r.genre) r.genre=detectGenre(r.nom||''); });
+          // Ajouter les DRENAET déjà en mémoire (chargés par le listener parc_drena_*)
+          var drenaInMem=(DB['_drena_'+col]||[]);
+          DB[col]=DB[col].concat(drenaInMem);
           localStorage.setItem('desps26_'+col,JSON.stringify(DB[col]));
           refreshUI();
         }
@@ -3106,6 +3100,35 @@ function fbSyncAll() {
       function(e){ console.warn('Sync '+col+':',e.message); }
     );
     _fbUnsubs.push(u);
+  });
+
+  // ── Collections DRENAET dédiées (parc_drena_*) ──
+  var drenaCols = ['bureau','portables','imprimantes','tablettes','pc'];
+  drenaCols.forEach(function(col){
+    var u2 = window.FB.onSnapshot(
+      window.FB.collection(window.FB.db,'parc_drena_'+col),
+      function(snap){
+        var data=[];
+        snap.forEach(function(d){ data.push(Object.assign({_fbid_drena:d.id,_source:'DRENAET'},d.data())); });
+        // Stocker en mémoire tampon
+        DB['_drena_'+col]=data;
+        data.forEach(function(r){ if(!r.genre) r.genre=detectGenre(r.nom||''); });
+        // Sauvegarder localement
+        localStorage.setItem('desps26_drena_'+col,JSON.stringify(data));
+        if(col==='pc'){
+          // Bureaux DRENAET → DB['pc']
+          DB['pc']=data;
+          localStorage.setItem('desps26_pc',JSON.stringify(data));
+        } else {
+          // Fusionner avec DB[col] en remplaçant les anciens DRENAET
+          DB[col]=(DB[col]||[]).filter(function(r){return !_isD(r);}).concat(data);
+          localStorage.setItem('desps26_'+col,JSON.stringify(DB[col]));
+        }
+        refreshUI();
+      },
+      function(e){ console.warn('Sync DRENAET '+col+':',e.message); }
+    );
+    _fbUnsubs.push(u2);
   });
   // Sync comptes utilisateurs
   window.FB.onSnapshot(
@@ -3127,23 +3150,48 @@ function save(k){
     return _dKw.some(function(kw){return (r.service||'').toUpperCase().includes(kw);});
   };
   var centrale=DB[k].filter(function(r){return !_isD(r);});
-  var drenaet=DB[k].filter(function(r){return _isD(r);});
-  // Sauvegarder Centrale + DRENAET ensemble dans la clé principale
+  var drenaet =DB[k].filter(function(r){return _isD(r);});
+  // Sauvegarder localement
   localStorage.setItem('desps26_'+k,JSON.stringify(DB[k]));
-  // Sauvegarder DRENAET séparément dans sa propre clé (protégée de Firebase)
   localStorage.setItem('desps26_drena_'+k,JSON.stringify(drenaet));
   if(!window.FB_OK) return;
-  // N'envoyer à Firestore QUE la Centrale (pas DRENAET)
-  // Ne pas synchroniser 'pc' (Ordinateurs Bureaux DRENAET) vers Firestore
-  if(k==='pc') return;
   var batch=window.FB.writeBatch(window.FB.db);
-  var data=centrale;
-  data.forEach(function(rec){
-    var id=rec._fbid||rec.num_serie||rec.id||('r'+Date.now()+Math.random().toString(36).slice(2,6));
-    rec._fbid=id;
-    batch.set(window.FB.doc(window.FB.db,'parc_'+k,id),rec);
+  // ── Centrale DESPS → parc_<k> ──
+  if(k!=='pc'){
+    centrale.forEach(function(rec){
+      var id=rec._fbid||rec.num_serie||rec.id||('r'+Date.now()+Math.random().toString(36).slice(2,6));
+      rec._fbid=id;
+      batch.set(window.FB.doc(window.FB.db,'parc_'+k,id),rec);
+    });
+  }
+  // ── DRENAET → parc_drena_<k> (collection dédiée partagée) ──
+  drenaet.forEach(function(rec){
+    var id=rec._fbid_drena||rec.num_serie||rec.id||('d'+Date.now()+Math.random().toString(36).slice(2,6));
+    rec._fbid_drena=id;
+    batch.set(window.FB.doc(window.FB.db,'parc_drena_'+k,id),rec);
   });
+  // ── DB['pc'] (Bureaux DRENAET) → parc_drena_pc ──
+  if(k==='pc'){
+    (DB['pc']||[]).forEach(function(rec){
+      var id=rec._fbid_drena||rec.num_serie||rec.id||('d'+Date.now()+Math.random().toString(36).slice(2,6));
+      rec._fbid_drena=id;
+      batch.set(window.FB.doc(window.FB.db,'parc_drena_pc',id),rec);
+    });
+  }
   batch.commit().catch(function(e){console.warn('Save '+k+':',e.message);});
+}
+
+// Sauvegarder uniquement DB['pc'] (Bureaux DRENAET) sur Firebase
+function savePC(){
+  localStorage.setItem('desps26_pc',JSON.stringify(DB['pc']||[]));
+  if(!window.FB_OK) return;
+  var batch=window.FB.writeBatch(window.FB.db);
+  (DB['pc']||[]).forEach(function(rec){
+    var id=rec._fbid_drena||rec.num_serie||rec.id||('d'+Date.now()+Math.random().toString(36).slice(2,6));
+    rec._fbid_drena=id;
+    batch.set(window.FB.doc(window.FB.db,'parc_drena_pc',id),rec);
+  });
+  batch.commit().catch(function(e){console.warn('SavePC:',e.message);});
 }
 
 // ==================== AUTH ====================
