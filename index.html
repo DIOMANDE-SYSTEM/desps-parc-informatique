@@ -200,6 +200,8 @@ body{font-family:'Outfit',sans-serif;background:var(--navy);color:var(--txt);min
 .btn-sec{background:var(--card);color:var(--txt);border:1px solid var(--border2);}
 .btn-sec:hover{border-color:var(--blue-light);}
 .btn-gold{background:var(--gold);color:#1a0d00;}
+.btn-outline{background:transparent;color:var(--txt2);border:1px solid var(--border2);}
+.btn-outline:hover{border-color:var(--blue-light);color:var(--txt);}
 .btn-sm{padding:5px 11px;font-size:12px;}
 
 /* ====== CONTENT ====== */
@@ -242,6 +244,27 @@ canvas{max-width:100%;}
 .tcard-actions{display:flex;gap:7px;align-items:center;}
 .filter-row{padding:10px 18px;border-bottom:1px solid var(--border);display:flex;gap:9px;flex-wrap:wrap;background:rgba(0,0,0,0.1);}
 .flt{background:var(--surface);border:1px solid var(--border);color:var(--txt);padding:5px 9px;border-radius:7px;font-size:12px;font-family:'Outfit',sans-serif;cursor:pointer;outline:none;}
+/* ====== PHOTOS ÉQUIPEMENT ====== */
+.photo-upload-zone{border:2px dashed var(--border2);border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:border-color 0.2s;background:rgba(255,255,255,0.02);}
+.photo-upload-zone:hover{border-color:var(--accent);}
+.photo-upload-zone input[type=file]{display:none;}
+.photo-thumb{width:100%;max-height:100px;object-fit:cover;border-radius:6px;cursor:pointer;}
+.photo-preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+.photo-preview-item{position:relative;border-radius:8px;overflow:hidden;background:rgba(0,0,0,0.2);}
+.photo-preview-item img{width:100%;height:80px;object-fit:cover;display:block;}
+.photo-preview-item .photo-del{position:absolute;top:3px;right:3px;background:rgba(230,57,70,0.85);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.photo-preview-item .photo-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);color:#fff;font-size:9px;text-align:center;padding:2px 4px;}
+.tbl-photo-cell{width:52px;text-align:center;}
+.tbl-photo-thumb{width:42px;height:32px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid var(--border);transition:transform 0.15s;}
+.tbl-photo-thumb:hover{transform:scale(1.08);}
+.no-photo-badge{display:inline-block;width:42px;height:32px;background:rgba(148,163,184,0.1);border:1px dashed var(--border);border-radius:4px;font-size:10px;color:var(--txt3);display:flex;align-items:center;justify-content:center;}
+/* Modal plein écran photo */
+#modal-photo-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;align-items:center;justify-content:center;flex-direction:column;gap:10px;}
+#modal-photo-viewer.on{display:flex;}
+#modal-photo-viewer img{max-width:90vw;max-height:80vh;object-fit:contain;border-radius:8px;}
+#modal-photo-viewer .pv-caption{color:rgba(255,255,255,0.7);font-size:13px;}
+#modal-photo-viewer .pv-close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,0.12);border:none;color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;}
+
 .flt:focus{border-color:var(--blue-light);}
 .flt option{background:var(--navy2);}
 .scroll{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch;}
@@ -843,6 +866,9 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <div class="nav-item admin-nav-only" onclick="nav('users')" style="display:none;" id="nav-users">
         <span class="nav-ico">👥</span><span>Comptes utilisateurs</span>
       </div>
+      <div class="nav-item admin-nav-only" onclick="nav('collecte')" style="display:none;" id="nav-collecte">
+        <span class="nav-ico">📋</span><span>Collecte de données</span>
+      </div>
 
       <!-- visible to all (autres rôles): guide -->
       <div class="nav-item user-nav-only" onclick="nav('guide')" style="display:none;">
@@ -1037,7 +1063,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <select class="flt" id="f-b-etat" onchange="renderTbl('bureau')"><option value="">Tous les &eacute;tats</option></select>
             <input type="date" class="flt" id="f-b-date" onchange="renderTbl('bureau')" title="Filtrer par date">
           </div>
-          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('bureau',this)"></th><th>N°</th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th class="hs">CPU</th><th class="hs">RAM</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Date</th><th>Actions</th></tr></thead><tbody id="tbl-bureau"></tbody></table></div>
+          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('bureau',this)"></th><th>N°</th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th class="hs">CPU</th><th class="hs">RAM</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Date</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-bureau"></tbody></table></div>
           <div class="pag"><div class="pag-info" id="pi-bureau"></div><div class="pag-btns" id="pb-bureau"></div></div>
         </div>
       </div>
@@ -1060,7 +1086,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
             <select class="flt" id="f-p-genre" onchange="renderTbl('portables')"><option value="">Tous genres</option><option value="F">&#9792; F&eacute;minin</option><option value="M">&#9794; Masculin</option></select>
             <input type="date" class="flt" id="f-p-date" onchange="renderTbl('portables')" title="Filtrer par date">
           </div>
-          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('portables',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th class="hs">CPU</th><th class="hs">RAM</th><th>Projet</th><th>Service</th><th>Date</th><th>Genre</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-portables"></tbody></table></div>
+          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('portables',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th class="hs">CPU</th><th class="hs">RAM</th><th>Projet</th><th>Service</th><th>Date</th><th>Genre</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-portables"></tbody></table></div>
           <div class="pag"><div class="pag-info" id="pi-portables"></div><div class="pag-btns" id="pb-portables"></div></div>
         </div>
       </div>
@@ -1079,7 +1105,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
           <div class="filter-row">
             <select class="flt" id="f-i-etat" onchange="renderTbl('imprimantes')"><option value="">Tous les &eacute;tats</option></select>
           </div>
-          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('imprimantes',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Projet</th><th>Service</th><th>Utilisateur</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-imprimantes"></tbody></table></div>
+          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('imprimantes',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Projet</th><th>Service</th><th>Utilisateur</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-imprimantes"></tbody></table></div>
           <div class="pag"><div class="pag-info" id="pi-imprimantes"></div><div class="pag-btns" id="pb-imprimantes"></div></div>
         </div>
       </div>
@@ -1095,7 +1121,7 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
               <button class="btn btn-primary btn-sm write-gate" onclick="openAdd('tablettes')">&#43; Ajouter</button>
             </div>
           </div>
-          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('tablettes',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>CPU</th><th>RAM</th><th>Stockage</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-tablettes"></tbody></table></div>
+          <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('tablettes',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>CPU</th><th>RAM</th><th>Stockage</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-tablettes"></tbody></table></div>
           <div class="pag"><div class="pag-info" id="pi-tablettes"></div><div class="pag-btns" id="pb-tablettes"></div></div>
         </div>
       </div>
@@ -1103,23 +1129,23 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <!-- ===== DRENA pages (filtered) ===== -->
       <div id="pg-drena-pc" class="page">
         <div class="tcard"><div class="tcard-head"><h3>🖥️ DRENAET — Ordinateurs Bureaux<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-pc')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-pc')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-pc')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-pc" onclick="deleteSelected('drena-pc')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-pc">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-pc',this)"></th><th>N°</th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-pc"></tbody></table></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-pc',this)"></th><th>N°</th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-drena-pc"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-pc"></div><div class="pag-btns" id="pb-drena-pc"></div></div></div>
       </div>
       <div id="pg-drena-bureau" class="page">
         <div class="tcard"><div class="tcard-head"><h3>💻 DRENAET — Ordinateurs Portables<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-bureau')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-bureau')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-bureau')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-bureau" onclick="deleteSelected('drena-bureau')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-bureau">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-bureau',this)"></th><th>Nom &amp; Pr&eacute;noms</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>Date</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-drena-bureau"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-bureau"></div><div class="pag-btns" id="pb-drena-bureau"></div></div></div>
       </div>
 
       <div id="pg-drena-impr" class="page">
         <div class="tcard"><div class="tcard-head"><h3>🖨️ DRENAET — Imprimantes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-impr')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-impr')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-impr')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-impr" onclick="deleteSelected('drena-impr')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-impr">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-impr',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Caract.</th><th>Service</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-drena-impr"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-impr"></div><div class="pag-btns" id="pb-drena-impr"></div></div></div>
       </div>
       <div id="pg-drena-tab" class="page">
         <div class="tcard"><div class="tcard-head"><h3>📱 DRENAET — Tablettes<span class="badge b-gold" style="margin-left:10px;">DRENAET</span></h3><div class="tcard-actions"><button class="btn btn-primary btn-sm write-gate" onclick="openAdd('drena-tab')">&#43; Ajouter</button><button class="btn btn-sec btn-sm" onclick="exportTableExcel('drena-tab')">&#8595; Excel</button><button class="btn btn-sec btn-sm" onclick="exportTableWord('drena-tab')">&#8595; Word</button><button class="btn btn-sm btn-bulk-del delete-gate" id="bulk-del-drena-tab" onclick="deleteSelected('drena-tab')" disabled>🗑 Supprimer la sélection (<span id="cnt-sel-drena-tab">0</span>)</button></div></div>
-        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th>Actions</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div>
+        <div class="scroll"><table><thead><tr><th class="sel-th"><input type="checkbox" class="head-chk" onclick="toggleAllSel('drena-tab',this)"></th><th>N°</th><th>N° S&eacute;rie</th><th>Marque</th><th>Projet</th><th>Service</th><th>&Eacute;tat</th><th class="tbl-photo-cell">Photos</th><th>Actions</th></tr></thead><tbody id="tbl-drena-tab"></tbody></table></div>
         <div class="pag"><div class="pag-info" id="pi-drena-tab"></div><div class="pag-btns" id="pb-drena-tab"></div></div></div>
       </div>
 
@@ -2385,6 +2411,199 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
 
       </div>
 
+      <!-- ===== PAGE COLLECTE DE DONNÉES ===== -->
+      <div id="pg-collecte" class="page admin-gate" style="display:none;">
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
+            <div>
+              <div style="font-size:11px;color:var(--txt3);font-family:'IBM Plex Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">— COLLECTE DE DONNÉES</div>
+              <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--txt);margin:0;">Formulaires <em style="font-style:italic;color:var(--accent);">en ligne</em></h2>
+              <p style="font-size:13px;color:var(--txt2);margin-top:6px;max-width:520px;line-height:1.6;">Concevez des questionnaires comme avec KoboToolbox, partagez par lien public et collectez les réponses directement dans la plateforme.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-outline btn-sm" onclick="collecteImportXLS()" title="Importer un fichier XLSForm">
+                <span>⬆️</span> Importer XLSForm
+              </button>
+              <button class="btn btn-gold btn-sm" onclick="collecteGenererIA()" title="Générer un formulaire par IA">
+                <span>⭐</span> Générer par IA
+              </button>
+              <button class="btn btn-primary" onclick="collecteNouveauFormulaire()" title="Créer un nouveau formulaire">
+                <span>＋</span> Nouveau formulaire
+              </button>
+            </div>
+          </div>
+
+          <!-- Liste des formulaires -->
+          <div id="collecte-list-container">
+            <div id="collecte-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--txt3);">
+              <div style="font-size:48px;margin-bottom:12px;">📋</div>
+              <div style="font-size:15px;font-weight:600;margin-bottom:6px;">Aucun formulaire créé</div>
+              <div style="font-size:13px;">Cliquez sur <strong>+ Nouveau formulaire</strong> pour commencer.</div>
+            </div>
+            <div id="collecte-forms-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE COLLECTE : BUILDER DE FORMULAIRE ===== -->
+      <div id="pg-collecte-builder" class="page admin-gate" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <button class="btn btn-outline btn-sm" onclick="collecteBackToList()">← Retour</button>
+          <div>
+            <h2 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--txt);margin:0;" id="builder-title">Nouveau formulaire</h2>
+            <span style="font-size:11px;color:var(--txt3);" id="builder-subtitle">Conception du questionnaire</span>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="collectePreviewForm()">👁 Aperçu</button>
+            <button class="btn btn-primary" onclick="collecteSaveForm()">💾 Enregistrer</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start;">
+          <!-- Panneau principal : méta + questions -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <!-- Méta formulaire -->
+            <div class="tcard">
+              <div class="tcard-head"><h3>📝 Informations générales</h3></div>
+              <div style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+                <div>
+                  <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Titre du formulaire *</label>
+                  <input type="text" id="builder-form-title" class="flt" style="width:100%;" placeholder="Ex : Enquête sur l'équipement informatique" oninput="this.value&&(document.getElementById('builder-title').textContent=this.value)">
+                </div>
+                <div>
+                  <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Description</label>
+                  <textarea id="builder-form-desc" class="flt" style="width:100%;min-height:60px;resize:vertical;" placeholder="Description ou instructions pour les répondants..."></textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div>
+                    <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Direction cible</label>
+                    <select id="builder-form-direction" class="flt" style="width:100%;">
+                      <option value="">— Toutes —</option>
+                      <option value="Centrale">Centrale / DESPS</option>
+                      <option value="DRENAET">DRENAET</option>
+                      <option value="IEPP">IEPP</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px;">Statut</label>
+                    <select id="builder-form-status" class="flt" style="width:100%;">
+                      <option value="brouillon">📝 Brouillon</option>
+                      <option value="publie">✅ Publié</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Questions -->
+            <div class="tcard">
+              <div class="tcard-head">
+                <h3>❓ Questions</h3>
+                <button class="btn btn-primary btn-sm" onclick="collecteAddQuestion()">➕ Ajouter une question</button>
+              </div>
+              <div id="builder-questions" style="padding:14px;display:flex;flex-direction:column;gap:10px;">
+                <div style="text-align:center;padding:30px;color:var(--txt3);font-size:13px;">
+                  Aucune question ajoutée. Cliquez sur <strong>Ajouter une question</strong>.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panneau latéral : types de questions -->
+          <div class="tcard" style="position:sticky;top:20px;">
+            <div class="tcard-head"><h3>🧩 Types de champs</h3></div>
+            <div style="padding:14px;display:flex;flex-direction:column;gap:6px;">
+              <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Champs texte</div>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('text')">📝 Texte court</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('textarea')">📄 Texte long</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('number')">🔢 Nombre</button>
+              <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin:6px 0 4px;">Choix</div>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('select_one')">🔘 Choix unique</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('select_multiple')">☑️ Choix multiple</button>
+              <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin:6px 0 4px;">Date & heure</div>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('date')">📅 Date</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('datetime')">🕐 Date et heure</button>
+              <div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin:6px 0 4px;">Spéciaux</div>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('note')">📌 Note / Info</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('geopoint')">📍 Localisation</button>
+              <button class="btn btn-outline btn-sm" style="justify-content:flex-start;gap:8px;" onclick="collecteAddQuestion('photo')">📷 Photo équipement</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAGE COLLECTE : RÉPONSES D'UN FORMULAIRE ===== -->
+      <div id="pg-collecte-reponses" class="page admin-gate" style="display:none;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+          <button class="btn btn-outline btn-sm" onclick="collecteBackToList()">← Retour</button>
+          <div>
+            <h2 style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--txt);margin:0;" id="reponses-form-title">Réponses</h2>
+            <span id="reponses-form-count" style="font-size:11px;color:var(--txt3);">0 réponse(s)</span>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="collecteExportReponses()">📊 Exporter Excel</button>
+          </div>
+        </div>
+        <div class="tcard">
+          <div id="reponses-table-container" style="overflow-x:auto;padding:14px;">
+            <p style="color:var(--txt3);text-align:center;padding:30px;">Aucune réponse enregistrée pour ce formulaire.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MODAL : APERÇU / REMPLIR FORMULAIRE PUBLIC ===== -->
+      <div id="modal-collecte-preview" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;overflow-y:auto;">
+        <div style="max-width:620px;margin:40px auto;background:var(--card);border:1px solid var(--border2);border-radius:20px;overflow:hidden;">
+          <div style="background:linear-gradient(135deg,var(--blue),var(--blue2));padding:24px 28px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1.5px;font-family:'IBM Plex Mono',monospace;margin-bottom:4px;">DESPS / MENAET — Formulaire en ligne</div>
+                <h2 id="preview-form-title" style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin:0;"></h2>
+                <p id="preview-form-desc" style="font-size:13px;color:rgba(255,255,255,0.8);margin-top:6px;line-height:1.5;"></p>
+              </div>
+              <button onclick="document.getElementById('modal-collecte-preview').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+            </div>
+          </div>
+          <div id="preview-form-body" style="padding:24px 28px;display:flex;flex-direction:column;gap:16px;"></div>
+          <div style="padding:16px 28px 28px;display:flex;justify-content:flex-end;gap:10px;">
+            <button class="btn btn-outline" onclick="document.getElementById('modal-collecte-preview').style.display='none'">Annuler</button>
+            <button class="btn btn-primary" id="preview-submit-btn" onclick="collecteSubmitResponse()">💾 Enregistrer la réponse</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MODAL : GÉNÉRATEUR IA ===== -->
+      <div id="modal-collecte-ia" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9000;overflow-y:auto;">
+        <div style="max-width:560px;margin:60px auto;background:var(--card);border:1px solid var(--border2);border-radius:20px;overflow:hidden;">
+          <div style="background:linear-gradient(135deg,#2a1a6e,#1a4a8e);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:2px;">Analyse sémantique locale</div>
+              <h3 style="font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#fff;margin:0;">⭐ Générer un formulaire par IA</h3>
+            </div>
+            <button onclick="document.getElementById('modal-collecte-ia').style.display='none'" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>
+          </div>
+          <div style="padding:20px 24px;display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Décrivez votre besoin *</label>
+              <textarea id="ia-prompt" class="flt" style="width:100%;min-height:100px;resize:vertical;" placeholder="Listez les champs souhaités, séparés par des virgules :&#10;Ex : Nom &amp; Prénoms, Service, Marque &amp; Modèle, N° Série, RAM, Stockage, État, Date obtention, Email, Téléphone, Bureau/Porte, Projet, Observations"></textarea>
+              <div style="font-size:11px;color:var(--txt3);margin-top:6px;line-height:1.5;">💡 <strong>Astuce :</strong> Nommez directement les champs (ex : <em>RAM, Stockage, État, Date obtention</em>). Le moteur reconnaît automatiquement les champs courants du parc informatique DESPS.</div>
+            </div>
+            <div id="ia-result" style="display:none;"></div>
+            <div style="display:flex;justify-content:flex-end;gap:8px;">
+              <button class="btn btn-outline" onclick="document.getElementById('modal-collecte-ia').style.display='none'">Annuler</button>
+              <button class="btn btn-gold" id="ia-generate-btn" onclick="collecteIAGenerate()">⭐ Générer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MODAL VISIONNEUSE PHOTO PLEIN ÉCRAN ===== -->
+      <div id="modal-photo-viewer">
+        <button class="pv-close" onclick="document.getElementById('modal-photo-viewer').classList.remove('on')">✕</button>
+        <img id="pv-img" src="" alt="Photo équipement">
+        <div class="pv-caption" id="pv-caption"></div>
+      </div>
+
 <footer>
       <strong>&copy; DESPS 2026 &mdash; Tous droits r&eacute;serv&eacute;s</strong>
       &nbsp;|&nbsp; Derni&egrave;re mise &agrave; jour : <strong>mai 2026</strong>
@@ -2963,9 +3182,9 @@ function hashPw(pw) {
 
 // ==================== DATA ====================
 var INIT = {
-  bureau: [{"id":"00001","date_obtention":"2025-04-20","num_serie":"5CD337DG4V","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDESP","etat":"Nouvel PC","date_remise":"2025-04-20","date_restitution":null,"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":""},{"id":"00002","date_obtention":"2025-04-28","num_serie":"5CD337DFJX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDEPMI","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","email":""},{"id":"00003","date_obtention":"2025-04-28","num_serie":"5CD337DGQX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","email":"blangomail@gmail.com"},{"id":"00004","date_obtention":"2025-04-28","num_serie":"5CD337DF8T","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","email":"heurtache@yahoo.fr"},{"id":"00005","date_obtention":"2025-04-28","num_serie":"5CD336C52Q","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","email":"marietteaudreyca6@gmail.com"},{"id":"00006","date_obtention":"2025-04-28","num_serie":"5CD3359FBK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SICRE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","email":""},{"id":"00007","date_obtention":"2025-04-28","num_serie":"5CD337DFKX","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","email":"sekabricecocobeu@gmail.com"},{"id":"00008","date_obtention":"2025-04-28","num_serie":"5CD32394MS","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","email":"traoreadama@gmail.com"},{"id":"00009","date_obtention":"2025-04-28","num_serie":"5CD337DFFQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KONAN KOUAME JEAN BOSCO","bureau":"23\u00e8me porte 34","telephone":"707074553","email":"jboscokonan@gmail.com"},{"id":"00010","date_obtention":"2025-04-28","num_serie":"5CD3368V75","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"AKA KOFFI CHRISTIAN FABRICE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00011","date_obtention":"2025-04-28","num_serie":"5CD336C59R","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY YOUSSOUF","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00012","date_obtention":"2025-04-28","num_serie":"5CD336C3XF","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"YAO KOFFI JEAN DESIRE","bureau":"23\u00e8me porte 36","telephone":"","email":""},{"id":"00013","date_obtention":"2025-04-28","num_serie":"5CD337DFQK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KOUADIO KONAN PARFAIT","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00014","date_obtention":"2025-04-28","num_serie":"5CD337DG7G","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"DIALLO NOUHOUN","bureau":"23\u00e8me porte 28","telephone":"","email":""},{"id":"00015","date_obtention":"2025-04-28","num_serie":"5CD336CKVK","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00016","date_obtention":"2025-04-28","num_serie":"5CD337DG09","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SOUMAHORO LOSSENI","bureau":"23\u00e8me porte 26","telephone":"","email":""},{"id":"00017","date_obtention":"2025-05-06","num_serie":"5CD337DFR1","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"LOBA BI JEAN CLAUDE","bureau":"23\u00e8me porte 25","telephone":"0748597416","email":""},{"id":"00018","date_obtention":"2025-05-06","num_serie":"5CD3359FH7","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"DIOMANDE MARIAMA","bureau":"23\u00e8me porte 25","telephone":"0757350977","email":""},{"id":"00019","date_obtention":"2025-05-06","num_serie":"5CD337DFWQ","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"BOKA SOUMAHORO CHRISTIAN","bureau":"23\u00e8me porte 25","telephone":"0777501960","email":""},{"id":"00020","date_obtention":"2025-05-06","num_serie":"5CD337DFF3","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"GBAMAN KOUAME INNOCENT","bureau":"23\u00e8me porte 25","telephone":"0707700285","email":"gbamankouame@gmail.com"},{"num_ordre":"46","nom":"BOHOUSSOU AYA ISABELLE","bureau":"23\u00e8me Porte 42","telephone":"07 47 42 14 07","email":"","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00046"},{"num_ordre":"47","nom":"ANO CLAUDE FRANCOIS DE SALES","bureau":"23 \u00e8me Porte 40","telephone":"01 73 94 48 29","email":"claudeano@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00047"},{"num_ordre":"48","nom":"YOBOU JACOB WILLIAM","bureau":"23 \u00e8me Porte 40","telephone":"07 59 59 16 98","email":"yobouwilliamjacob@yahoo.fr","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00048"},{"num_ordre":"49","nom":"ZAOUI GUIE","bureau":"23 \u00e8me Porte 24","telephone":"07 07 00 87 99","email":"heurtache@yahoo,fr","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00049"},{"num_ordre":"50","nom":"DIOMANDE YAYA","bureau":"23 \u00e8me Porte 18","telephone":"01 40 99 58 77","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SDEPMI","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00050"},{"num_ordre":"51","nom":"BOMI FOUELOU","bureau":"23 \u00e8me Porte 35","telephone":"07 07 81 29 67","email":"Non renseigner","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00051"},{"num_ordre":"52","nom":"Mme AMANY AGATHE","bureau":"18 \u00e8me Porte  25","telephone":"07 07 44 48 67","email":"konan_amanyagathe@yahoo,fr","projet":"DESPS","service":"SDESP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00052"},{"num_ordre":"53","nom":"SILUE SALIFOU","bureau":"23\u00e8me Porte 35","telephone":"01 52 62 20 64","email":"saifeulis223@gmail.com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00053"},{"num_ordre":"54","nom":"M. YOBOUET SIMPLICE","bureau":"23 \u00e8me Porte 35","telephone":"07 08 21 31 33","email":"","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00054"},{"num_ordre":"55","nom":"ENOC KEFFA","bureau":"23 \u00e8me Porte 34","telephone":"07 79 36 70 79","email":"","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00055"},{"num_ordre":"56","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  Porte 19","telephone":"0505 39 08 62","email":"blangomail@gmail.com","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"DELL core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00056"},{"num_ordre":"57","nom":"BEUGRE Reine Felix","bureau":"23 \u00e8me  Porte 42","telephone":"07 47 14 62 52","email":"lobroreinefeliciebe@gmail.com","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00057"},{"num_ordre":"58","nom":"TRAORE ADAMA","bureau":"23 \u00e8me Porte 35","telephone":"07 47 47 20 11","email":"traoreadama@gmail,com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00058"}],
-  portables: [{"nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","projet":"CLEF","email":"","date_obtention":"2025-04-20","service":"SDESP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DG4V","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"N'DRI KONAN AIME","bureau":"18\u00e8me porte 24","telephone":"708631645","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SDEPMI","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFJX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"505390862","projet":"CLEF","email":"blangomail@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DGQX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ZAOUI GUIE","bureau":"23\u00e8me porte 25","telephone":"707008799","projet":"CLEF","email":"heurtache@yahoo.fr","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DF8T","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ASSOHOUN AUDREY","bureau":"18 \u00e8me porte 20","telephone":"708029729","projet":"CLEF","email":"marietteaudreyca6@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD336C52Q","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"KABLAN KOUADIO MALICK","bureau":"18 \u00e8me porte 32","telephone":"708875456","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SICRE","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD3359FBK","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"SEKA FABRICE COCOBEU","bureau":"18 \u00e8me porte 20","telephone":"153904949","projet":"CLEF","email":"sekabricecocobeu@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFKX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"TRAORE ADAMA","bureau":"23\u00e8me porte 35","telephone":"747472011","projet":"CLEF","email":"traoreadama@gmail.com","date_obtention":"2025-04-28","service":"SDPSEPP","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD32394MS","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"DIOMANDE YAYA","bureau":"23\u00e8 \u00c9tage porte 18","telephone":"0140995877","projet":"PATEB","email":"diomyaya28@gmail.com","date_obtention":"2025-08-26","service":"SERVICE DIGITALISATION","marque":"HP Probook","num_serie":"1H85100ZZVC","cpu":"Intel Ultra 7 155U","stockage":"1 To","ram":"16 Go","etat":"Nouveau","date_restitution":null},{"nom":"BEUGRE JOSEPH DIMITRI","bureau":"23EME ETAGE","telephone":"0707160929","projet":"PATEB","email":"dimitrijbeugre@gmail.com","date_obtention":"2025-11-06","service":"GESTION FNE SECONDAIRE","marque":"HP","num_serie":"1H84331W7Z","cpu":"INTEL","stockage":"1 TERRA","ram":"16G","etat":"Nouveau","date_restitution":null},{"num_ordre":"9","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"0707722000","email":"armandgbocli@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DH2J","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"10","nom":"KONE DASSE EMILIENNE","bureau":"23\u00e8me porte 25","telephone":"0707648904","email":"kdeg2010@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13\u00e8 Gt\u00b0","num_serie":"5CD337DFLI","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"11","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52366","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"12","nom":"Mme GABOU Elisabeth","bureau":"23 \u00e8me  porte 19","telephone":"01O1298519","email":"Elloelisabeth@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52367","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"13","nom":"BOMI FOUEULO","bureau":"23 \u00e8me  porte 35","telephone":"707812967","email":"foueulobomi@gmail.com","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85101001C","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"14","nom":"LIGBET JEAN LEVIS","bureau":"18\u00e8me porte 24","telephone":"778746126","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7 PROBOOK 460 G11","num_serie":"1H85100ZZZC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"15","nom":"SILUE FONNIBEGUE SALIFOU","bureau":"23 \u00e8me  porte 35","telephone":"0152622064","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H8510100ZZY","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"16","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"PATEB","service":"SDPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZWC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"17","nom":"Mme KAMAGATE Matagar\u00e9 Epse OUATTARA","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZXC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"19","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831K7P","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"20","nom":"Monsieur Le DESPS","bureau":"23 \u00e8me Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831KRQ","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"21","nom":"S/D M, ALLODJI  Aymar","bureau":"23  \u00e8me Porte :  27","telephone":"747731154","email":"allodjiaymar@yahoo,fr","projet":"PIP","service":"SDGFNE","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC37","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"23","nom":"TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC61","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"24","nom":"Mr TRAORE ZAHANON","bureau":"18 \u00e8me \u00e9tage Porte : 34","telephone":"708480784","email":"zahabd2011@hotmail.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD45273ZX","cpu":"3,8 Ghz","stockage":"1 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"25","nom":"Mr ZENA BI","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"506790240","email":"biflazan@yahoo.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD452740H","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"27","nom":"Mr ZENA BI","bureau":"19 \u00e8me \u00e9tage Porte : 35","telephone":"506790241","email":"biflazan@yahoo.fr","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG81622SN","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Non Restitu\u00e9)","date_obtention":"26/08/2025","date_restitution":"05/09/2025","statut":"\u2713 Restitue"},{"num_ordre":"28","nom":"Mr KOFFI STEPHANE","bureau":"18 \u00e8me \u00e9tage Porte : 35","telephone":"747625950","email":"","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8364099","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"30","nom":"Mme KAMAGATE Matagar\u00e9","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"0708373982","email":"","projet":"DESPS-KPD","service":"SDPSEP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5CG8360M82","cpu":"2,4 Ghz","stockage":"256 Go","ram":"16 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"31","nom":"Mr TRA LEON ARMAND","bureau":"18 \u00e8me \u00e9tage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7\u00e8meGt\u00b0","num_serie":"5GCICC84981","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Restitu\u00e9)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"33","nom":"M. TOURE SIE PECROWELE CHRISTOPHE","bureau":"23 \u00e8me \u00e9tage Porte : 35","telephone":"758559503","email":"","projet":"DESPS-FASFE","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core i7","num_serie":"CND3512477","cpu":"1,7 GHz","stockage":"500 Go","ram":"8 Go","etat":"Nouvel PC","date_obtention":"24/07/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"35","nom":"M. COULIBALY SIRIKI","bureau":"24\u00e8me - Porte 24","telephone":"0778129534","email":"sircoul@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VYJ","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"36","nom":"M. Traore Yacouba","bureau":"23\u00e8me \u00e9tage porte 26","telephone":"0748820043","email":"traoreyacoub@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331W49","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"37","nom":"M. KAN\u00c9 ADAMA","bureau":"23eme - Porte 41","telephone":"0575213280","email":"Kaneadama72@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQPC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"38","nom":"M. KONE POGBAN KATANGUI","bureau":"23\u00e8me - Porte 41","telephone":"0585893137","email":"rahimkatangui@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQXC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"39","nom":"KONAN \u00e9pouse AMANY AHOU AGATHE","bureau":"18\u00e8me \u00e9tage porte 25","telephone":"707544867","email":"","projet":"UNICEF","service":"SDESP","type_machine":"PC Portable","marque":"HUAWEI AMD RYZEN","num_serie":"M5EPM21106000418","cpu":"2,8 Ghz","stockage":"250 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"12/08/2024","date_restitution":"17/11/2025","statut":"\u2713 Restitue"},{"num_ordre":"40","nom":"KOUAKOU KOFFI ARMAND","bureau":"23\u00e8me porte 18","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"1H85100ZZZ","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"20/10/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"41","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23\u00e8me porte 17","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"42","nom":"M. MIAN","bureau":"23 \u00e8me porte","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"43","nom":"BLANGO KANGA HERVE","bureau":"23 \u00e8me  porte 19","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"44","nom":"KOFFI AMENAN FLAVIE","bureau":"23 \u00e8me  porte 40","telephone":"708393996","email":"","projet":"UNICEF","service":"SCOURRIER","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"}],
-  imprimantes: [{"id":"00001","date_obtention":"inconnue","num_serie":"023RTYU7680","marque":"HP1536","caracteristiques":"Multi-fonction","projet":"inconnu","service":"Coordination","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"Mr. KONE DOUFANGA","bureau":"23 \u00e8me \u00e9tage","telephone":"07 07 44 28 39","email":""},{"id":"00002","date_obtention":"inconnue","num_serie":"CZ165-90977","marque":"HP177","caracteristiques":"Multi-fonction","projet":"inconnu","service":"En maintenance","etat":"Ancienne Imprimante en Panne","date_remise":null,"date_restitution":null,"nom":"BOHOUSSOU AYA ISABELLE","bureau":"","telephone":"","email":""},{"id":"00004","date_obtention":null,"num_serie":"CN8171P33L","marque":"HP LaserJet","caracteristiques":"LaserJet Pro","projet":"DESPS","service":"SDGFNE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23 \u00e8me \u00e9tage porte 24","telephone":"","email":""},{"id":"00005","date_obtention":null,"num_serie":"VNB3G12567","marque":"HP LaserJet","caracteristiques":"LaserJet","projet":"DESPS","service":"SICRE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"KABLAN MALICK","bureau":"18 \u00e8me \u00e9tage","telephone":"","email":""},{"num_ordre":"45","nom":"KONE DOUFANGA","bureau":"23 \u00e8me  Porte 49","telephone":"07 07 44 28 39","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"Imprimante","marque":"HP1536","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00045"}],
+  bureau: [{"id":"00001","date_obtention":"2025-04-20","num_serie":"5CD337DG4V","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDESP","etat":"Nouvel PC","date_remise":"2025-04-20","date_restitution":null,"nom":"KONAN épouse AMANY AHOU AGATHE","bureau":"18ème étage porte 25","telephone":"707544867","email":""},{"id":"00002","date_obtention":"2025-04-28","num_serie":"5CD337DFJX","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDEPMI","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"N'DRI KONAN AIME","bureau":"18ème porte 24","telephone":"708631645","email":""},{"id":"00003","date_obtention":"2025-04-28","num_serie":"5CD337DGQX","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"BLANGO KANGA HERVE","bureau":"23 ème  porte 19","telephone":"505390862","email":"blangomail@gmail.com"},{"id":"00004","date_obtention":"2025-04-28","num_serie":"5CD337DF8T","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ZAOUI GUIE","bureau":"23ème porte 25","telephone":"707008799","email":"heurtache@yahoo.fr"},{"id":"00005","date_obtention":"2025-04-28","num_serie":"5CD336C52Q","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"ASSOHOUN AUDREY","bureau":"18 ème porte 20","telephone":"708029729","email":"marietteaudreyca6@gmail.com"},{"id":"00006","date_obtention":"2025-04-28","num_serie":"5CD3359FBK","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SICRE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KABLAN KOUADIO MALICK","bureau":"18 ème porte 32","telephone":"708875456","email":""},{"id":"00007","date_obtention":"2025-04-28","num_serie":"5CD337DFKX","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SEKA FABRICE COCOBEU","bureau":"18 ème porte 20","telephone":"153904949","email":"sekabricecocobeu@gmail.com"},{"id":"00008","date_obtention":"2025-04-28","num_serie":"5CD32394MS","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"TRAORE ADAMA","bureau":"23ème porte 35","telephone":"747472011","email":"traoreadama@gmail.com"},{"id":"00009","date_obtention":"2025-04-28","num_serie":"5CD337DFFQ","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KONAN KOUAME JEAN BOSCO","bureau":"23ème porte 34","telephone":"707074553","email":"jboscokonan@gmail.com"},{"id":"00010","date_obtention":"2025-04-28","num_serie":"5CD3368V75","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"AKA KOFFI CHRISTIAN FABRICE","bureau":"23ème porte 36","telephone":"","email":""},{"id":"00011","date_obtention":"2025-04-28","num_serie":"5CD336C59R","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY YOUSSOUF","bureau":"23ème porte 36","telephone":"","email":""},{"id":"00012","date_obtention":"2025-04-28","num_serie":"5CD336C3XF","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPSEPP","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"YAO KOFFI JEAN DESIRE","bureau":"23ème porte 36","telephone":"","email":""},{"id":"00013","date_obtention":"2025-04-28","num_serie":"5CD337DFQK","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"KOUADIO KONAN PARFAIT","bureau":"23ème porte 26","telephone":"","email":""},{"id":"00014","date_obtention":"2025-04-28","num_serie":"5CD337DG7G","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"DIALLO NOUHOUN","bureau":"23ème porte 28","telephone":"","email":""},{"id":"00015","date_obtention":"2025-04-28","num_serie":"5CD336CKVK","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23ème porte 26","telephone":"","email":""},{"id":"00016","date_obtention":"2025-04-28","num_serie":"5CD337DG09","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDGFNE","etat":"Nouvel PC","date_remise":"2025-04-28","date_restitution":null,"nom":"SOUMAHORO LOSSENI","bureau":"23ème porte 26","telephone":"","email":""},{"id":"00017","date_obtention":"2025-05-06","num_serie":"5CD337DFR1","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"LOBA BI JEAN CLAUDE","bureau":"23ème porte 25","telephone":"0748597416","email":""},{"id":"00018","date_obtention":"2025-05-06","num_serie":"5CD3359FH7","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"DIOMANDE MARIAMA","bureau":"23ème porte 25","telephone":"0757350977","email":""},{"id":"00019","date_obtention":"2025-05-06","num_serie":"5CD337DFWQ","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"BOKA SOUMAHORO CHRISTIAN","bureau":"23ème porte 25","telephone":"0777501960","email":""},{"id":"00020","date_obtention":"2025-05-06","num_serie":"5CD337DFF3","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","projet":"CLEF","service":"SDPP","etat":"Nouvel PC","date_remise":"2025-05-06","date_restitution":null,"nom":"GBAMAN KOUAME INNOCENT","bureau":"23ème porte 25","telephone":"0707700285","email":"gbamankouame@gmail.com"},{"num_ordre":"46","nom":"BOHOUSSOU AYA ISABELLE","bureau":"23ème Porte 42","telephone":"07 47 42 14 07","email":"","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00046"},{"num_ordre":"47","nom":"ANO CLAUDE FRANCOIS DE SALES","bureau":"23 ème Porte 40","telephone":"01 73 94 48 29","email":"claudeano@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00047"},{"num_ordre":"48","nom":"YOBOU JACOB WILLIAM","bureau":"23 ème Porte 40","telephone":"07 59 59 16 98","email":"yobouwilliamjacob@yahoo.fr","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00048"},{"num_ordre":"49","nom":"ZAOUI GUIE","bureau":"23 ème Porte 24","telephone":"07 07 00 87 99","email":"heurtache@yahoo,fr","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00049"},{"num_ordre":"50","nom":"DIOMANDE YAYA","bureau":"23 ème Porte 18","telephone":"01 40 99 58 77","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SDEPMI","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00050"},{"num_ordre":"51","nom":"BOMI FOUELOU","bureau":"23 ème Porte 35","telephone":"07 07 81 29 67","email":"Non renseigner","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00051"},{"num_ordre":"52","nom":"Mme AMANY AGATHE","bureau":"18 ème Porte  25","telephone":"07 07 44 48 67","email":"konan_amanyagathe@yahoo,fr","projet":"DESPS","service":"SDESP","type_machine":"PC bureau","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00052"},{"num_ordre":"53","nom":"SILUE SALIFOU","bureau":"23ème Porte 35","telephone":"01 52 62 20 64","email":"saifeulis223@gmail.com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00053"},{"num_ordre":"54","nom":"M. YOBOUET SIMPLICE","bureau":"23 ème Porte 35","telephone":"07 08 21 31 33","email":"","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00054"},{"num_ordre":"55","nom":"ENOC KEFFA","bureau":"23 ème Porte 34","telephone":"07 79 36 70 79","email":"","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00055"},{"num_ordre":"56","nom":"BLANGO KANGA HERVE","bureau":"23 ème  Porte 19","telephone":"0505 39 08 62","email":"blangomail@gmail.com","projet":"DESPS","service":"SDPP","type_machine":"PC bureau","marque":"DELL core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00056"},{"num_ordre":"57","nom":"BEUGRE Reine Felix","bureau":"23 ème  Porte 42","telephone":"07 47 14 62 52","email":"lobroreinefeliciebe@gmail.com","projet":"DESPS","service":"SECRETARIAT","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00057"},{"num_ordre":"58","nom":"TRAORE ADAMA","bureau":"23 ème Porte 35","telephone":"07 47 47 20 11","email":"traoreadama@gmail,com","projet":"DESPS","service":"SDPSEPP","type_machine":"PC bureau","marque":"HP core i3","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00058"}],
+  portables: [{"nom":"KONAN épouse AMANY AHOU AGATHE","bureau":"18ème étage porte 25","telephone":"707544867","projet":"CLEF","email":"","date_obtention":"2025-04-20","service":"SDESP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DG4V","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"N'DRI KONAN AIME","bureau":"18ème porte 24","telephone":"708631645","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SDEPMI","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DFJX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"BLANGO KANGA HERVE","bureau":"23 ème  porte 19","telephone":"505390862","projet":"CLEF","email":"blangomail@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DGQX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ZAOUI GUIE","bureau":"23ème porte 25","telephone":"707008799","projet":"CLEF","email":"heurtache@yahoo.fr","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DF8T","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"ASSOHOUN AUDREY","bureau":"18 ème porte 20","telephone":"708029729","projet":"CLEF","email":"marietteaudreyca6@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD336C52Q","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"KABLAN KOUADIO MALICK","bureau":"18 ème porte 32","telephone":"708875456","projet":"CLEF","email":"","date_obtention":"2025-04-28","service":"SICRE","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD3359FBK","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"SEKA FABRICE COCOBEU","bureau":"18 ème porte 20","telephone":"153904949","projet":"CLEF","email":"sekabricecocobeu@gmail.com","date_obtention":"2025-04-28","service":"SDPP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DFKX","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"TRAORE ADAMA","bureau":"23ème porte 35","telephone":"747472011","projet":"CLEF","email":"traoreadama@gmail.com","date_obtention":"2025-04-28","service":"SDPSEPP","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD32394MS","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_restitution":null},{"nom":"DIOMANDE YAYA","bureau":"23è \u00c9tage porte 18","telephone":"0140995877","projet":"PATEB","email":"diomyaya28@gmail.com","date_obtention":"2025-08-26","service":"SERVICE DIGITALISATION","marque":"HP Probook","num_serie":"1H85100ZZVC","cpu":"Intel Ultra 7 155U","stockage":"1 To","ram":"16 Go","etat":"Nouveau","date_restitution":null},{"nom":"BEUGRE JOSEPH DIMITRI","bureau":"23EME ETAGE","telephone":"0707160929","projet":"PATEB","email":"dimitrijbeugre@gmail.com","date_obtention":"2025-11-06","service":"GESTION FNE SECONDAIRE","marque":"HP","num_serie":"1H84331W7Z","cpu":"INTEL","stockage":"1 TERRA","ram":"16G","etat":"Nouveau","date_restitution":null},{"num_ordre":"9","nom":"KOUAKOU KOFFI ARMAND","bureau":"23ème porte 18","telephone":"0707722000","email":"armandgbocli@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DH2J","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"10","nom":"KONE DASSE EMILIENNE","bureau":"23ème porte 25","telephone":"0707648904","email":"kdeg2010@yahoo.fr","projet":"CLEF","service":"SDPP","type_machine":"PC Portable","marque":"HP 15EG 3045 core i7 13è Gt\u00b0","num_serie":"5CD337DFLI","cpu":"2,8 Ghz","stockage":"512 Go","ram":"16 Go","etat":"Nouvel PC","date_obtention":"28/04/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"11","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23ème porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52366","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"12","nom":"Mme GABOU Elisabeth","bureau":"23 ème  porte 19","telephone":"01O1298519","email":"Elloelisabeth@yahoo.fr","projet":"UNICEF","service":"SDPP","type_machine":"PC Portable","marque":"HP Probook 430 G6","num_serie":"00330-52367","cpu":"1,99 Ghz","stockage":"238 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"13/07/2021","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"13","nom":"BOMI FOUEULO","bureau":"23 ème  porte 35","telephone":"707812967","email":"foueulobomi@gmail.com","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85101001C","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"14","nom":"LIGBET JEAN LEVIS","bureau":"18ème porte 24","telephone":"778746126","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7 PROBOOK 460 G11","num_serie":"1H85100ZZZC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"15","nom":"SILUE FONNIBEGUE SALIFOU","bureau":"23 ème  porte 35","telephone":"0152622064","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H8510100ZZY","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"16","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23ème porte 17","telephone":"0707789974","email":"rv_kan@yahoo.fr","projet":"PATEB","service":"SDPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZWC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"17","nom":"Mme KAMAGATE Matagaré Epse OUATTARA","bureau":"23 ème étage Porte : 35","telephone":"0708373982","email":"","projet":"PATEB","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core ultra 7","num_serie":"1H85100ZZXC","cpu":"4,8 Ghz","stockage":"1 To","ram":"16 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"19","nom":"Monsieur Le DESPS","bureau":"23 ème Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831K7P","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"20","nom":"Monsieur Le DESPS","bureau":"23 ème Porte : 42","telephone":"709652236","email":"","projet":"PIP","service":"DESPS","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"SCD5831KRQ","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"21","nom":"S/D M, ALLODJI  Aymar","bureau":"23  ème Porte :  27","telephone":"747731154","email":"allodjiaymar@yahoo,fr","projet":"PIP","service":"SDGFNE","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC37","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"23","nom":"TRA LEON ARMAND","bureau":"18 ème étage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"PF5HDC61","cpu":"3,7 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"24","nom":"Mr TRAORE ZAHANON","bureau":"18 ème étage Porte : 34","telephone":"708480784","email":"zahabd2011@hotmail.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD45273ZX","cpu":"3,8 Ghz","stockage":"1 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"25","nom":"Mr ZENA BI","bureau":"18 ème étage Porte : 35","telephone":"506790240","email":"biflazan@yahoo.fr","projet":"PIP","service":"SDESP","type_machine":"PC Portable","marque":"HP INTEL EVO SPECTRE","num_serie":"5CD452740H","cpu":"3,8 Ghz","stockage":"2 To","ram":"32 Go","etat":"Nouvel PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"27","nom":"Mr ZENA BI","bureau":"19 ème étage Porte : 35","telephone":"506790241","email":"biflazan@yahoo.fr","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7èmeGt\u00b0","num_serie":"5CG81622SN","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Non Restitué)","date_obtention":"26/08/2025","date_restitution":"05/09/2025","statut":"\u2713 Restitue"},{"num_ordre":"28","nom":"Mr KOFFI STEPHANE","bureau":"18 ème étage Porte : 35","telephone":"747625950","email":"","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7èmeGt\u00b0","num_serie":"5CG8364099","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"26/08/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"30","nom":"Mme KAMAGATE Matagaré","bureau":"23 ème étage Porte : 35","telephone":"0708373982","email":"","projet":"DESPS-KPD","service":"SDPSEP","type_machine":"PC Portable","marque":"HP Core i5-7èmeGt\u00b0","num_serie":"5CG8360M82","cpu":"2,4 Ghz","stockage":"256 Go","ram":"16 Go","etat":"Ancien PC (Restitué)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"31","nom":"Mr TRA LEON ARMAND","bureau":"18 ème étage Porte : 32","telephone":"708117580","email":"tlarmand@gmail.com","projet":"DESPS-KPD","service":"SDESP","type_machine":"PC Portable","marque":"HP Core i5-7èmeGt\u00b0","num_serie":"5GCICC84981","cpu":"2,4 Ghz","stockage":"256 Go","ram":"8 Go","etat":"Ancien PC (Restitué)","date_obtention":"25/02/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"33","nom":"M. TOURE SIE PECROWELE CHRISTOPHE","bureau":"23 ème étage Porte : 35","telephone":"758559503","email":"","projet":"DESPS-FASFE","service":"SDPSEPP","type_machine":"PC Portable","marque":"HP Core i7","num_serie":"CND3512477","cpu":"1,7 GHz","stockage":"500 Go","ram":"8 Go","etat":"Nouvel PC","date_obtention":"24/07/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"35","nom":"M. COULIBALY SIRIKI","bureau":"24ème - Porte 24","telephone":"0778129534","email":"sircoul@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VYJ","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"36","nom":"M. Traore Yacouba","bureau":"23ème étage porte 26","telephone":"0748820043","email":"traoreyacoub@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331W49","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"37","nom":"M. KAN\u00c9 ADAMA","bureau":"23eme - Porte 41","telephone":"0575213280","email":"Kaneadama72@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQPC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"38","nom":"M. KONE POGBAN KATANGUI","bureau":"23ème - Porte 41","telephone":"0585893137","email":"rahimkatangui@gmail.com","projet":"DESPS-FASFE","service":"SDGFNE","type_machine":"PC Portable","marque":"HP 13th Gen Intel(R) Core I7","num_serie":"1H84331VQXC","cpu":"1.7GHz","stockage":"1 To","ram":"16Go","etat":"Nouvel PC","date_obtention":"06/11/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"39","nom":"KONAN épouse AMANY AHOU AGATHE","bureau":"18ème étage porte 25","telephone":"707544867","email":"","projet":"UNICEF","service":"SDESP","type_machine":"PC Portable","marque":"HUAWEI AMD RYZEN","num_serie":"M5EPM21106000418","cpu":"2,8 Ghz","stockage":"250 Go","ram":"8 Go","etat":"Ancien PC","date_obtention":"12/08/2024","date_restitution":"17/11/2025","statut":"\u2713 Restitue"},{"num_ordre":"40","nom":"KOUAKOU KOFFI ARMAND","bureau":"23ème porte 18","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"1H85100ZZZ","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"20/10/2025","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"41","nom":"N'GUESSAN KOFFI KAN HERVE","bureau":"23ème porte 17","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"42","nom":"M. MIAN","bureau":"23 ème porte","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"43","nom":"BLANGO KANGA HERVE","bureau":"23 ème  porte 19","telephone":"","email":"","projet":"","service":"","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"},{"num_ordre":"44","nom":"KOFFI AMENAN FLAVIE","bureau":"23 ème  porte 40","telephone":"708393996","email":"","projet":"UNICEF","service":"SCOURRIER","type_machine":"PC Portable","marque":"","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"\u25cf En service"}],
+  imprimantes: [{"id":"00001","date_obtention":"inconnue","num_serie":"023RTYU7680","marque":"HP1536","caracteristiques":"Multi-fonction","projet":"inconnu","service":"Coordination","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"Mr. KONE DOUFANGA","bureau":"23 ème étage","telephone":"07 07 44 28 39","email":""},{"id":"00002","date_obtention":"inconnue","num_serie":"CZ165-90977","marque":"HP177","caracteristiques":"Multi-fonction","projet":"inconnu","service":"En maintenance","etat":"Ancienne Imprimante en Panne","date_remise":null,"date_restitution":null,"nom":"BOHOUSSOU AYA ISABELLE","bureau":"","telephone":"","email":""},{"id":"00004","date_obtention":null,"num_serie":"CN8171P33L","marque":"HP LaserJet","caracteristiques":"LaserJet Pro","projet":"DESPS","service":"SDGFNE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"COULIBALY SIRIKI","bureau":"23 ème étage porte 24","telephone":"","email":""},{"id":"00005","date_obtention":null,"num_serie":"VNB3G12567","marque":"HP LaserJet","caracteristiques":"LaserJet","projet":"DESPS","service":"SICRE","etat":"Ancienne Imprimante","date_remise":null,"date_restitution":null,"nom":"KABLAN MALICK","bureau":"18 ème étage","telephone":"","email":""},{"num_ordre":"45","nom":"KONE DOUFANGA","bureau":"23 ème  Porte 49","telephone":"07 07 44 28 39","email":"diomyaya28@gmail.com","projet":"DESPS","service":"SCGA(COORDO)","type_machine":"Imprimante","marque":"HP1536","num_serie":"","cpu":"","stockage":"","ram":"","etat":"","date_obtention":"","date_restitution":"","statut":"","id":"00045"}],
   pc: [],
   tablettes: [{"id":"0001","date_obtention":"2025-04-20","num_serie":"8677352032840883","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0002","date_obtention":"2025-04-20","num_serie":"8677352032840438","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0003","date_obtention":"2025-04-20","num_serie":"8677352032841241","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DPP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0004","date_obtention":"2025-04-20","num_serie":"8677352032841323","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DESP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""},{"id":"0005","date_obtention":"2025-04-20","num_serie":"8677352032840766","marque":"Tablette Juniper SC-CT 8x2","cpu":"1,7Ghz","stockage":"64 Go","ram":"4 Go","projet":"CLEF","service":"S/DESP","etat":"Nouvelle TB","date_remise":null,"date_restitution":null,"nom":"","bureau":"","telephone":"","email":""}]
 };
@@ -3707,6 +3926,7 @@ function nav(page) {
     'stats-drenaet':'🏫 Statistiques DRENAET',
     'stats-etat':'⚙️ État du Parc',
     'courrier':'📬 Courrier interne',
+    'collecte':'📋 Collecte de données',
     'maint-bureau':'🔧 Bureaux en Maintenance',
     'maint-portables':'🔧 Portables en Maintenance',
     'maint-imprimantes':'🔧 Imprimantes en Maintenance',
@@ -3974,9 +4194,21 @@ function renderTbl(type) {
   updateBulkBar(type);
 }
 
+function photoCell(r) {
+  // Génère la cellule miniature pour le tableau
+  var hasFace  = !!r.photo_face;
+  var hasProfil= !!r.photo_profil;
+  if (!hasFace && !hasProfil) {
+    return '<td class="tbl-photo-cell"><div class="no-photo-badge" title="Aucune photo">—</div></td>';
+  }
+  var imgs = '';
+  if (hasFace)   imgs += '<img class="tbl-photo-thumb" src="'+r.photo_face+'"   title="Photo Faciale"  onclick="viewPhoto(this.src,\x27Photo Faciale\x27,event)">';
+  if (hasProfil) imgs += '<img class="tbl-photo-thumb" src="'+r.photo_profil+'" title="Photo Lat\u00e9rale" onclick="viewPhoto(this.src,\x27Photo Lat\u00e9rale\x27,event)">';
+  return '<td class="tbl-photo-cell" style="display:flex;gap:3px;align-items:center;">'+imgs+'</td>';
+}
+
 function buildRow(r, type, idx) {
   var ebg = etatBadge(r.etat);
-  // Utiliser le système de permissions : tout rôle qui peut écrire voit ✏️ ; seul l'admin voit 🗑
   var canEdit = canWrite();
   var canDel  = can('delete');
   var v0 = "viewRec('" + type + "'," + idx + ")";
@@ -3986,28 +4218,27 @@ function buildRow(r, type, idx) {
   if (canEdit) actsHtml += '<button class="ibt write-only" onclick="'+e0+'">&#9999;</button>';
   if (canDel)  actsHtml += '<button class="ibt delete-only" onclick="'+d0+'">&#128465;</button>';
   var acts = '<td><div class="act-cell">'+actsHtml+'</div></td>';
-  // Cellule checkbox de sélection (visible admin uniquement via .sel-col)
   var selCell = '<td class="sel-col"><input type="checkbox" class="row-chk" data-type="'+type+'" data-idx="'+idx+'" onclick="onRowCheck(this)"></td>';
-  
   var genreIcon = detectGenre(r.nom||'') === 'F' ? '<span style="color:var(--red)">♀</span>' : '<span style="color:var(--blue-light)">♂</span>';
-  
+  var pc = photoCell(r);
+
   if (type==='drena-pc') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td>'+pc+acts+'</tr>';
   }
   if (type==='bureau') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||r.num_ordre||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td>'+ebg+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+pc+acts+'</tr>';
   }
   if (type==='drena-bureau') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+ebg+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td>'+ebg+pc+acts+'</tr>';
   }
   if (type==='portables'||type==='drena-portables') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="clip">'+(r.nom||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td class="clip">'+(r.marque||'—')+'</td><td class="hs" style="font-size:11.5px;color:var(--txt2)">'+(r.cpu||'—')+'</td><td class="hs">'+(r.ram||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td style="font-size:11px">'+(r.date_obtention||'—')+'</td><td>'+genreIcon+'</td>'+ebg+'</td>'+pc+acts+'</tr>';
   }
   if (type==='imprimantes'||type==='drena-impr') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td>'+(r.marque||'—')+'</td><td style="font-size:11.5px;color:var(--txt2)">'+(r.caracteristiques||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td>'+ebg+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td>'+(r.marque||'—')+'</td><td style="font-size:11.5px;color:var(--txt2)">'+(r.caracteristiques||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td class="clip">'+(r.nom||'—')+'</td><td>'+ebg+'</td>'+pc+acts+'</tr>';
   }
   if (type==='tablettes'||type==='drena-tab') {
-    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td>'+(r.marque||'—')+'</td><td style="font-size:11.5px">'+(r.cpu||'—')+'</td><td>'+(r.ram||'—')+'</td><td>'+(r.stockage||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td>'+ebg+'</td>'+acts+'</tr>';
+    return '<tr data-type="'+type+'" data-idx="'+idx+'">'+selCell+'<td class="mono" style="color:var(--accent)">'+(r.id||'—')+'</td><td class="mono" style="font-size:11px">'+(r.num_serie||'—')+'</td><td>'+(r.marque||'—')+'</td><td style="font-size:11.5px">'+(r.cpu||'—')+'</td><td>'+(r.ram||'—')+'</td><td>'+(r.stockage||'—')+'</td><td><span class="badge b-blue">'+(r.projet||'—')+'</span></td><td class="clip" style="font-size:11.5px;color:var(--txt2)">'+(r.service||'—')+'</td><td>'+ebg+'</td>'+pc+acts+'</tr>';
   }
   return '';
 }
@@ -4141,7 +4372,35 @@ function buildForm() {
     return '<div class="fg '+(f.f?'full':'')+'" ><label>'+f.l+'</label>'
       +(f.sel?'<select id="fld-'+f.id+'">'+f.sel+'</select>'
              :'<input type="text" id="fld-'+f.id+'" placeholder="'+(f.ph||'')+'">');
-  }).join('');
+  }).join('')
+  + '<div class="fg full" style="margin-top:4px;">'
+  + '<label style="display:flex;align-items:center;gap:6px;">📷 Photos de l\'équipement <span style="font-size:10px;font-weight:400;color:var(--txt3);">(facultatif)</span></label>'
+  + '<div class="photo-preview-grid" id="photo-preview-grid"></div>'
+  + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">'
+  +   '<div class="photo-upload-zone" onclick="document.getElementById(\'ph-input-face\').click()" title="Photo faciale / frontale">'
+  +     '<input type="file" id="ph-input-face" accept="image/*" onchange="photoPickFile(this,\'face\')">'
+  +     '<div style="font-size:20px;">📷</div>'
+  +     '<div style="font-size:11px;color:var(--txt2);margin-top:4px;font-weight:600;">Photo Faciale</div>'
+  +     '<div style="font-size:10px;color:var(--txt3);">Vue frontale de l\'équipement</div>'
+  +   '</div>'
+  +   '<div class="photo-upload-zone" onclick="document.getElementById(\'ph-input-profil\').click()" title="Photo latérale / de profil">'
+  +     '<input type="file" id="ph-input-profil" accept="image/*" onchange="photoPickFile(this,\'profil\')">'
+  +     '<div style="font-size:20px;">📸</div>'
+  +     '<div style="font-size:11px;color:var(--txt2);margin-top:4px;font-weight:600;">Photo Latérale</div>'
+  +     '<div style="font-size:10px;color:var(--txt3);">Vue de profil / côté</div>'
+  +   '</div>'
+  + '</div>'
+  + '</div>';
+  window._photoBuffer = {};
+  if (editIdx !== null) {
+    var _type = document.getElementById('add-type').value;
+    var _bk = _type==='drena-pc'?'pc':_type.replace('drena-','').replace(/^impr$/,'imprimantes').replace(/^tab$/,'tablettes');
+    var _r = (DB[_bk]||DB[_type]||[])[editIdx];
+    if (_r) {
+      if (_r.photo_face)  { window._photoBuffer.face  = _r.photo_face;  photoRenderPreview(); }
+      if (_r.photo_profil){ window._photoBuffer.profil = _r.photo_profil; photoRenderPreview(); }
+    }
+  }
 }
 function saveRecord() {
   var type = document.getElementById('add-type').value;
@@ -4157,6 +4416,12 @@ function saveRecord() {
   });
   rec.genre = detectGenre(rec.nom || '');
   if (type.startsWith('drena-')) rec._source = 'DRENAET';
+  // Intégrer les photos du buffer
+  if (window._photoBuffer) {
+    if (window._photoBuffer.face)   rec.photo_face   = window._photoBuffer.face;
+    if (window._photoBuffer.profil) rec.photo_profil = window._photoBuffer.profil;
+  }
+  window._photoBuffer = {};
 
   if (editIdx !== null) {
     // Modification : editIdx est l'index RÉEL dans DB[dbKey] (passé par buildRow via indexOf)
@@ -4187,10 +4452,21 @@ function viewRec(type, idx) {
   var src = DB[baseType]||DB[type]||[];
   var r=src[idx]; if(!r) return;
   document.getElementById('m-detail-title').textContent='👁 '+(r.nom||r.num_serie||'Détail');
-  var keys=Object.keys(r).filter(function(k){return r[k]&&k!=='_source'&&k!=='genre';});
-  document.getElementById('m-detail-body').innerHTML='<div class="di-grid">'+keys.map(function(k){
+  var keys=Object.keys(r).filter(function(k){ return r[k]&&k!=='_source'&&k!=='genre'&&k!=='photo_face'&&k!=='photo_profil'; });
+  var fieldsHtml = '<div class="di-grid">'+keys.map(function(k){
     return '<div class="di '+(k==='service'||k==='nom'?'full':'')+'"><div class="di-lbl">'+(LABELS[k]||k)+'</div><div class="di-val">'+(r[k]||'—')+'</div></div>';
   }).join('')+'</div>';
+  // Bloc photos dans la fiche détail
+  var photosHtml = '';
+  if (r.photo_face || r.photo_profil) {
+    photosHtml = '<div style="margin-top:14px;border-top:1px solid var(--border);padding-top:12px;">'
+      + '<div style="font-size:11px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📷 Photos de l\'équipement</div>'
+      + '<div style="display:grid;grid-template-columns:'+(r.photo_face&&r.photo_profil?'1fr 1fr':'1fr')+';gap:10px;">';
+    if (r.photo_face)   photosHtml += '<div style="border-radius:10px;overflow:hidden;cursor:pointer;" onclick="viewPhoto(\''+r.photo_face+'\',\'Photo Faciale\',event)"><img src="'+r.photo_face+'"   style="width:100%;max-height:160px;object-fit:cover;display:block;"><div style="text-align:center;font-size:11px;color:var(--txt3);padding:5px;background:rgba(0,0,0,0.15);">📷 Vue Faciale / Frontale</div></div>';
+    if (r.photo_profil) photosHtml += '<div style="border-radius:10px;overflow:hidden;cursor:pointer;" onclick="viewPhoto(\''+r.photo_profil+'\',\'Photo Latérale\',event)"><img src="'+r.photo_profil+'" style="width:100%;max-height:160px;object-fit:cover;display:block;"><div style="text-align:center;font-size:11px;color:var(--txt3);padding:5px;background:rgba(0,0,0,0.15);">📸 Vue Latérale / Profil</div></div>';
+    photosHtml += '</div></div>';
+  }
+  document.getElementById('m-detail-body').innerHTML = fieldsHtml + photosHtml;
   document.getElementById('m-detail').classList.add('on');
 }
 function delRec(type,idx){
@@ -7165,7 +7441,779 @@ function exportMaintItemsWord(type){
 
 </script>
 
-<!-- SCROLLBAR -->
+<!-- ===== MODULE COLLECTE DE DONNÉES ===== -->
+<script>
+// ==================== COLLECTE DE DONNÉES — STORAGE ====================
+// ==================== MODULE PHOTOS ÉQUIPEMENT ====================
+window._photoBuffer = {}; // {face: dataURL, profil: dataURL}
+
+function photoPickFile(input, slot) {
+  var file = input.files[0];
+  if (!file) return;
+  // Vérification taille (max 3 Mo)
+  if (file.size > 3 * 1024 * 1024) {
+    notif('⚠️ Photo trop lourde (max 3 Mo). Compressez l\'image.', 'err');
+    input.value = '';
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    // Compression via canvas
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 800;
+      var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.78);
+      window._photoBuffer[slot] = dataUrl;
+      photoRenderPreview();
+      notif('📷 Photo ' + (slot==='face'?'Faciale':'Latérale') + ' chargée', 'ok');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function photoRenderPreview() {
+  var grid = document.getElementById('photo-preview-grid');
+  if (!grid) return;
+  var html = '';
+  if (window._photoBuffer.face) {
+    html += '<div class="photo-preview-item">'
+      + '<img src="'+window._photoBuffer.face+'" onclick="viewPhoto(\''+window._photoBuffer.face+'\',\'Photo Faciale\',event)">'
+      + '<button class="photo-del" onclick="photoRemove(\'face\')" title="Supprimer">✕</button>'
+      + '<div class="photo-lbl">📷 Faciale</div>'
+      + '</div>';
+  }
+  if (window._photoBuffer.profil) {
+    html += '<div class="photo-preview-item">'
+      + '<img src="'+window._photoBuffer.profil+'" onclick="viewPhoto(\''+window._photoBuffer.profil+'\',\'Photo Latérale\',event)">'
+      + '<button class="photo-del" onclick="photoRemove(\'profil\')" title="Supprimer">✕</button>'
+      + '<div class="photo-lbl">📸 Latérale</div>'
+      + '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function photoRemove(slot) {
+  delete window._photoBuffer[slot];
+  photoRenderPreview();
+  notif('🗑 Photo supprimée', 'ok');
+}
+
+function viewPhoto(src, caption, e) {
+  if (e) { e.stopPropagation(); }
+  var modal = document.getElementById('modal-photo-viewer');
+  var img   = document.getElementById('pv-img');
+  var cap   = document.getElementById('pv-caption');
+  if (!modal || !img) return;
+  img.src = src;
+  if (cap) cap.textContent = caption || '';
+  modal.classList.add('on');
+}
+
+// Fermer visionneuse avec Echap
+document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var m=document.getElementById('modal-photo-viewer'); if(m) m.classList.remove('on'); } });
+document.getElementById('modal-photo-viewer') && document.getElementById('modal-photo-viewer').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('on'); });
+
+var COLLECTE_KEY = 'desps26_collecte_forms';
+var COLLECTE_REP_KEY = 'desps26_collecte_responses';
+var _collecteForms = null;
+var _currentFormId = null;
+var _builderQuestions = [];
+var _editFormId = null;
+
+function collecteGetForms(){
+  if(!_collecteForms){
+    try{ _collecteForms = JSON.parse(localStorage.getItem(COLLECTE_KEY)||'[]'); }
+    catch(e){ _collecteForms = []; }
+  }
+  return _collecteForms;
+}
+function collecteSaveForms(arr){
+  _collecteForms = arr;
+  localStorage.setItem(COLLECTE_KEY, JSON.stringify(arr));
+}
+function collecteGetResponses(formId){
+  var all = {};
+  try{ all = JSON.parse(localStorage.getItem(COLLECTE_REP_KEY)||'{}'); }catch(e){}
+  return all[formId]||[];
+}
+function collecteSaveResponse(formId, data){
+  var all = {};
+  try{ all = JSON.parse(localStorage.getItem(COLLECTE_REP_KEY)||'{}'); }catch(e){}
+  if(!all[formId]) all[formId]=[];
+  all[formId].push({ id: Date.now(), date: new Date().toLocaleString('fr-FR'), data: data });
+  localStorage.setItem(COLLECTE_REP_KEY, JSON.stringify(all));
+}
+
+// ==================== RENDU LISTE DES FORMULAIRES ====================
+function collecteRenderList(){
+  var forms = collecteGetForms();
+  var listEl = document.getElementById('collecte-forms-list');
+  var emptyEl = document.getElementById('collecte-empty');
+  if(!listEl) return;
+  if(!forms.length){
+    emptyEl&&(emptyEl.style.display='block');
+    listEl.style.display='none';
+    return;
+  }
+  emptyEl&&(emptyEl.style.display='none');
+  listEl.style.display='flex';
+  listEl.innerHTML = forms.map(function(f){
+    var reps = collecteGetResponses(f.id).length;
+    var statusLabel = f.status==='publie'
+      ? '<span style="background:rgba(0,154,68,0.15);color:#00C470;border:1px solid rgba(0,201,167,0.3);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">PUBLIÉ</span>'
+      : '<span style="background:rgba(148,163,184,0.1);color:var(--txt3);border:1px solid var(--border);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">BROUILLON</span>';
+    return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;transition:border-color 0.2s;" onmouseover="this.style.borderColor=\'var(--border2)\'" onmouseout="this.style.borderColor=\'var(--border)\'">'
+      + '<div style="width:44px;height:44px;background:rgba(0,201,167,0.12);border:1px solid rgba(0,201,167,0.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">✅</div>'
+      + '<div style="flex:1;min-width:0;">'
+      +   '<div style="font-family:\'Syne\',sans-serif;font-size:15px;font-weight:700;color:var(--txt);margin-bottom:4px;">' + f.title + '</div>'
+      +   '<div style="font-size:12px;color:var(--txt3);">' + statusLabel + ' &nbsp; ' + (f.questions||[]).length + ' question(s) &middot; ' + reps + ' réponse(s) &middot; Créé le ' + (f.createdAt||'—') + '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:8px;flex-shrink:0;">'
+      +   '<button class="btn btn-outline btn-sm" title="Partager le lien" onclick="collecteShareLink(\'' + f.id + '\')">🔗</button>'
+      +   '<button class="btn btn-outline btn-sm" title="Voir les réponses" onclick="collecteOpenReponses(\'' + f.id + '\')">📊</button>'
+      +   '<button class="btn btn-outline btn-sm" title="Modifier" onclick="collecteEditForm(\'' + f.id + '\')">✏️</button>'
+      +   '<button class="btn btn-outline btn-sm" title="Dupliquer" onclick="collecteDuplicateForm(\'' + f.id + '\')">📋</button>'
+      +   '<button class="btn btn-outline btn-sm" title="Supprimer" onclick="collecteDeleteForm(\'' + f.id + '\')" style="color:var(--red);">🗑️</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+// ==================== NAVIGATION COLLECTE ====================
+function collecteBackToList(){
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+  var pg = document.getElementById('pg-collecte');
+  if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  var ni = document.getElementById('nav-collecte');
+  if(ni) ni.classList.add('active');
+  collecteRenderList();
+}
+
+// ==================== NOUVEAU FORMULAIRE ====================
+function collecteNouveauFormulaire(){
+  _editFormId = null;
+  _builderQuestions = [];
+  document.getElementById('builder-form-title').value = '';
+  document.getElementById('builder-form-desc').value = '';
+  document.getElementById('builder-form-direction').value = '';
+  document.getElementById('builder-form-status').value = 'brouillon';
+  document.getElementById('builder-title').textContent = 'Nouveau formulaire';
+  document.getElementById('builder-subtitle').textContent = 'Conception du questionnaire';
+  collecteRenderBuilderQuestions();
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+  var pg = document.getElementById('pg-collecte-builder');
+  if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+}
+
+function collecteEditForm(id){
+  var forms = collecteGetForms();
+  var f = forms.find(function(x){ return x.id===id; });
+  if(!f) return;
+  _editFormId = id;
+  _builderQuestions = JSON.parse(JSON.stringify(f.questions||[]));
+  document.getElementById('builder-form-title').value = f.title||'';
+  document.getElementById('builder-form-desc').value = f.description||'';
+  document.getElementById('builder-form-direction').value = f.direction||'';
+  document.getElementById('builder-form-status').value = f.status||'brouillon';
+  document.getElementById('builder-title').textContent = f.title||'Formulaire';
+  document.getElementById('builder-subtitle').textContent = 'Modification du questionnaire';
+  collecteRenderBuilderQuestions();
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+  var pg = document.getElementById('pg-collecte-builder');
+  if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+}
+
+function collecteDuplicateForm(id){
+  var forms = collecteGetForms();
+  var f = forms.find(function(x){ return x.id===id; });
+  if(!f) return;
+  var copy = JSON.parse(JSON.stringify(f));
+  copy.id = 'form_' + Date.now();
+  copy.title = 'Copie — ' + copy.title;
+  copy.status = 'brouillon';
+  copy.createdAt = new Date().toLocaleDateString('fr-FR');
+  forms.push(copy);
+  collecteSaveForms(forms);
+  collecteRenderList();
+  notif('✅ Formulaire dupliqué', 'ok');
+}
+
+function collecteDeleteForm(id){
+  if(!confirm('Supprimer ce formulaire et toutes ses réponses ?')) return;
+  var forms = collecteGetForms().filter(function(x){ return x.id!==id; });
+  collecteSaveForms(forms);
+  var all={};
+  try{ all=JSON.parse(localStorage.getItem(COLLECTE_REP_KEY)||'{}'); }catch(e){}
+  delete all[id];
+  localStorage.setItem(COLLECTE_REP_KEY, JSON.stringify(all));
+  collecteRenderList();
+  notif('🗑️ Formulaire supprimé', 'ok');
+}
+
+function collecteShareLink(id){
+  var url = window.location.href.split('#')[0] + '#form/' + id;
+  if(navigator.clipboard){ navigator.clipboard.writeText(url).then(function(){ notif('🔗 Lien copié dans le presse-papier', 'ok'); }); }
+  else { prompt('Copiez ce lien public :', url); }
+}
+
+// ==================== BUILDER : QUESTIONS ====================
+var _qTypes = { text:'Texte court', textarea:'Texte long', number:'Nombre', select_one:'Choix unique', select_multiple:'Choix multiple', date:'Date', datetime:'Date et heure', note:'Note / Info', geopoint:'Localisation', photo:'📷 Photo' };
+
+function collecteAddQuestion(type){
+  type = type || 'text';
+  var q = { id: 'q_' + Date.now() + '_' + Math.floor(Math.random()*1000), type: type, label: '', required: false, options: (type==='select_one'||type==='select_multiple')?['Option 1','Option 2']:[] };
+  _builderQuestions.push(q);
+  collecteRenderBuilderQuestions();
+}
+
+function collecteRemoveQuestion(qid){
+  _builderQuestions = _builderQuestions.filter(function(q){ return q.id!==qid; });
+  collecteRenderBuilderQuestions();
+}
+
+function collecteMoveQuestion(qid, dir){
+  var idx = _builderQuestions.findIndex(function(q){ return q.id===qid; });
+  if(idx<0) return;
+  var newIdx = idx+dir;
+  if(newIdx<0||newIdx>=_builderQuestions.length) return;
+  var tmp = _builderQuestions[idx];
+  _builderQuestions[idx] = _builderQuestions[newIdx];
+  _builderQuestions[newIdx] = tmp;
+  collecteRenderBuilderQuestions();
+}
+
+function collecteRenderBuilderQuestions(){
+  var cont = document.getElementById('builder-questions');
+  if(!cont) return;
+  if(!_builderQuestions.length){
+    cont.innerHTML = '<div style="text-align:center;padding:30px;color:var(--txt3);font-size:13px;">Aucune question ajoutée. Cliquez sur <strong>Ajouter une question</strong>.</div>';
+    return;
+  }
+  var html = '';
+  _builderQuestions.forEach(function(q, i){
+    var safeLabel = (q.label||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    var optHtml = '';
+    if(q.type==='select_one'||q.type==='select_multiple'){
+      var safeOpts = (q.options||[]).join('\n').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      optHtml = '<div style="margin-top:8px;">'
+        + '<div style="font-size:11px;color:var(--txt3);margin-bottom:4px;">Options (une par ligne) :</div>'
+        + '<textarea class="q-options-input" style="width:100%;min-height:60px;resize:vertical;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:6px;color:var(--txt);font-size:12px;padding:6px;font-family:inherit;" placeholder="Option 1&#10;Option 2&#10;Option 3">'+safeOpts+'</textarea>'
+        + '</div>';
+    }
+    html += '<div data-qid="'+q.id+'" style="background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:14px;">'
+      + '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      +   '<span style="font-size:11px;font-weight:700;color:var(--txt3);background:rgba(91,163,240,0.15);padding:2px 8px;border-radius:20px;">'+(i+1)+'</span>'
+      +   '<span style="font-size:11px;color:var(--accent);">'+(_qTypes[q.type]||q.type)+'</span>'
+      +   '<div style="margin-left:auto;display:flex;gap:4px;">'
+      +     (i>0 ? '<button class="btn btn-outline btn-sm q-move-up" data-qid="'+q.id+'" style="padding:3px 7px;" title="Monter">↑</button>' : '')
+      +     (i<_builderQuestions.length-1 ? '<button class="btn btn-outline btn-sm q-move-down" data-qid="'+q.id+'" style="padding:3px 7px;" title="Descendre">↓</button>' : '')
+      +     '<button class="btn btn-sm q-remove" data-qid="'+q.id+'" style="padding:3px 7px;background:rgba(230,57,70,0.15);color:var(--red);border:1px solid rgba(230,57,70,0.3);" title="Supprimer">🗑</button>'
+      +   '</div>'
+      + '</div>'
+      + '<input type="text" class="flt q-label-input" style="width:100%;margin-bottom:6px;" placeholder="Libellé de la question *" value="'+safeLabel+'">'
+      + '<label style="font-size:12px;color:var(--txt2);display:flex;align-items:center;gap:6px;cursor:pointer;">'
+      +   '<input type="checkbox" class="q-required-input" '+(q.required?'checked':'')+'> Réponse obligatoire'
+      + '</label>'
+      + optHtml
+      + '</div>';
+  });
+  cont.innerHTML = html;
+
+  // Délégation d'événements sur le conteneur (évite les onclick inline avec IDs)
+  cont.onclick = function(e){
+    var btn = e.target.closest('button');
+    if(!btn) return;
+    var qid = btn.getAttribute('data-qid');
+    if(!qid) return;
+    if(btn.classList.contains('q-remove'))    { collecteRemoveQuestion(qid); }
+    if(btn.classList.contains('q-move-up'))   { collecteMoveQuestion(qid,-1); }
+    if(btn.classList.contains('q-move-down')) { collecteMoveQuestion(qid,1); }
+  };
+}
+
+function collecteUpdateQLabel(qid, val){
+  var q = _builderQuestions.find(function(x){ return x.id===qid; });
+  if(q) q.label = val;
+}
+function collecteUpdateQRequired(qid, val){
+  var q = _builderQuestions.find(function(x){ return x.id===qid; });
+  if(q) q.required = val;
+}
+function collecteUpdateQOptions(qid, val){
+  var q = _builderQuestions.find(function(x){ return x.id===qid; });
+  if(q) q.options = val.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+}
+
+// ==================== SAUVEGARDE FORMULAIRE ====================
+function collecteSaveForm(){
+  var title = (document.getElementById('builder-form-title').value||'').trim();
+  if(!title){ notif('⚠️ Le titre du formulaire est obligatoire','err'); return; }
+  // Récupérer l'état actuel des labels depuis le DOM via data-qid (plus fiable que les IDs CSS)
+  document.querySelectorAll('[data-qid]').forEach(function(block){
+    var qid = block.getAttribute('data-qid');
+    var q = _builderQuestions.find(function(x){ return x.id===qid; });
+    if(!q) return;
+    var labelEl = block.querySelector('input.q-label-input');
+    if(labelEl) q.label = labelEl.value;
+    var reqEl = block.querySelector('input.q-required-input');
+    if(reqEl) q.required = reqEl.checked;
+    var optEl = block.querySelector('textarea.q-options-input');
+    if(optEl) q.options = optEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  });
+  var forms = collecteGetForms();
+  if(_editFormId){
+    var idx = forms.findIndex(function(x){ return x.id===_editFormId; });
+    if(idx>=0){
+      forms[idx].title = title;
+      forms[idx].description = document.getElementById('builder-form-desc').value;
+      forms[idx].direction = document.getElementById('builder-form-direction').value;
+      forms[idx].status = document.getElementById('builder-form-status').value;
+      forms[idx].questions = JSON.parse(JSON.stringify(_builderQuestions));
+      forms[idx].updatedAt = new Date().toLocaleDateString('fr-FR');
+    }
+  } else {
+    forms.push({
+      id: 'form_' + Date.now(),
+      title: title,
+      description: document.getElementById('builder-form-desc').value,
+      direction: document.getElementById('builder-form-direction').value,
+      status: document.getElementById('builder-form-status').value,
+      questions: JSON.parse(JSON.stringify(_builderQuestions)),
+      createdAt: new Date().toLocaleDateString('fr-FR')
+    });
+  }
+  collecteSaveForms(forms);
+  notif('✅ Formulaire enregistré', 'ok');
+  collecteBackToList();
+}
+
+// ==================== APERÇU & REMPLISSAGE ====================
+function collectePreviewForm(){
+  // Récupérer l'état actuel des labels via data-qid
+  document.querySelectorAll('[data-qid]').forEach(function(block){
+    var qid = block.getAttribute('data-qid');
+    var q = _builderQuestions.find(function(x){ return x.id===qid; });
+    if(!q) return;
+    var labelEl = block.querySelector('input.q-label-input');
+    if(labelEl) q.label = labelEl.value;
+    var optEl = block.querySelector('textarea.q-options-input');
+    if(optEl) q.options = optEl.value.split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  });
+  var title = (document.getElementById('builder-form-title').value||'Aperçu du formulaire');
+  var desc = document.getElementById('builder-form-desc').value||'';
+  _currentFormId = _editFormId || '__preview__';
+  collecteOpenPreviewModal({ id: _currentFormId, title: title, description: desc, questions: _builderQuestions });
+}
+
+function collecteOpenPreviewModal(f){
+  _currentFormId = f.id;
+  document.getElementById('preview-form-title').textContent = f.title;
+  document.getElementById('preview-form-desc').textContent = f.description||'';
+  var body = document.getElementById('preview-form-body');
+  body.innerHTML = (f.questions||[]).map(function(q){
+    var req = q.required ? '<span style="color:var(--red);margin-left:3px;">*</span>' : '';
+    var input = '';
+    if(q.type==='text') input = '<input type="text" id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;">';
+    else if(q.type==='textarea') input = '<textarea id="pf-'+q.id+'" style="width:100%;min-height:80px;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;resize:vertical;"></textarea>';
+    else if(q.type==='number') input = '<input type="number" id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;">';
+    else if(q.type==='date') input = '<input type="date" id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;">';
+    else if(q.type==='datetime') input = '<input type="datetime-local" id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;">';
+    else if(q.type==='select_one') input = '<select id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(14,31,61,0.9);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;"><option value="">— Choisir —</option>' + (q.options||[]).map(function(o){ return '<option>'+o+'</option>'; }).join('') + '</select>';
+    else if(q.type==='select_multiple') input = '<div id="pf-'+q.id+'" style="display:flex;flex-direction:column;gap:6px;">' + (q.options||[]).map(function(o,oi){ return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;"><input type="checkbox" value="'+o+'" name="pf-'+q.id+'"> '+o+'</label>'; }).join('') + '</div>';
+    else if(q.type==='note') input = '<div style="background:rgba(91,163,240,0.08);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--txt2);">'+q.label+'</div>';
+    else if(q.type==='geopoint') input = '<div style="background:rgba(0,201,167,0.07);border:1px solid rgba(0,201,167,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--txt2);">📍 Collecte de géolocalisation (disponible sur mobile)</div>';
+    else if(q.type==='photo')    input = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'
+      + '<div style="border:2px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;" onclick="document.getElementById(\'pf-ph-face-'+q.id+'\').click()">'
+      +   '<input type="file" id="pf-ph-face-'+q.id+'" accept="image/*" style="display:none;" onchange="pfPhotoLoad(this,\'face\',\'pf-'+q.id+'\')">'
+      +   '<div id="pf-face-prev-'+q.id+'"><div style="font-size:22px;">📷</div><div style="font-size:11px;color:var(--txt3);margin-top:4px;">Photo Faciale</div></div>'
+      + '</div>'
+      + '<div style="border:2px dashed var(--border2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;" onclick="document.getElementById(\'pf-ph-profil-'+q.id+'\').click()">'
+      +   '<input type="file" id="pf-ph-profil-'+q.id+'" accept="image/*" style="display:none;" onchange="pfPhotoLoad(this,\'profil\',\'pf-'+q.id+'\')">'
+      +   '<div id="pf-profil-prev-'+q.id+'"><div style="font-size:22px;">📸</div><div style="font-size:11px;color:var(--txt3);margin-top:4px;">Photo Latérale</div></div>'
+      + '</div>'
+      + '</div>';
+    else input = '<input type="text" id="pf-'+q.id+'" style="width:100%;padding:8px 12px;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:8px;color:var(--txt);font-size:13px;">';
+    if(q.type==='note') return '<div style="margin-bottom:4px;"><div style="font-size:13px;font-weight:600;color:var(--blue-light);margin-bottom:6px;">📌 Note</div>'+input+'</div>';
+    return '<div><label style="font-size:13px;font-weight:600;color:var(--txt);display:block;margin-bottom:6px;">'+q.label+req+'</label>'+input+'</div>';
+  }).join('') || '<p style="color:var(--txt3);text-align:center;">Aucune question dans ce formulaire.</p>';
+  document.getElementById('modal-collecte-preview').style.display='block';
+}
+
+function collecteSubmitResponse(){
+  var forms = collecteGetForms();
+  var f = forms.find(function(x){ return x.id===_currentFormId; });
+  if(!f){ notif('Formulaire introuvable','err'); return; }
+  var responseData = {};
+  var valid = true;
+  (f.questions||[]).forEach(function(q){
+    var val = '';
+    if(q.type==='select_multiple'){
+      var checked = document.querySelectorAll('#pf-'+q.id+' input[type="checkbox"]:checked');
+      val = Array.from(checked).map(function(cb){ return cb.value; }).join(', ');
+    } else if(q.type==='note'||q.type==='geopoint'){
+      val = '';
+    } else if(q.type==='photo'){
+      // Récupérer les photos capturées (stockées dans data-attributes)
+      var faceEl   = document.getElementById('pf-ph-face-'+q.id);
+      var profilEl = document.getElementById('pf-ph-profil-'+q.id);
+      val = (faceEl&&faceEl.dataset.preview?'[Face]':'')+' '+(profilEl&&profilEl.dataset.preview?'[Profil]':'');
+      val = val.trim() || '';
+      responseData[q.id+'_face']   = { label: q.label+' — Faciale',  value: (faceEl&&faceEl.dataset.preview)||'' };
+      responseData[q.id+'_profil'] = { label: q.label+' — Latérale', value: (profilEl&&profilEl.dataset.preview)||'' };
+    } else {
+      var el = document.getElementById('pf-'+q.id);
+      val = el ? el.value : '';
+    }
+    if(q.required && !val){ valid=false; }
+    responseData[q.id] = { label: q.label, value: val };
+  });
+  if(!valid){ notif('⚠️ Remplissez tous les champs obligatoires','err'); return; }
+  collecteSaveResponse(_currentFormId, responseData);
+  document.getElementById('modal-collecte-preview').style.display='none';
+  notif('✅ Réponse enregistrée avec succès','ok');
+  collecteRenderList();
+}
+
+// ==================== RÉPONSES ====================
+function collecteOpenReponses(id){
+  var forms = collecteGetForms();
+  var f = forms.find(function(x){ return x.id===id; });
+  if(!f) return;
+  _currentFormId = id;
+  document.getElementById('reponses-form-title').textContent = '📊 ' + f.title;
+  var reps = collecteGetResponses(id);
+  document.getElementById('reponses-form-count').textContent = reps.length + ' réponse(s)';
+  var container = document.getElementById('reponses-table-container');
+  if(!reps.length){
+    container.innerHTML = '<p style="color:var(--txt3);text-align:center;padding:30px;">Aucune réponse enregistrée pour ce formulaire.</p>';
+  } else {
+    var qs = f.questions||[];
+    var thead = '<tr><th style="padding:8px 12px;text-align:left;font-size:11px;color:var(--txt3);border-bottom:1px solid var(--border);">Date</th>'
+      + qs.map(function(q){ return '<th style="padding:8px 12px;text-align:left;font-size:11px;color:var(--txt3);border-bottom:1px solid var(--border);white-space:nowrap;">'+q.label+'</th>'; }).join('') + '</tr>';
+    var tbody = reps.map(function(r){
+      return '<tr onmouseover="this.style.background=\'rgba(91,163,240,0.04)\'" onmouseout="this.style.background=\'\'">'
+        + '<td style="padding:8px 12px;font-size:12px;color:var(--txt2);white-space:nowrap;">'+r.date+'</td>'
+        + qs.map(function(q){ var v=(r.data&&r.data[q.id])?r.data[q.id].value:'—'; return '<td style="padding:8px 12px;font-size:12px;color:var(--txt);">'+v+'</td>'; }).join('') + '</tr>';
+    }).join('');
+    container.innerHTML = '<table style="width:100%;border-collapse:collapse;"><thead>'+thead+'</thead><tbody>'+tbody+'</tbody></table>';
+  }
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+  var pg = document.getElementById('pg-collecte-reponses');
+  if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+}
+
+function collecteExportReponses(){
+  var forms = collecteGetForms();
+  var f = forms.find(function(x){ return x.id===_currentFormId; });
+  if(!f) return;
+  var reps = collecteGetResponses(_currentFormId);
+  if(!reps.length){ notif('Aucune réponse à exporter','err'); return; }
+  var qs = f.questions||[];
+  var wb = XLSX.utils.book_new();
+  var wsData = [['Date'].concat(qs.map(function(q){ return q.label; }))];
+  reps.forEach(function(r){
+    wsData.push([r.date].concat(qs.map(function(q){ return (r.data&&r.data[q.id])?r.data[q.id].value:''; })));
+  });
+  var ws = XLSX.utils.aoa_to_sheet(wsData);
+  XLSX.utils.book_append_sheet(wb, ws, 'Réponses');
+  XLSX.writeFile(wb, 'Reponses_' + f.title.replace(/\s+/g,'_') + '.xlsx');
+  notif('📊 Export Excel réussi','ok');
+}
+
+// ==================== IMPORT XLSFORM ====================
+function collecteImportXLS(){
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.xlsx,.xls,.csv';
+  input.onchange = function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        var wb = XLSX.read(ev.target.result, {type:'binary'});
+        var ws = wb.Sheets['survey']||wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, {header:1});
+        var headers = (rows[0]||[]).map(function(h){ return (h||'').toString().toLowerCase().trim(); });
+        var typeIdx = headers.indexOf('type');
+        var nameIdx = headers.indexOf('name');
+        var labelIdx = headers.findIndex(function(h){ return h.startsWith('label'); });
+        var reqIdx = headers.indexOf('required');
+        var questions = [];
+        for(var i=1;i<rows.length;i++){
+          var r=rows[i];
+          if(!r||!r[typeIdx]) continue;
+          var qtype = (r[typeIdx]||'').toString().trim();
+          var qname = (r[nameIdx]||'q'+i).toString().trim();
+          var qlabel = labelIdx>=0 ? (r[labelIdx]||qname).toString().trim() : qname;
+          var qreq = reqIdx>=0 && ['yes','true','1'].includes((r[reqIdx]||'').toString().toLowerCase().trim());
+          var mapped = {'text':'text','integer':'number','decimal':'number','select_one':'select_one','select_multiple':'select_multiple','date':'date','datetime':'datetime','note':'note','geopoint':'geopoint','textarea':'textarea'}[qtype]||'text';
+          if(['begin_group','end_group','begin_repeat','end_repeat'].includes(qtype)) continue;
+          questions.push({ id:'q_'+Date.now()+'_'+i, type:mapped, label:qlabel, required:qreq, options:[] });
+        }
+        if(!questions.length){ notif('⚠️ Aucune question trouvée dans ce fichier XLSForm','err'); return; }
+        _editFormId = null;
+        _builderQuestions = questions;
+        var fname = file.name.replace(/\.[^.]+$/, '');
+        document.getElementById('builder-form-title').value = fname;
+        document.getElementById('builder-title').textContent = fname;
+        document.getElementById('builder-form-desc').value = 'Importé depuis XLSForm';
+        document.getElementById('builder-form-status').value = 'brouillon';
+        collecteRenderBuilderQuestions();
+        document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+        var pg = document.getElementById('pg-collecte-builder');
+        if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+        notif('✅ XLSForm importé — ' + questions.length + ' question(s) chargée(s)', 'ok');
+      }catch(err){ notif('❌ Erreur lecture XLSForm : '+err.message,'err'); }
+    };
+    reader.readAsBinaryString(file);
+  };
+  input.click();
+}
+
+// ==================== GÉNÉRER PAR IA ====================
+function collecteGenererIA(){
+  document.getElementById('ia-prompt').value='';
+  document.getElementById('ia-result').style.display='none';
+  document.getElementById('modal-collecte-ia').style.display='block';
+}
+
+// ==================== MOTEUR IA LOCAL — GÉNÉRATION PAR MOTS-CLÉS ====================
+// Pas d'appel API externe : analyse sémantique du prompt côté client.
+// Dictionnaire de champs reconnus avec leur type et options éventuelles.
+var _iaFieldDict = [
+  // Identité / personne
+  { kw:['nom','prénoms','prénom','name'],          label:'Nom & Prénoms',           type:'text',       required:true },
+  { kw:['téléphone','tel','phone','mobile','numéro de téléphone'], label:'Numéro de téléphone', type:'text', required:false },
+  { kw:['email','courriel','mail','adresse email'], label:'Adresse email',          type:'text',       required:false },
+  { kw:['bureau','porte','bureau/porte','étage'],   label:'Bureau / Porte / Étage', type:'text',       required:false },
+  { kw:['service','direction','sous-direction','sous direction'], label:'Service / Direction', type:'text', required:true },
+  { kw:['poste','fonction','titre'],               label:'Poste / Fonction',        type:'text',       required:false },
+
+  // Équipement informatique
+  { kw:['marque','modèle','marque & modèle','marque modèle'], label:'Marque & Modèle', type:'text',   required:true },
+  { kw:['n° série','numéro série','numéro de série','série','serial'], label:'N° de Série', type:'text', required:true },
+  { kw:['cpu','processeur','processor'],           label:'Processeur (CPU)',         type:'text',       required:false },
+  { kw:['ram','mémoire ram','mémoire'],            label:'Mémoire RAM',             type:'select_one', required:false,
+    options:['2 Go','4 Go','8 Go','16 Go','32 Go','64 Go'] },
+  { kw:['stockage','disque','hdd','ssd','storage'], label:'Stockage (Disque)',       type:'select_one', required:false,
+    options:['128 Go','256 Go','512 Go','1 To','2 To'] },
+  { kw:['projet'],                                 label:'Projet / Programme',       type:'text',       required:false },
+  { kw:['type d\'équipement','type équipement','équipement','type de matériel','matériel'],
+    label:'Type d\'équipement', type:'select_one', required:true,
+    options:['PC Bureau','PC Portable','Imprimante','Tablette','Serveur','Switch','Routeur','Autre'] },
+  { kw:['état','etat','condition','statut matériel'], label:'État du matériel', type:'select_one', required:true,
+    options:['Neuf','Bon état','État moyen','En panne','À réparer','Hors service'] },
+  { kw:['date obtention','date d\'obtention','date acquisition','acquisition'], label:'Date d\'obtention', type:'date', required:false },
+  { kw:['date'],                                   label:'Date',                    type:'date',       required:false },
+
+  // Localisation
+  { kw:['localisation','lieu','location','gps','géolocalisation'], label:'Localisation GPS', type:'geopoint', required:false },
+  { kw:['drenaet','drena','région','département'],  label:'DRENAET / Région',        type:'text',       required:false },
+  { kw:['iepp','inspection','sous-préfecture'],     label:'IEPP / Inspection',       type:'text',       required:false },
+  { kw:['école','établissement','structure'],        label:'École / Établissement',   type:'text',       required:false },
+
+  // Collecte spécifique
+  { kw:['observation','remarque','commentaire','note','observations'], label:'Observations / Remarques', type:'textarea', required:false },
+  { kw:['recommandation','recommandations'],        label:'Recommandations',         type:'textarea',   required:false },
+  { kw:['nombre','quantité','count','total'],       label:'Quantité',                type:'number',     required:false },
+  { kw:['année','an'],                              label:'Année',                   type:'number',     required:false },
+  { kw:['oui non','oui/non','yes/no','disponible'], label:'Disponible ?',            type:'select_one', required:false,
+    options:['Oui','Non','Partiellement'] },
+  // Photos équipement
+  { kw:['photo faciale','photo face','photo frontale','vue faciale','vue frontale','photo avant'], label:'Photo Faciale (Vue frontale)', type:'photo', required:false },
+  { kw:['photo latérale','photo profil','vue latérale','vue de profil','photo côté','photo derrière'], label:'Photo Latérale (Vue de profil)', type:'photo', required:false },
+  { kw:['photo','photos','image','images','capture'], label:'Photo de l\'équipement', type:'photo', required:false },
+];
+
+// Dictionnaire de TITRES prédéfinis selon le contexte du prompt
+var _iaTitleDict = [
+  { kw:['parc informatique','inventaire','équipement informatique','matériel informatique'], title:'Enquête sur l\'équipement informatique', desc:'Formulaire de collecte des informations relatives au parc informatique — DESPS / MENAET' },
+  { kw:['pc bureau','ordinateur bureau','bureau'],   title:'Inventaire — PC Bureau',   desc:'Collecte des informations des ordinateurs de bureau' },
+  { kw:['portable','laptop','pc portable'],          title:'Inventaire — PC Portables', desc:'Collecte des informations des ordinateurs portables' },
+  { kw:['imprimante'],                               title:'Inventaire — Imprimantes',  desc:'Collecte des informations des imprimantes' },
+  { kw:['tablette'],                                 title:'Inventaire — Tablettes',    desc:'Collecte des informations des tablettes' },
+  { kw:['agent','personnel','utilisateur'],          title:'Fiche Agent — Dotation informatique', desc:'Collecte des équipements attribués aux agents' },
+  { kw:['mission','visite','terrain'],               title:'Fiche de visite terrain',   desc:'Collecte de données lors des missions de terrain' },
+  { kw:['maintenance','panne','réparation'],         title:'Fiche de maintenance matériel', desc:'Signalement et suivi des pannes et maintenances' },
+  { kw:['statmen','aser','clef','mena'],             title:'Suivi STATMEN — Équipement', desc:'Collecte dans le cadre du programme STATMEN/MENA-PROJECT' },
+];
+
+function _iaAnalyzePrompt(prompt){
+  var p = prompt.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'') // retirer accents pour matching
+    .replace(/[,;]/g,' ');
+
+  // 1. Détecter le titre
+  var title = 'Formulaire de collecte de données';
+  var desc  = 'Généré automatiquement par l\'assistant IA — DESPS / MENAET';
+  _iaTitleDict.forEach(function(t){
+    t.kw.forEach(function(k){
+      if(p.includes(k.normalize('NFD').replace(/[\u0300-\u036f]/g,''))){ title=t.title; desc=t.desc; }
+    });
+  });
+
+  // 2. Détecter les champs en évitant les doublons
+  var matched = [];
+  var usedLabels = {};
+  var tokens = p.split(/\s+/);
+
+  _iaFieldDict.forEach(function(field){
+    var hit = field.kw.some(function(k){
+      var kn = k.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      return p.includes(kn);
+    });
+    if(hit && !usedLabels[field.label]){
+      usedLabels[field.label] = true;
+      matched.push({
+        id: 'q_ia_' + Date.now() + '_' + matched.length,
+        type: field.type,
+        label: field.label,
+        required: !!field.required,
+        options: field.options ? field.options.slice() : []
+      });
+    }
+  });
+
+  // 3. Si rien trouvé, créer des questions génériques selon les tokens
+  if(!matched.length){
+    var genericWords = prompt.split(/[,;\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+    genericWords.forEach(function(w,i){
+      if(w.length>2){
+        matched.push({ id:'q_ia_gen_'+i, type:'text', label:w, required:i===0, options:[] });
+      }
+    });
+  }
+
+  // 4. Ajouter toujours une note d'introduction si non présente
+  var hasNote = matched.some(function(q){ return q.type==='note'; });
+  if(!hasNote && matched.length>0){
+    matched.unshift({ id:'q_ia_note_0', type:'note', label:'Merci de remplir ce formulaire avec des informations exactes. Tous les champs marqués * sont obligatoires.', required:false, options:[] });
+  }
+
+  return { title:title, description:desc, questions:matched };
+}
+
+function collecteIAGenerate(){
+  var prompt = (document.getElementById('ia-prompt').value||'').trim();
+  if(!prompt){ notif('⚠️ Décrivez votre besoin','err'); return; }
+  var btn = document.getElementById('ia-generate-btn');
+  var resEl = document.getElementById('ia-result');
+  btn.disabled=true; btn.textContent='⏳ Analyse…';
+  resEl.style.display='none';
+
+  // Simulation d'un délai pour l'effet "traitement IA"
+  setTimeout(function(){
+    try{
+      var form = _iaAnalyzePrompt(prompt);
+      if(!form.questions.length){ throw new Error('Aucun champ reconnu. Précisez les noms des champs souhaités.'); }
+
+      var previewHtml = form.questions.slice(0,5).map(function(q){
+        var badge = { text:'Texte', textarea:'Texte long', number:'Nombre', select_one:'Choix unique',
+          select_multiple:'Choix multiple', date:'Date', datetime:'Date+Heure', note:'Note', geopoint:'GPS' }[q.type]||q.type;
+        return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);">'
+          + '<span style="font-size:10px;background:rgba(91,163,240,0.15);color:var(--blue-light);padding:2px 7px;border-radius:10px;flex-shrink:0;">'+badge+'</span>'
+          + '<span style="font-size:12px;color:var(--txt);">' + q.label + (q.required?' <span style="color:var(--red);">*</span>':'') + '</span>'
+          + '</div>';
+      }).join('') + (form.questions.length>5 ? '<div style="font-size:11px;color:var(--txt3);padding-top:6px;">… et '+(form.questions.length-5)+' autre(s) champ(s)</div>' : '');
+
+      resEl.innerHTML =
+        '<div style="background:rgba(0,201,167,0.08);border:1px solid rgba(0,201,167,0.25);border-radius:10px;padding:14px;margin-bottom:12px;">'
+        + '<div style="font-size:13px;font-weight:700;color:var(--accent);margin-bottom:2px;">✅ ' + form.title + '</div>'
+        + '<div style="font-size:11px;color:var(--txt3);margin-bottom:10px;">' + form.questions.length + ' question(s) générée(s)</div>'
+        + previewHtml
+        + '</div>'
+        + '<div style="display:flex;gap:8px;justify-content:flex-end;">'
+        + '<button class="btn btn-primary" onclick="collecteIAApply()">✅ Utiliser ce formulaire</button>'
+        + '</div>';
+      // Stocker en variable globale pour éviter tout problème d'encodage dans l'onclick
+      window._iaPendingForm = form;
+      resEl.style.display='block';
+    }catch(err){
+      resEl.innerHTML='<div style="color:var(--red);font-size:13px;padding:10px;background:rgba(230,57,70,0.1);border-radius:8px;">❌ '+err.message+'</div>';
+      resEl.style.display='block';
+    }
+    btn.disabled=false; btn.textContent='⭐ Générer';
+  }, 700);
+}
+
+function collecteIAApply(){
+  try{
+    var form = window._iaPendingForm;
+    if(!form || !form.questions){ notif('❌ Aucun formulaire IA en attente','err'); return; }
+    _editFormId = null;
+    _builderQuestions = (form.questions||[]).map(function(q,i){
+      return { id:'q_ia_'+Date.now()+'_'+i, type:q.type||'text', label:q.label||'', required:!!q.required, options:(q.options||[]).slice() };
+    });
+    // Remplir les méta du builder
+    var titleEl = document.getElementById('builder-form-title');
+    var descEl  = document.getElementById('builder-form-desc');
+    var hEl     = document.getElementById('builder-title');
+    var stEl    = document.getElementById('builder-form-status');
+    if(titleEl) titleEl.value = form.title||'';
+    if(descEl)  descEl.value  = form.description||'';
+    if(hEl)     hEl.textContent = form.title||'Formulaire IA';
+    if(stEl)    stEl.value    = 'brouillon';
+    // Fermer le modal IA
+    document.getElementById('modal-collecte-ia').style.display='none';
+    // Afficher le builder
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); p.style.display=''; });
+    var pg = document.getElementById('pg-collecte-builder');
+    if(pg){ pg.classList.add('active'); pg.style.display='block'; }
+    // Rendre les questions
+    collecteRenderBuilderQuestions();
+    window._iaPendingForm = null;
+    notif('✅ Formulaire IA chargé — modifiez puis cliquez sur Enregistrer','ok');
+  }catch(e){
+    notif('❌ Erreur : '+e.message,'err');
+  }
+}
+
+// ==================== PHOTO DANS FORMULAIRE PUBLIC ====================
+function pfPhotoLoad(input, slot, qid) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img2 = new Image();
+    img2.onload = function() {
+      var cv = document.createElement('canvas');
+      var MAX2 = 600;
+      var r2 = Math.min(MAX2/img2.width, MAX2/img2.height, 1);
+      cv.width = Math.round(img2.width*r2); cv.height = Math.round(img2.height*r2);
+      cv.getContext('2d').drawImage(img2,0,0,cv.width,cv.height);
+      var data = cv.toDataURL('image/jpeg', 0.75);
+      input.dataset.preview = data;
+      var prevId = slot==='face' ? 'pf-face-prev-' + qid.replace('pf-','') : 'pf-profil-prev-' + qid.replace('pf-','');
+      var prevEl = document.getElementById(prevId);
+      if (prevEl) prevEl.innerHTML = '<img src="'+data+'" style="width:100%;max-height:60px;object-fit:cover;border-radius:6px;">';
+      notif('📷 Photo chargée', 'ok');
+    };
+    img2.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ==================== INIT : hook sur nav collecte ====================
+(function(){
+  var _origNav = window.nav;
+  window.nav = function(page){
+    if(page==='collecte'){
+      _origNav && _origNav(page);
+      setTimeout(function(){ collecteRenderList(); },80);
+    } else {
+      _origNav && _origNav(page);
+    }
+  };
+})();
+</script>
 <div class="global-hscroll" id="global-hscroll"><span class="hs-label">&#9664;</span><div class="hs-track" id="hs-track"><div class="hs-thumb" id="hs-thumb"></div></div><span class="hs-label">&#9654;</span></div>
 </body>
 </html>
