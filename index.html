@@ -636,9 +636,118 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
   .logo-desps { width:56px; height:56px; }
   .logo-desps-sm { width:40px; height:40px; }
   .logo-desps-xs { width:34px; height:34px; }
+
+/* Correctif d'affichage : les pages réservées admin ne s'empilent plus au-dessus de la page active */
+.page.admin-gate:not(.active){display:none!important;}
+
+/* ====== CONSOLIDATION PARC : saisie publique (#saisie) + page admin ====== */
+.pub-mode .login-page,.pub-mode .app,.pub-mode .global-hscroll{display:none!important;}
+#pub-saisie{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;overflow:auto;background:#eef2f8;color:#14233f;font-family:'Segoe UI',Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;}
+.pub-mode #pub-saisie{display:block;}
+#pub-saisie *{box-sizing:border-box;}
+#pub-saisie .pb-bar{height:7px;background:linear-gradient(90deg,#F5841F 0 33.33%,#ffffff 33.33% 66.66%,#009A44 66.66% 100%);border-bottom:1px solid #d5dce8;}
+#pub-saisie .pb-head{background:#0b1f4d;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+#pub-saisie .pb-head img{width:46px;height:46px;object-fit:contain;background:#fff;border-radius:8px;padding:3px;flex-shrink:0;}
+#pub-saisie .pb-head .t1{font-weight:800;font-size:15px;letter-spacing:.2px;line-height:1.25;}
+#pub-saisie .pb-head .t2{font-size:11.5px;opacity:.8;margin-top:2px;line-height:1.35;}
+#pub-saisie .pb-wrap{max-width:760px;margin:0 auto;padding:14px 14px 60px;}
+#pub-saisie .pb-net{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border-radius:10px;padding:9px 12px;font-size:12.5px;font-weight:600;margin-bottom:12px;}
+#pub-saisie .pb-net.ok{background:#e4f6ec;color:#0b6b36;border:1px solid #b6e2c7;}
+#pub-saisie .pb-net.off{background:#fff3df;color:#8a4b00;border:1px solid #f3d29c;}
+#pub-saisie .pb-net.wait{background:#e8f0fd;color:#0b3d91;border:1px solid #bcd1f5;}
+#pub-saisie .pb-net button{background:#0b1f4d;color:#fff;border:0;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;}
+#pub-saisie h1{font-size:20px;margin:6px 0 4px;color:#0b1f4d;}
+#pub-saisie .pb-sub{font-size:13px;color:#4b5b78;margin:0 0 14px;line-height:1.5;}
+#pub-saisie .pb-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:560px){#pub-saisie .pb-grid{grid-template-columns:1fr 1fr;}}
+#pub-saisie .pb-type{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #d5dce8;border-radius:14px;padding:14px;cursor:pointer;text-align:left;font-family:inherit;color:inherit;width:100%;transition:border-color .15s,transform .1s;}
+#pub-saisie .pb-type:hover{border-color:#F5841F;}
+#pub-saisie .pb-type:active{transform:scale(.99);}
+#pub-saisie .pb-type .ic{width:46px;height:46px;border-radius:12px;background:#eef2f8;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+#pub-saisie .pb-type .tt{font-weight:800;font-size:14.5px;color:#0b1f4d;}
+#pub-saisie .pb-type .ds{font-size:12px;color:#5d6d89;margin-top:2px;}
+#pub-saisie .pb-sec{background:#fff;border:1px solid #d5dce8;border-radius:14px;padding:14px;margin-bottom:12px;}
+#pub-saisie .pb-sec h2{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:#F5841F;margin:0 0 10px;font-weight:800;}
+#pub-saisie .pb-f{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:560px){#pub-saisie .pb-f{grid-template-columns:1fr 1fr;}#pub-saisie .pb-f .full{grid-column:1/-1;}}
+#pub-saisie label{display:block;font-size:12px;font-weight:700;color:#3b4a66;margin-bottom:4px;}
+#pub-saisie label .rq{color:#d62839;}
+#pub-saisie input,#pub-saisie select,#pub-saisie textarea{width:100%;min-height:46px;border:1.5px solid #c9d3e3;border-radius:10px;padding:10px 12px;font-size:16px;font-family:inherit;color:#14233f;background:#fff;outline:none;}
+#pub-saisie textarea{min-height:84px;resize:vertical;}
+#pub-saisie input:focus,#pub-saisie select:focus,#pub-saisie textarea:focus{border-color:#F5841F;box-shadow:0 0 0 3px rgba(245,132,31,.18);}
+#pub-saisie .bad{border-color:#d62839!important;background:#fff5f6;}
+#pub-saisie .pb-ph{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+#pub-saisie .pb-phbtn{border:2px dashed #c0cce0;border-radius:12px;padding:14px 8px;text-align:center;font-size:12px;font-weight:700;color:#4b5b78;cursor:pointer;background:#f8fafd;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+#pub-saisie .pb-phbtn img{max-width:100%;max-height:90px;border-radius:8px;}
+#pub-saisie .pb-phbtn input{display:none;}
+#pub-saisie .pb-submit{width:100%;min-height:52px;border:0;border-radius:12px;background:#009A44;color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;}
+#pub-saisie .pb-submit:disabled{opacity:.6;}
+#pub-saisie .pb-back{background:none;border:0;color:#0b3d91;font-weight:700;font-size:13px;cursor:pointer;padding:6px 0;font-family:inherit;}
+#pub-saisie .pb-err{background:#fdecee;border:1px solid #f3b4bb;color:#8f1c28;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px;display:none;}
+#pub-saisie .pb-ok{background:#fff;border:1px solid #b6e2c7;border-radius:16px;padding:22px 16px;text-align:center;}
+#pub-saisie .pb-ok .big{font-size:46px;}
+#pub-saisie .pb-ok h2{color:#0b6b36;margin:6px 0;font-size:18px;}
+#pub-saisie .pb-ok .ref{font-family:monospace;background:#eef2f8;border-radius:8px;display:inline-block;padding:4px 10px;margin:6px 0 14px;font-size:13px;}
+#pub-saisie .pb-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+#pub-saisie .pb-btns button{border:0;border-radius:10px;padding:12px 16px;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;}
+#pub-saisie .pb-b1{background:#F5841F;color:#fff;}
+#pub-saisie .pb-b2{background:#e3e9f4;color:#0b1f4d;}
+#pub-saisie .pb-foot{text-align:center;font-size:11px;color:#6b7a96;margin-top:18px;line-height:1.6;}
+
+/* ----- page admin : consolidation ----- */
+.cs-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px;}
+.cs-kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.cs-kpi b{display:block;font-family:'Syne',sans-serif;font-size:24px;color:var(--txt);}
+.cs-kpi span{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:.8px;}
+.cs-links{padding:14px;display:flex;flex-direction:column;gap:8px;}
+.cs-link{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 12px;}
+.cs-link .nm{min-width:210px;font-weight:700;font-size:13px;color:var(--txt);}
+.cs-link code{flex:1;min-width:200px;font-size:11.5px;color:var(--blue-light);word-break:break-all;font-family:'IBM Plex Mono',monospace;}
+.cs-warn{margin:0 14px 12px;padding:9px 12px;border-radius:9px;background:rgba(244,185,66,.12);border:1px solid rgba(244,185,66,.35);color:var(--gold);font-size:12px;line-height:1.5;}
+.cs-table{width:100%;border-collapse:collapse;font-size:12px;}
+.cs-table th{background:rgba(0,0,0,.28);color:var(--blue-pale);padding:7px 9px;text-align:left;white-space:nowrap;font-size:11px;letter-spacing:.4px;border-bottom:1px solid var(--border2);}
+.cs-table td{padding:6px 9px;border-bottom:1px solid var(--border);color:var(--txt);white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis;}
+.cs-table tr:hover td{background:rgba(91,163,240,.06);}
+.cs-matrix th,.cs-matrix td{text-align:center;}
+.cs-matrix th:first-child,.cs-matrix td:first-child{text-align:left;}
+.cs-matrix .tot{font-weight:800;color:var(--accent);}
+.cs-matrix small{display:block;color:var(--txt3);font-size:10px;}
+.cs-grp{margin-bottom:14px;}
+.cs-grp-h{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:11px 16px;background:rgba(0,0,0,.25);border-bottom:1px solid var(--border);}
+.cs-grp-h b{font-family:'Syne',sans-serif;font-size:14px;color:var(--txt);}
+.cs-grp-h span{font-size:11px;color:var(--txt3);}
+.cs-sub{padding:10px 14px 4px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--orange);}
+.cs-st{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;}
+.cs-st.en_attente{background:rgba(244,185,66,.15);color:var(--gold);border:1px solid rgba(244,185,66,.35);}
+.cs-st.integre{background:rgba(0,201,167,.14);color:var(--accent);border:1px solid rgba(0,201,167,.35);}
+.cs-st.rejete{background:rgba(230,57,70,.14);color:var(--red);border:1px solid rgba(230,57,70,.35);}
+.cs-new{color:var(--accent);font-weight:800;}
+.cs-act{display:flex;gap:4px;}
+.cs-act button{background:var(--surface);border:1px solid var(--border2);color:var(--txt);border-radius:6px;padding:3px 7px;cursor:pointer;font-size:12px;}
+.cs-act button:hover{border-color:var(--blue-light);}
+.cs-bulk{display:none;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:12px;background:rgba(0,201,167,.1);border:1px solid rgba(0,201,167,.3);border-radius:10px;font-size:12.5px;color:var(--txt);}
+#cs-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:5000;background:rgba(2,8,22,.75);align-items:center;justify-content:center;padding:16px;}
+#cs-modal.on{display:flex;}
+#cs-modal .box{background:var(--card);border:1px solid var(--border2);border-radius:14px;max-width:720px;width:100%;max-height:90vh;overflow:auto;padding:18px;}
+#cs-modal pre{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px;font-size:11.5px;color:var(--blue-pale);overflow:auto;white-space:pre-wrap;}
 </style>
 </head>
 <body>
+<script>(function(){try{if(/^#saisie/i.test(location.hash)){document.documentElement.classList.add("pub-mode");}}catch(e){}})();</script>
+
+<!-- ==================== SAISIE PUBLIQUE (lien libre, sans mot de passe) : #saisie ==================== -->
+<div id="pub-saisie" aria-live="polite">
+  <div class="pb-bar"></div>
+  <div class="pb-head">
+    <img id="pb-logo1" alt="" style="display:none;">
+    <div style="flex:1;min-width:0;">
+      <div class="t1">Parc Informatique DESPS</div>
+      <div class="t2">Ministère de l'Éducation Nationale, de l'Alphabétisation et de l'Enseignement Technique</div>
+    </div>
+    <img id="pb-logo2" alt="" style="display:none;">
+  </div>
+  <div class="pb-wrap" id="pb-root"></div>
+</div>
 
 <!-- ==================== LOGIN PAGE ==================== -->
 <div class="login-page" id="login-page">
@@ -847,6 +956,11 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
       <div class="nav-item write-nav" id="nav-suivi-parent" onclick="nav('suivi-unifie')" style="display:none;">
         <span class="nav-ico">🔧</span>
         <span>Suivi Mat&eacute;riels &amp; Maintenance</span>
+      </div>
+
+      <div class="nav-item write-nav" onclick="nav('consolidation')" style="display:none;" id="nav-consolidation">
+        <span class="nav-ico">📥</span><span>Consolidation du parc</span>
+        <span class="nav-bdg" id="nb-conso">0</span>
       </div>
 
       <!-- ── ADMINISTRATION (admin uniquement) ── -->
@@ -2410,6 +2524,74 @@ footer{padding:12px 22px;border-top:1px solid var(--border);background:rgba(0,0,
         </div>
 
       </div>
+
+            <!-- ===== PAGE CONSOLIDATION DU PARC (fiches reçues par le lien public) ===== -->
+      <div id="pg-consolidation" class="page" style="display:none;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+          <div>
+            <div style="font-size:11px;color:var(--txt3);font-family:'IBM Plex Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">— SAISIE PUBLIQUE &amp; CONSOLIDATION</div>
+            <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--txt);margin:0;">Consolidation du <em style="font-style:italic;color:var(--accent);">parc</em></h2>
+            <p style="font-size:13px;color:var(--txt2);margin-top:6px;max-width:640px;line-height:1.6;">Les agents renseignent leurs fiches via un lien libre (sans mot de passe). Les fiches reçues sont classées par Direction et par type d'appareil, puis intégrées au parc en un clic.</p>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" onclick="consoRefresh()">🔄 Actualiser</button>
+            <button class="btn btn-outline btn-sm" onclick="consoTest()">🩺 Tester la collecte</button>
+            <button class="btn btn-outline btn-sm" onclick="consoPrint()">🖨️ Imprimer</button>
+            <button class="btn btn-primary btn-sm" onclick="consoExportExcel()">📊 Exporter Excel consolidé</button>
+          </div>
+        </div>
+
+        <div class="tcard">
+          <div class="tcard-head"><h3>🔗 Liens de saisie libre (sans mot de passe, sans code d'accès)</h3></div>
+          <div id="cs-warn"></div>
+          <div style="padding:12px 14px 0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <label style="font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;">Adresse publique de la plateforme</label>
+            <input type="text" id="cs-base" class="flt" style="flex:1;min-width:260px;cursor:text;" placeholder="https://votre-site.github.io/desps/index.html" onchange="consoSetBase(this.value)">
+          </div>
+          <div class="cs-links" id="cs-links"></div>
+        </div>
+
+        <div class="cs-kpis" id="cs-kpis"></div>
+
+        <div class="tcard">
+          <div class="tcard-head"><h3>🧮 Synthèse : Direction × Type d'appareil</h3></div>
+          <div style="overflow-x:auto;padding:10px 14px 14px;" id="cs-matrix"></div>
+        </div>
+
+        <div class="tcard" style="overflow:visible;">
+          <div class="tcard-head" style="flex-wrap:wrap;gap:8px;">
+            <h3>📥 Fiches reçues</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <select id="cs-f-dir" class="flt" onchange="consoRender()"></select>
+              <select id="cs-f-type" class="flt" onchange="consoRender()"></select>
+              <select id="cs-f-etat" class="flt" onchange="consoRender()">
+                <option value="">Toutes machines</option><option value="new">Nouvelles machines</option><option value="old">Anciennes machines</option>
+              </select>
+              <select id="cs-f-stat" class="flt" onchange="consoRender()">
+                <option value="">Tous statuts</option><option value="en_attente">En attente</option><option value="integre">Intégrées</option><option value="rejete">Rejetées</option>
+              </select>
+              <select id="cs-f-group" class="flt" onchange="consoRender()">
+                <option value="direction">Regrouper par Direction</option><option value="service">Regrouper par Service/Sous-Direction</option><option value="type">Regrouper par Appareil</option>
+              </select>
+              <input type="text" id="cs-f-q" class="flt" style="cursor:text;width:180px;" placeholder="Rechercher…" oninput="consoRender()">
+            </div>
+          </div>
+          <div style="padding:14px;">
+            <div class="cs-bulk" id="cs-bulk">
+              <b id="cs-bulk-n">0 sélectionnée(s)</b>
+              <button class="btn btn-primary btn-sm" onclick="consoIntegrateSel()">✅ Intégrer au parc</button>
+              <button class="btn btn-outline btn-sm" onclick="consoRejectSel()">⛔ Rejeter</button>
+              <button class="btn btn-outline btn-sm" style="color:var(--red);" onclick="consoDeleteSel()">🗑️ Supprimer</button>
+              <button class="btn btn-outline btn-sm" onclick="consoClearSel()">Annuler</button>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <button class="btn btn-gold btn-sm" onclick="consoIntegrateAll()">✅ Intégrer toutes les fiches « En attente » (filtre actuel)</button>
+            </div>
+            <div id="cs-list"></div>
+          </div>
+        </div>
+      </div>
+      <div id="cs-modal" onclick="if(event.target===this)consoCloseModal()"><div class="box" id="cs-modal-box"></div></div>
 
       <!-- ===== PAGE COLLECTE DE DONNÉES ===== -->
       <div id="pg-collecte" class="page admin-gate" style="display:none;">
@@ -8212,6 +8394,661 @@ function pfPhotoLoad(input, slot, qid) {
       _origNav && _origNav(page);
     }
   };
+})();
+</script>
+<script>
+/* ==========================================================================
+   CONSOLIDATION DU PARC — saisie publique (#saisie) + consolidation par Direction
+   Module ADDITIF : n'altère aucune fonction existante (nav / initApp / doLogout
+   sont simplement enveloppées). Données reçues : collection Firestore « parc_collecte ».
+   ========================================================================== */
+(function(){
+'use strict';
+
+var PUB_COL='parc_collecte';
+var QKEY='desps26_pub_queue', LASTKEY='desps26_pub_last', BASEKEY='desps26_pub_base', CACHEKEY='desps26_conso_cache', DEVKEY='desps26_pub_device';
+var FB_CFG={"apiKey": "AIzaSyAAPXXF-_s3rR3stkJYRUt-1GPfblXMthQ", "authDomain": "desps-gestioninformatique-id.firebaseapp.com", "projectId": "desps-gestioninformatique-id", "storageBucket": "desps-gestioninformatique-id.firebasestorage.app", "messagingSenderId": "496783160844", "appId": "1:496783160844:web:722ff2b58254959038a029"};
+var FB_APP_URL='https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+var FB_FS_URL='https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+/* ---------- Catalogue des champs (libellés = entêtes des fichiers Excel) ---------- */
+var DIRS=[
+  {v:'DESPS',l:'DESPS — Direction centrale'},
+  {v:'DRENAET',l:'DRENAET'},
+  {v:'IEPP',l:'IEPP'},
+  {v:'AUTRE',l:'Autre direction'}
+];
+var ETAT_PC=['Nouvel PC','Ancien PC','Ancien PC (Restitué)','Ancien PC (Non Restitué)','En Maintenance'];
+var ETAT_IMP=['Nouvelle Imprimante','Ancienne Imprimante','Ancienne Imprimante en Panne'];
+var ETAT_TAB=['Nouvelle Tablette','Ancienne Tablette','Ancienne Tablette en Panne'];
+var MSTAT=['En cours','Terminé','En attente pièce'];
+
+var F={
+  nom:{l:'Nom & Prénoms',t:'text',ph:'NOM Prénoms'},
+  sexe:{l:'Sexe',x:'sexe',t:'select',o:['M','F']},
+  email:{l:'Email',t:'email',ph:'nom@exemple.com'},
+  telephone:{l:'Téléphone',t:'tel',ph:'07 00 00 00 00'},
+  bureau:{l:'Bureau/Étage/Porte',t:'text',ph:'23è étage, porte 18'},
+  service:{l:'Service/Sous-Direction',t:'text',list:'svc',ph:'SDPP, SDEPMI, SCOURRIER…'},
+  projet:{l:'Projet',t:'text',list:'proj',ph:'CLEF, PATEB, PIP…'},
+  marque:{l:'Marque & Modèle',t:'text',ph:'HP ProBook 450 G10'},
+  num_serie:{l:'N° de Série',t:'text',ph:'Inscrit sous / derrière l\'appareil'},
+  cpu:{l:'Processeur (CPU)',t:'text',ph:'Intel Core i5 – 2,8 GHz'},
+  ram:{l:'Mémoire RAM',t:'text',ph:'8 Go'},
+  stockage:{l:'Stockage',t:'text',ph:'512 Go'},
+  etat:{l:'État',t:'select'},
+  date_obtention:{l:'Date obtention',t:'date'},
+  date_restitution:{l:'Date de restitution',t:'date'},
+  num_ordre:{l:'N° Ordre',t:'text',ph:'001'},
+  caracteristiques:{l:'Caractéristiques',t:'text',ph:'Multi-fonction, laser couleur…'}
+};
+var MF={ /* Maintenance : mêmes clés internes que les fiches de maintenance du parc */
+  num:{l:'N°',t:'auto'},
+  date:{l:'Date entrée',t:'date'},
+  serie:{l:'N° Série',t:'text',ph:'Numéro de série de l\'appareil'},
+  marque:{l:'Marque / Modèle',t:'text',ph:'HP ProBook 450 G10'},
+  service:{l:'Service',t:'text',list:'svc',ph:'SDPP, SDEPMI…'},
+  bureau:{l:'Bureau',t:'text',ph:'23è étage, porte 18'},
+  panne:{l:'Panne / Motif',t:'textarea',ph:'Décrivez la panne ou le motif'},
+  technicien:{l:'Technicien',t:'text',ph:'Nom du technicien (si connu)'},
+  statut:{l:'Statut',t:'select',o:MSTAT},
+  dateResolution:{l:'Date résolution',t:'date'},
+  pieces:{l:'Pièces / Logiciels',t:'text',ph:'Pièces changées, logiciels installés'},
+  obs:{l:'Observations',t:'textarea',ph:'Remarques éventuelles'}
+};
+
+var TYPES={
+  bureau:{k:'bureau',label:'Ordinateur de bureau',short:'PC Bureau',ico:'🖥️',kind:'device',sheet:'Ordinateurs Bureaux',etats:ETAT_PC,photos:true,
+    sections:[{t:'Utilisateur',f:['nom','email','telephone','bureau','service','projet']},{t:'Équipement',f:['marque','num_serie','cpu','ram','stockage','etat','date_obtention','num_ordre']}],
+    req:['nom','service','marque','num_serie','etat'],
+    excel:['bureau','num_ordre','email','nom','num_serie','cpu','projet','marque','stockage','service','telephone','date_obtention','etat','ram']},
+  portables:{k:'portables',label:'Ordinateur portable',short:'PC Portable',ico:'💻',kind:'device',sheet:'Ordinateurs Portables',etats:ETAT_PC,photos:true,
+    sections:[{t:'Utilisateur',f:['nom','sexe','email','telephone','bureau','service','projet']},{t:'Équipement',f:['marque','num_serie','cpu','ram','stockage','etat','date_obtention','date_restitution']}],
+    req:['nom','service','marque','num_serie','etat'],
+    excel:['marque','num_serie','date_restitution','projet','cpu','service','etat','email','ram','telephone','stockage','sexe','bureau','nom','date_obtention']},
+  imprimantes:{k:'imprimantes',label:'Imprimante',short:'Imprimante',ico:'🖨️',kind:'device',sheet:'Imprimantes',etats:ETAT_IMP,photos:true,
+    sections:[{t:'Utilisateur',f:['nom','service','projet']},{t:'Équipement',f:['marque','num_serie','caracteristiques','etat','date_obtention','num_ordre']}],
+    req:['nom','service','marque','num_serie','etat'],
+    excel:['date_obtention','nom','etat','caracteristiques','num_ordre','projet','service','marque','num_serie']},
+  tablettes:{k:'tablettes',label:'Tablette & autres',short:'Tablette',ico:'📱',kind:'device',sheet:'Tablettes',etats:ETAT_TAB,photos:true,
+    sections:[{t:'Utilisateur',f:['nom','sexe','email','telephone','bureau','service','projet']},{t:'Équipement',f:['marque','num_serie','cpu','ram','stockage','etat','date_obtention','date_restitution','num_ordre']}],
+    req:['nom','service','marque','num_serie','etat'],
+    excel:['email','bureau','etat','nom','service','date_obtention','num_serie','sexe','stockage','date_restitution','ram','marque','num_ordre','projet','telephone','cpu']},
+  maint_bureau:{k:'maint_bureau',label:'Maintenance — Ordinateur de bureau',short:'Maint. Bureau',ico:'🔧',kind:'maint',mt:'bureau',sheet:'Maintenance Ordinateur Bureau',photos:false,
+    sections:[{t:'Équipement en panne',f:['date','serie','marque','service','bureau']},{t:'Intervention',f:['panne','technicien','statut','dateResolution','pieces','obs']}],
+    req:['date','serie','marque','service','panne'],
+    excel:['num','date','serie','marque','service','bureau','panne','technicien','statut','dateResolution','pieces','obs']},
+  maint_portables:{k:'maint_portables',label:'Maintenance — Ordinateur portable',short:'Maint. Portable',ico:'🛠️',kind:'maint',mt:'portables',sheet:'Maintenance Ordinateur Portable',photos:false,
+    sections:[{t:'Équipement en panne',f:['date','serie','marque','service','bureau']},{t:'Intervention',f:['panne','technicien','statut','dateResolution','pieces','obs']}],
+    req:['date','serie','marque','service','panne'],
+    excel:['num','date','serie','marque','service','bureau','panne','technicien','statut','dateResolution','pieces','obs']}
+  ,maint_imprimantes:{k:'maint_imprimantes',label:'Maintenance — Imprimante',short:'Maint. Imprimante',ico:'🔧',kind:'maint',mt:'imprimantes',sheet:'Maintenance Imprimantes',photos:false,
+    sections:[{t:'Équipement en panne',f:['date','serie','marque','service','bureau']},{t:'Intervention',f:['panne','technicien','statut','dateResolution','pieces','obs']}],
+    req:['date','serie','marque','service','panne'],
+    excel:['num','date','serie','marque','service','bureau','panne','technicien','statut','dateResolution','pieces','obs']}
+  ,maint_tablettes:{k:'maint_tablettes',label:'Maintenance — Tablette & autres',short:'Maint. Tablette',ico:'🔧',kind:'maint',mt:'tablettes',sheet:'Maintenance Tablettes',photos:false,
+    sections:[{t:'Équipement en panne',f:['date','serie','marque','service','bureau']},{t:'Intervention',f:['panne','technicien','statut','dateResolution','pieces','obs']}],
+    req:['date','serie','marque','service','panne'],
+    excel:['num','date','serie','marque','service','bureau','panne','technicien','statut','dateResolution','pieces','obs']}
+};
+var TYPE_ORDER=['bureau','portables','imprimantes','tablettes','maint_bureau','maint_portables','maint_imprimantes','maint_tablettes'];
+var TYPE_DESC={maint_imprimantes:'Déclarer une panne / entrée en maintenance',maint_tablettes:'Déclarer une panne / entrée en maintenance',bureau:'Fiche d\'un ordinateur de bureau',portables:'Fiche d\'un ordinateur portable',imprimantes:'Fiche d\'une imprimante',tablettes:'Fiche d\'une tablette',maint_bureau:'Déclarer une panne / entrée en maintenance',maint_portables:'Déclarer une panne / entrée en maintenance'};
+
+function fdef(T,k){ return (T.kind==='maint'?MF[k]:F[k])||{l:k,t:'text'}; }
+function xhead(T,k){ var d=fdef(T,k); return d.x||d.l; }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(s){ if(!s) return ''; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s)); return m?(m[3]+'/'+m[2]+'/'+m[1]):String(s); }
+function isNewEtat(e){ return /^nouv/i.test(String(e||'').trim()); }
+function dirLabel(r){
+  var d=r.direction||'DESPS', n=(r.direction_nom||'').trim();
+  if(d==='DESPS') return 'DESPS';
+  if(d==='AUTRE') return n?n.toUpperCase():'AUTRE DIRECTION';
+  return n?(d+' '+n).toUpperCase():d;
+}
+function $(id){ return document.getElementById(id); }
+function lsGet(k,def){ try{ var s=localStorage.getItem(k); return s?JSON.parse(s):def; }catch(e){ return def; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); return true; }catch(e){ return false; } }
+
+/* ---------- Accès Firestore (réutilise window.FB, sinon import dynamique) ---------- */
+var fbPromise=null;
+function pubEnsureFB(){
+  if(window.FB_OK && window.FB) return Promise.resolve(window.FB);
+  if(typeof navigator!=='undefined' && navigator.onLine===false) return Promise.reject(new Error('hors-connexion'));
+  if(fbPromise) return fbPromise;
+  fbPromise=new Promise(function(res){ // laisse 2,5 s au module Firebase de la page pour se charger
+    if(window.FB_OK) return res();
+    var done=false; function go(){ if(!done){ done=true; res(); } }
+    document.addEventListener('fb-ready',go,{once:true}); setTimeout(go,2500);
+  }).then(function(){
+    if(window.FB_OK && window.FB) return window.FB;
+    return Promise.all([import(FB_APP_URL),import(FB_FS_URL)]).then(function(m){
+      var app; try{ app=m[0].getApp(); }catch(e){ app=m[0].initializeApp(FB_CFG); }
+      var fs=m[1];
+      return {db:fs.getFirestore(app),collection:fs.collection,doc:fs.doc,setDoc:fs.setDoc,getDocs:fs.getDocs,onSnapshot:fs.onSnapshot,deleteDoc:fs.deleteDoc};
+    });
+  }).catch(function(e){ fbPromise=null; throw e; });
+  return fbPromise;
+}
+
+/* ==========================================================================
+   A. SAISIE PUBLIQUE
+   ========================================================================== */
+var pub={view:'home',type:null,ph:{},busy:false,flushing:false,lastErr:'',inflight:{}};
+
+function pubDevice(){ var d=lsGet(DEVKEY,null); if(!d){ d='d'+Math.random().toString(36).slice(2,9); lsSet(DEVKEY,d); } return d; }
+function qGet(){ return lsGet(QKEY,[]); }
+function qSet(a){ if(!lsSet(QKEY,a)){ pub.lastErr='Mémoire du téléphone saturée'; } }
+function qAdd(r){ var a=qGet(); a.push(r); qSet(a); }
+function qRemove(id){ qSet(qGet().filter(function(x){ return x.id!==id; })); }
+function qUpdate(r){ qSet(qGet().map(function(x){ return x.id===r.id?r:x; })); }
+function cleanForSend(r){ var o={}; Object.keys(r).forEach(function(k){ if(k.charAt(0)!=='_' && k!=='tries' && k!=='lastError' && r[k]!==undefined) o[k]=r[k]; }); return o; }
+
+function timeoutP(ms){ return new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('delai-depasse')); },ms); }); }
+function pubSend(rec){
+  if(pub.inflight[rec.id]) return pub.inflight[rec.id];
+  var p=pubEnsureFB().then(function(fb){
+    var w=fb.setDoc(fb.doc(fb.db,PUB_COL,rec.id),cleanForSend(rec));
+    w.then(function(){ qRemove(rec.id); delete pub.inflight[rec.id]; pubNet(); },function(){});
+    return Promise.race([w,timeoutP(15000)]);
+  });
+  pub.inflight[rec.id]=p;
+  p.then(null,function(e){ if(e&&e.message!=='delai-depasse') delete pub.inflight[rec.id]; });
+  return p;
+}
+function pubFlush(){
+  if(pub.flushing) return Promise.resolve(0);
+  var q=qGet(); if(!q.length){ pubNet(); return Promise.resolve(0); }
+  pub.flushing=true; pubNet();
+  var ok=0;
+  return q.reduce(function(chain,rec){
+    return chain.then(function(){
+      return pubSend(rec).then(function(){ qRemove(rec.id); ok++; }).catch(function(e){
+        rec.tries=(rec.tries||0)+1; rec.lastError=(e&&(e.code||e.message))||'erreur'; pub.lastErr=rec.lastError; qUpdate(rec);
+      });
+    });
+  },Promise.resolve()).then(function(){ pub.flushing=false; pubNet(); return ok; });
+}
+function pubNet(){
+  var el=$('pb-net'); if(!el) return;
+  var n=qGet().length, on=(typeof navigator==='undefined')||navigator.onLine!==false;
+  var cls,txt,btn='';
+  if(!on){ cls='off'; txt='📴 Pas de réseau'+(n?' — '+n+' fiche(s) gardée(s) sur ce téléphone, envoi automatique au retour du réseau.':' — vous pouvez remplir : la fiche sera gardée sur ce téléphone puis envoyée automatiquement.'); }
+  else if(pub.flushing){ cls='wait'; txt='⏳ Envoi en cours…'; }
+  else if(n){ cls='wait'; txt='⏳ '+n+' fiche(s) en attente d\'envoi.'+(pub.lastErr?' ('+esc(/permission/i.test(pub.lastErr)?'accès refusé — prévenez le Service Digitalisation DESPS':pub.lastErr)+')':''); btn='<button type="button" onclick="pubRetry()">Envoyer maintenant</button>'; }
+  else { cls='ok'; txt='✅ Connecté — toutes vos fiches sont envoyées.'; }
+  el.className='pb-net '+cls; el.innerHTML='<span>'+txt+'</span>'+btn;
+}
+window.pubRetry=function(){ pub.lastErr=''; pubFlush(); };
+
+function pubHash(){ var h=(location.hash||'').replace(/^#/,''); var p=h.split('/'); return {root:(p[0]||'').toLowerCase(),type:(p[1]||'').split('?')[0]}; }
+
+function pubRoute(){
+  var h=pubHash();
+  if(h.root!=='saisie') return;
+  if(h.type && TYPES[h.type]){ pub.view='form'; pub.type=h.type; } else { pub.view='home'; pub.type=null; }
+  pub.ph={}; pubRender();
+}
+function pubLists(){
+  var svc=[],proj=[];
+  try{ (typeof SERVICES_DEFAULT!=='undefined'?SERVICES_DEFAULT:[]).forEach(function(s){ if(s.abrev) svc.push(s.abrev); }); }catch(e){}
+  try{ (typeof PROJETS_DEFAULT!=='undefined'?PROJETS_DEFAULT:[]).forEach(function(p){ if(p.nom) proj.push(p.nom); }); }catch(e){}
+  ['SDEPMI','SDESP','SDPP','SDGFNE','SDPSEPP','SCOURRIER','SCGA','SICRE','SECRETARIAT','DESPS'].forEach(function(x){ if(svc.indexOf(x)<0) svc.push(x); });
+  ['CLEF','PATEB','PIP','UNICEF','DESPS','DESPS-FASFE','DESPS-KPD'].forEach(function(x){ if(proj.indexOf(x)<0) proj.push(x); });
+  return {svc:svc,proj:proj};
+}
+function pubRender(){
+  var root=$('pb-root'); if(!root) return;
+  var i1=document.querySelector('.login-logos img'), i2=document.querySelectorAll('.login-logos img')[1];
+  if(i1&&$('pb-logo1')){ $('pb-logo1').src=i1.src; $('pb-logo1').style.display=''; }
+  if(i2&&$('pb-logo2')){ $('pb-logo2').src=i2.src; $('pb-logo2').style.display=''; }
+  var L=pubLists();
+  var dl='<datalist id="pb-dl-svc">'+L.svc.map(function(x){return '<option value="'+esc(x)+'">';}).join('')+'</datalist><datalist id="pb-dl-proj">'+L.proj.map(function(x){return '<option value="'+esc(x)+'">';}).join('')+'</datalist>';
+  var net='<div id="pb-net" class="pb-net ok"></div>';
+  if(pub.view==='form' && TYPES[pub.type]){ root.innerHTML=net+pubFormHtml(TYPES[pub.type])+dl; }
+  else {
+    root.innerHTML=net
+      +'<h1>Recensement du matériel informatique</h1>'
+      +'<p class="pb-sub">Accès libre — <b>aucun mot de passe</b>. Choisissez le type de fiche à remplir. Les informations sont transmises à la DESPS et classées par Direction.</p>'
+      +'<div class="pb-grid">'+TYPE_ORDER.map(function(k){ var T=TYPES[k]; return '<button type="button" class="pb-type" onclick="location.hash=\'#saisie/'+k+'\'"><span class="ic">'+T.ico+'</span><span><div class="tt">'+esc(T.label)+'</div><div class="ds">'+esc(TYPE_DESC[k])+'</div></span></button>'; }).join('')+'</div>'
+      +'<div class="pb-foot">DESPS — Service Digitalisation, Exploitation des Plateformes et Maintenance Informatique<br>Fonctionne aussi sans réseau : les fiches sont envoyées dès que la connexion revient.</div>';
+  }
+  window.scrollTo&&($('pub-saisie').scrollTop=0);
+  pubNet();
+}
+function pubFieldHtml(T,k,last){
+  var d=fdef(T,k), req=T.req.indexOf(k)>=0, id='pf_'+k, lab=esc(d.l)+(req?' <span class="rq">*</span>':'');
+  var v=(last&&last[k])||'';
+  var h='<div class="'+(d.t==='textarea'?'full':'')+'"><label for="'+id+'">'+lab+'</label>';
+  if(d.t==='select'){
+    var opts=d.o||T.etats||[]; if(k==='statut'&&!v) v='En cours';
+    h+='<select id="'+id+'"><option value="">— Choisir —</option>'+opts.map(function(o){ return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>'; }).join('')+'</select>';
+  } else if(d.t==='textarea'){ h+='<textarea id="'+id+'" placeholder="'+esc(d.ph||'')+'"></textarea>'; }
+  else {
+    var type=d.t==='date'?'date':(d.t==='email'?'email':(d.t==='tel'?'tel':'text'));
+    h+='<input id="'+id+'" type="'+type+'" value="'+esc(d.t==='date'?(k==='date'?new Date().toISOString().slice(0,10):''):v)+'" placeholder="'+esc(d.ph||'')+'"'+(d.list?' list="pb-dl-'+d.list+'"':'')+(type==='tel'?' inputmode="tel"':'')+' autocomplete="off">';
+  }
+  return h+'</div>';
+}
+function pubFormHtml(T){
+  var last=lsGet(LASTKEY,{});
+  var dopts=DIRS.map(function(d){ return '<option value="'+d.v+'"'+((last.direction||'DESPS')===d.v?' selected':'')+'>'+esc(d.l)+'</option>'; }).join('');
+  var h='<button type="button" class="pb-back" onclick="location.hash=\'#saisie\'">← Changer de type de fiche</button>'
+    +'<h1>'+T.ico+' '+esc(T.label)+'</h1><p class="pb-sub">Les champs marqués <span style="color:#d62839">*</span> sont obligatoires.</p>'
+    +'<div class="pb-err" id="pb-err"></div>'
+    +'<div class="pb-sec"><h2>Rattachement</h2><div class="pb-f">'
+    +'<div><label for="pf_direction">Direction <span class="rq">*</span></label><select id="pf_direction" onchange="pubDirChange()">'+dopts+'</select></div>'
+    +'<div id="pf_dn_wrap" style="display:none;"><label for="pf_direction_nom">Nom de la structure <span class="rq">*</span></label><input id="pf_direction_nom" type="text" value="'+esc(last.direction_nom||'')+'" placeholder="Ex : Boundiali, Katiola, DRH…" autocomplete="off"></div>'
+    +'</div></div>';
+  T.sections.forEach(function(s){
+    h+='<div class="pb-sec"><h2>'+esc(s.t)+'</h2><div class="pb-f">'+s.f.map(function(k){ return pubFieldHtml(T,k,last); }).join('')+'</div></div>';
+  });
+  if(T.photos){
+    h+='<div class="pb-sec"><h2>Photos (facultatif)</h2><div class="pb-ph">'
+      +['face','profil'].map(function(sl){ return '<label class="pb-phbtn" id="pb-ph-'+sl+'"><input type="file" accept="image/*" onchange="pubPhoto(this,\''+sl+'\')"><span style="font-size:26px">'+(sl==='face'?'📷':'📸')+'</span><span>Photo '+(sl==='face'?'faciale':'latérale')+'</span></label>'; }).join('')
+      +'</div></div>';
+  }
+  h+='<button type="button" class="pb-submit" id="pb-submit" onclick="pubSubmit()">✅ Envoyer la fiche</button>'
+    +'<div class="pb-foot">Vos données sont transmises au Service Digitalisation de la DESPS (MENAET).</div>';
+  setTimeout(pubDirChange,0);
+  return h;
+}
+window.pubDirChange=function(){
+  var s=$('pf_direction'), w=$('pf_dn_wrap'); if(!s||!w) return;
+  w.style.display=(s.value==='DESPS')?'none':'block';
+};
+window.pubPhoto=function(input,slot){
+  var f=input.files&&input.files[0]; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(e){
+    var im=new Image();
+    im.onload=function(){
+      var M=720, r=Math.min(M/im.width,M/im.height,1), c=document.createElement('canvas');
+      c.width=Math.round(im.width*r); c.height=Math.round(im.height*r);
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      pub.ph[slot]=c.toDataURL('image/jpeg',0.68);
+      var b=$('pb-ph-'+slot); if(b){ var span=b.querySelectorAll('span'); span.forEach?span.forEach(function(x){x.style.display='none';}):0; var old=b.querySelector('img'); if(old) old.remove(); var img=document.createElement('img'); img.src=pub.ph[slot]; b.appendChild(img); }
+    };
+    im.src=e.target.result;
+  };
+  rd.readAsDataURL(f);
+};
+window.pubSubmit=function(){
+  var T=TYPES[pub.type]; if(!T||pub.busy) return;
+  var err=[], data={}, bad=[];
+  document.querySelectorAll('#pb-root .bad').forEach(function(x){ x.classList.remove('bad'); });
+  var dir=$('pf_direction').value, dnom=($('pf_direction_nom')?$('pf_direction_nom').value.trim():'');
+  if(dir!=='DESPS' && !dnom){ err.push('Indiquez le nom de la structure (ex. nom de la DRENAET / IEPP).'); bad.push('pf_direction_nom'); }
+  T.sections.forEach(function(s){ s.f.forEach(function(k){
+    var el=$('pf_'+k); if(!el) return; var v=el.value.trim(); if(v) data[k]=v;
+    if(T.req.indexOf(k)>=0 && !v){ err.push('« '+fdef(T,k).l+' » est obligatoire.'); bad.push('pf_'+k); }
+  }); });
+  if(data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)){ err.push('Adresse e-mail invalide.'); bad.push('pf_email'); }
+  if(data.telephone && data.telephone.replace(/\D/g,'').length<8){ err.push('Numéro de téléphone trop court.'); bad.push('pf_telephone'); }
+  if(data.date_obtention && data.date_restitution && data.date_restitution<data.date_obtention){ err.push('La date de restitution précède la date d\'obtention.'); bad.push('pf_date_restitution'); }
+  if(err.length){
+    bad.forEach(function(id){ var e=$(id); if(e) e.classList.add('bad'); });
+    var box=$('pb-err'); box.style.display='block'; box.innerHTML='• '+err.map(esc).join('<br>• ');
+    box.scrollIntoView&&box.scrollIntoView({behavior:'smooth',block:'center'}); return;
+  }
+  $('pb-err').style.display='none';
+  pub.busy=true; var btn=$('pb-submit'); if(btn){ btn.disabled=true; btn.textContent='⏳ Enregistrement…'; }
+  var rec={id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),type:pub.type,direction:dir,direction_nom:dnom,data:data,statut:'en_attente',created:new Date().toISOString(),device:pubDevice()};
+  if(pub.ph.face) rec.photo_face=pub.ph.face;
+  if(pub.ph.profil) rec.photo_profil=pub.ph.profil;
+  var last=lsGet(LASTKEY,{}); last.direction=dir; last.direction_nom=dnom; ['service','projet'].forEach(function(k){ if(data[k]) last[k]=data[k]; }); lsSet(LASTKEY,last);
+  qAdd(rec);                                  // 1) d'abord en sécurité sur le téléphone
+  pubFlush().then(function(){                 // 2) puis envoi (ou plus tard si pas de réseau)
+    var sent=!qGet().some(function(x){ return x.id===rec.id; });
+    pub.busy=false; pubDone(rec,sent);
+  });
+};
+function pubDone(rec,sent){
+  var T=TYPES[rec.type], root=$('pb-root'); if(!root) return;
+  root.innerHTML='<div id="pb-net" class="pb-net ok"></div><div class="pb-ok"><div class="big">'+(sent?'✅':'💾')+'</div>'
+    +'<h2>'+(sent?'Fiche envoyée, merci !':'Fiche enregistrée sur ce téléphone')+'</h2>'
+    +'<div>'+(sent?'Elle a bien été transmise à la DESPS.':'Pas de réseau pour le moment : elle sera envoyée automatiquement dès le retour de la connexion (gardez cette page ouverte ou rouvrez le lien).')+'</div>'
+    +'<div class="ref">Réf. '+esc(rec.id)+'</div>'
+    +'<div class="pb-btns"><button class="pb-b1" onclick="pubAgain()">➕ Une autre fiche ('+esc(T.short)+')</button><button class="pb-b2" onclick="location.hash=\'#saisie\'">Autre type de fiche</button></div></div>';
+  pubNet();
+}
+window.pubAgain=function(){ pub.ph={}; pubRender(); };
+
+function pubStart(){
+  window.addEventListener('hashchange',function(){ if(pubHash().root==='saisie'){ if(document.documentElement.classList.contains('pub-mode')) pubRoute(); else location.reload(); } else if(document.documentElement.classList.contains('pub-mode')){ location.reload(); } });
+  window.addEventListener('online',function(){ pub.lastErr=''; pubNet(); pubFlush(); });
+  window.addEventListener('offline',pubNet);
+  pubRoute(); pubFlush();
+}
+
+/* ==========================================================================
+   B. CONSOLIDATION (côté administration)
+   ========================================================================== */
+var CR={rows:[],unsub:null,sel:{},err:'',loaded:false,open:{}};
+
+function consoBase(){
+  var b=localStorage.getItem(BASEKEY);
+  if(b) return b;
+  if(/^https?:/i.test(location.protocol)) return location.href.split('#')[0].split('?')[0];
+  return '';
+}
+function validRow(r){ return r&&TYPES[r.type]&&r.data; }
+function consoLoadCache(){ var c=lsGet(CACHEKEY,null); if(c&&c.length&&!CR.rows.length) CR.rows=c; }
+function consoSaveCache(){
+  var slim=CR.rows.map(function(r){ var o={}; Object.keys(r).forEach(function(k){ if(k!=='photo_face'&&k!=='photo_profil') o[k]=r[k]; }); if(r.photo_face||r.photo_profil||r.has_photo) o.has_photo=true; return o; });
+  lsSet(CACHEKEY,slim);
+}
+function consoStart(){
+  consoLoadCache(); consoBadge();
+  if(window.FB_OK) consoSub(); else document.addEventListener('fb-ready',consoSub,{once:true});
+}
+function consoSub(){
+  if(CR.unsub||!window.FB_OK||!window.FB) return;
+  try{
+    CR.unsub=window.FB.onSnapshot(window.FB.collection(window.FB.db,PUB_COL),function(snap){
+      var a=[]; snap.forEach(function(d){ var x=d.data(); x._id=d.id; a.push(x); });
+      CR.rows=a.filter(validRow); CR.err=''; CR.loaded=true; consoSaveCache(); consoBadge();
+      if($('pg-consolidation')&&$('pg-consolidation').classList.contains('active')) consoRender();
+    },function(e){ CR.err=(e&&(e.code||e.message))||'erreur'; CR.unsub=null; consoBadge(); if($('pg-consolidation')&&$('pg-consolidation').classList.contains('active')) consoRender(); });
+  }catch(e){ CR.err=e.message; }
+}
+function consoStop(){ if(CR.unsub){ try{CR.unsub();}catch(e){} CR.unsub=null; } }
+function consoBadge(){
+  var n=CR.rows.filter(function(r){ return r.statut==='en_attente'; }).length, b=$('nb-conso');
+  if(b){ b.textContent=n; b.style.background=n?'rgba(244,185,66,0.25)':''; b.style.color=n?'var(--gold)':''; }
+}
+window.consoRefresh=function(){ consoStop(); CR.loaded=false; consoSub(); consoRender(); notif('🔄 Actualisation…','ok'); };
+
+/* ----- filtres ----- */
+function distinct(a){ var s={},o=[]; a.forEach(function(x){ if(x&&!s[x]){ s[x]=1; o.push(x); } }); return o.sort(); }
+function consoFiltersInit(){
+  var cur={dir:$('cs-f-dir').value,type:$('cs-f-type').value};
+  var dirs=distinct(CR.rows.map(dirLabel));
+  $('cs-f-dir').innerHTML='<option value="">Toutes les Directions</option>'+dirs.map(function(d){ return '<option'+(d===cur.dir?' selected':'')+' value="'+esc(d)+'">'+esc(d)+'</option>'; }).join('');
+  $('cs-f-type').innerHTML='<option value="">Tous les appareils</option>'+TYPE_ORDER.map(function(k){ return '<option value="'+k+'"'+(k===cur.type?' selected':'')+'>'+esc(TYPES[k].label)+'</option>'; }).join('');
+}
+function consoFiltered(){
+  var fd=$('cs-f-dir').value, ft=$('cs-f-type').value, fe=$('cs-f-etat').value, fs=$('cs-f-stat').value, q=($('cs-f-q').value||'').toLowerCase().trim();
+  return CR.rows.filter(function(r){
+    if(fd&&dirLabel(r)!==fd) return false;
+    if(ft&&r.type!==ft) return false;
+    if(fs&&r.statut!==fs) return false;
+    if(fe){ if(TYPES[r.type].kind!=='device') return false; var n=isNewEtat(r.data.etat); if(fe==='new'&&!n) return false; if(fe==='old'&&n) return false; }
+    if(q&&(JSON.stringify(r.data)+' '+dirLabel(r)).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  }).sort(function(a,b){ return String(b.created||'').localeCompare(String(a.created||'')); });
+}
+
+/* ----- rendu ----- */
+window.consoSetBase=function(v){ v=(v||'').trim(); if(v) localStorage.setItem(BASEKEY,v); else localStorage.removeItem(BASEKEY); consoRenderLinks(); };
+function consoRenderLinks(){
+  var base=consoBase(); if($('cs-base')&&document.activeElement!==$('cs-base')) $('cs-base').value=base;
+  var warn=$('cs-warn');
+  var isLocal=!base||/^file:/i.test(base)||/localhost|127\.0\.0\.1/.test(base);
+  warn.innerHTML=isLocal?'<div class="cs-warn">⚠️ La plateforme n\'est pas ouverte depuis une adresse publique. Pour que les agents puissent utiliser les liens, publiez d\'abord le fichier (ex. GitHub Pages) puis collez ici son adresse complète (ex. <b>https://diomande-system.github.io/desps/index.html</b>).</div>':'';
+  var rows=[{k:'',n:'📋 Menu général (l\'agent choisit le type)',u:base+'#saisie'}].concat(TYPE_ORDER.map(function(k){ return {k:k,n:TYPES[k].ico+' '+TYPES[k].label,u:base+'#saisie/'+k}; }));
+  $('cs-links').innerHTML=rows.map(function(x,i){
+    return '<div class="cs-link"><span class="nm">'+esc(x.n)+'</span><code>'+esc(x.u)+'</code>'
+      +'<span class="cs-act"><button title="Copier le lien" onclick="consoCopy('+i+')">📋 Copier</button><button title="Ouvrir" onclick="consoOpen('+i+')">↗️</button><button title="Partager par WhatsApp" onclick="consoWa('+i+')">💬</button></span></div>';
+  }).join('');
+  window._csLinks=rows;
+}
+window.consoCopy=function(i){ var u=window._csLinks[i].u; if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(u).then(function(){ notif('🔗 Lien copié','ok'); },function(){ prompt('Copiez ce lien :',u); }); } else prompt('Copiez ce lien :',u); };
+window.consoOpen=function(i){ window.open(window._csLinks[i].u,'_blank'); };
+window.consoWa=function(i){ var x=window._csLinks[i]; window.open('https://wa.me/?text='+encodeURIComponent('Fiche de recensement du matériel informatique DESPS — '+x.n.replace(/^[^A-Za-zÀ-ÿ]+/,'')+' : '+x.u),'_blank'); };
+
+function consoKpis(){
+  var all=CR.rows, dev=all.filter(function(r){ return TYPES[r.type].kind==='device'; });
+  var ser={},dup=0; dev.forEach(function(r){ var s=(r.data.num_serie||'').toUpperCase().trim(); if(!s) return; if(ser[s]) dup++; else ser[s]=1; });
+  var k=[['Fiches reçues',all.length],['En attente',all.filter(function(r){return r.statut==='en_attente';}).length],['Intégrées',all.filter(function(r){return r.statut==='integre';}).length],
+         ['Nouvelles machines',dev.filter(function(r){return isNewEtat(r.data.etat);}).length],['Directions',distinct(all.map(dirLabel)).length],['Doublons N° série',dup]];
+  $('cs-kpis').innerHTML=k.map(function(x){ return '<div class="cs-kpi"><b>'+x[1]+'</b><span>'+x[0]+'</span></div>'; }).join('')
+    +(CR.err?'<div class="cs-kpi" style="grid-column:1/-1;border-color:rgba(230,57,70,.4);"><span style="color:var(--red)">⚠️ Lecture des fiches impossible ('+esc(CR.err)+') — cliquez sur « 🩺 Tester la collecte ».</span></div>':'');
+}
+function consoMatrixData(rows){
+  var m={},dirs=distinct(rows.map(dirLabel));
+  dirs.forEach(function(d){ m[d]={}; TYPE_ORDER.forEach(function(t){ m[d][t]={n:0,nw:0}; }); });
+  rows.forEach(function(r){ var c=m[dirLabel(r)][r.type]; c.n++; if(TYPES[r.type].kind==='device'&&isNewEtat(r.data.etat)) c.nw++; });
+  return {dirs:dirs,m:m};
+}
+function consoMatrix(){
+  var d=consoMatrixData(CR.rows);
+  if(!d.dirs.length){ $('cs-matrix').innerHTML='<p style="color:var(--txt3);text-align:center;padding:18px;">Aucune fiche reçue pour le moment.</p>'; return; }
+  var tot={}; TYPE_ORDER.forEach(function(t){ tot[t]={n:0,nw:0}; });
+  var h='<table class="cs-table cs-matrix"><thead><tr><th>Direction</th>'+TYPE_ORDER.map(function(t){ return '<th>'+TYPES[t].ico+' '+esc(TYPES[t].short)+'</th>'; }).join('')+'<th>Total</th></tr></thead><tbody>';
+  d.dirs.forEach(function(dir){
+    var sum=0; h+='<tr><td><b>'+esc(dir)+'</b></td>';
+    TYPE_ORDER.forEach(function(t){ var c=d.m[dir][t]; sum+=c.n; tot[t].n+=c.n; tot[t].nw+=c.nw; h+='<td>'+(c.n?c.n+(c.nw?'<small class="cs-new">dont '+c.nw+' nouv.</small>':''):'<span style="color:var(--txt3)">—</span>')+'</td>'; });
+    h+='<td class="tot">'+sum+'</td></tr>';
+  });
+  var g=0; h+='<tr><td class="tot">TOTAL</td>'+TYPE_ORDER.map(function(t){ g+=tot[t].n; return '<td class="tot">'+tot[t].n+(tot[t].nw?'<small class="cs-new">dont '+tot[t].nw+' nouv.</small>':'')+'</td>'; }).join('')+'<td class="tot">'+g+'</td></tr></tbody></table>';
+  $('cs-matrix').innerHTML=h;
+}
+function cellVal(T,k,r,i){
+  if(k==='num') return i+1;
+  var v=r.data[k]; if(v==null) return '';
+  return /^date|dateResolution/.test(k)?fmtDate(v):v;
+}
+function consoList(){
+  var rows=consoFiltered(), gb=$('cs-f-group').value, box=$('cs-list');
+  if(!rows.length){ box.innerHTML='<p style="color:var(--txt3);text-align:center;padding:30px;">Aucune fiche ne correspond aux filtres.</p>'; consoBulk(); return; }
+  var groups={},order=[];
+  rows.forEach(function(r){
+    var g=gb==='type'?TYPES[r.type].label:(gb==='service'?(dirLabel(r)+' › '+((r.data.service||'—').toUpperCase())):dirLabel(r));
+    if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(r);
+  });
+  order.sort();
+  box.innerHTML=order.map(function(g,gi){
+    var arr=groups[g], key='g'+gi+'_'+g, open=CR.open[g]!==false;
+    var pend=arr.filter(function(r){return r.statut==='en_attente';}).length;
+    var h='<div class="tcard cs-grp" style="overflow:hidden;"><div class="cs-grp-h" onclick="consoToggle(\''+encodeURIComponent(g)+'\')"><b>'+(open?'▾':'▸')+' '+esc(g)+'</b><span>'+arr.length+' fiche(s)'+(pend?' · <b style="color:var(--gold)">'+pend+' en attente</b>':'')+'</span></div>';
+    if(open){
+      TYPE_ORDER.forEach(function(t){
+        var sub=arr.filter(function(r){return r.type===t;}); if(!sub.length) return; var T=TYPES[t];
+        h+='<div class="cs-sub">'+T.ico+' '+esc(T.label)+' — '+sub.length+'</div><div style="overflow-x:auto;"><table class="cs-table"><thead><tr><th><input type="checkbox" onclick="consoSelGroup(this,\''+encodeURIComponent(sub.map(function(r){return r._id;}).join(','))+'\')"></th>'
+          +T.excel.map(function(k){ return '<th>'+esc(xhead(T,k))+'</th>'; }).join('')+(gb==='direction'?'':'<th>Direction</th>')+'<th>Reçu le</th><th>Statut</th><th></th></tr></thead><tbody>'
+          +sub.map(function(r,i){
+            var nw=T.kind==='device'&&isNewEtat(r.data.etat);
+            return '<tr><td><input type="checkbox" '+(CR.sel[r._id]?'checked ':'')+'onclick="consoSel(\''+r._id+'\',this.checked)"></td>'
+              +T.excel.map(function(k){ var v=cellVal(T,k,r,i); return '<td'+(k==='etat'&&nw?' class="cs-new"':'')+' title="'+esc(v)+'">'+esc(v)+'</td>'; }).join('')
+              +(gb==='direction'?'':'<td>'+esc(dirLabel(r))+'</td>')
+              +'<td>'+esc(fmtDate((r.created||'').slice(0,10)))+'</td><td><span class="cs-st '+esc(r.statut)+'">'+({en_attente:'En attente',integre:'Intégrée',rejete:'Rejetée'}[r.statut]||esc(r.statut))+'</span></td>'
+              +'<td><div class="cs-act"><button title="Détails" onclick="consoDetail(\''+r._id+'\')">👁</button>'
+              +(can('add')&&r.statut!=='integre'?'<button title="Intégrer au parc" onclick="consoIntegrate([\''+r._id+'\'])">✅</button>':'')
+              +(can('edit')&&r.statut==='en_attente'?'<button title="Rejeter" onclick="consoReject([\''+r._id+'\'])">⛔</button>':'')
+              +(can('delete')?'<button title="Supprimer" onclick="consoDelete([\''+r._id+'\'])">🗑</button>':'')+'</div></td></tr>';
+          }).join('')+'</tbody></table></div>';
+      });
+    }
+    return h+'</div>';
+  }).join('');
+  consoBulk();
+}
+window.consoToggle=function(enc){ var g=decodeURIComponent(enc); CR.open[g]=(CR.open[g]===false); consoList(); };
+window.consoSel=function(id,on){ if(on) CR.sel[id]=1; else delete CR.sel[id]; consoBulk(); };
+window.consoSelGroup=function(cb,enc){ decodeURIComponent(enc).split(',').forEach(function(id){ if(cb.checked) CR.sel[id]=1; else delete CR.sel[id]; }); consoList(); };
+window.consoClearSel=function(){ CR.sel={}; consoList(); };
+function selIds(){ return Object.keys(CR.sel); }
+function consoBulk(){ var n=selIds().length, b=$('cs-bulk'); if(!b) return; b.style.display=n?'flex':'none'; $('cs-bulk-n').textContent=n+' sélectionnée(s)'; }
+window.consoRender=function(){
+  if(!$('cs-list')) return;
+  consoFiltersInit(); consoRenderLinks(); consoKpis(); consoMatrix(); consoList();
+};
+
+/* ----- intégration au parc ----- */
+var TYPE_MACHINE={bureau:'PC bureau',portables:'PC Portable',imprimantes:'Imprimante',tablettes:'Tablette'};
+function dbTarget(r){
+  var drena=(r.direction==='DRENAET');
+  // même logique que la plateforme : portables DRENAET → DB.bureau, bureaux DRENAET → DB.pc
+  var map={bureau:['bureau','pc'],portables:['portables','bureau'],imprimantes:['imprimantes','imprimantes'],tablettes:['tablettes','tablettes']};
+  return map[r.type][drena?1:0];
+}
+function toParc(r){
+  var d=r.data, o={};
+  Object.keys(d).forEach(function(k){ if(k==='sexe') o.genre=d.sexe; else o[k]=d[k]; });
+  ['date_obtention','date_restitution'].forEach(function(k){ if(o[k]) o[k]=fmtDate(o[k]); });
+  o.type_machine=TYPE_MACHINE[r.type]; o.statut='● En service';
+  if(!o.genre&&typeof detectGenre==='function') o.genre=detectGenre(o.nom||'');
+  o.direction=r.direction; o.direction_nom=r.direction_nom||''; o.source_collecte=r._id;
+  if(r.photo_face) o.photo_face=r.photo_face; if(r.photo_profil) o.photo_profil=r.photo_profil;
+  if(r.direction==='DRENAET') o._source='DRENAET';
+  return o;
+}
+function setStatus(ids,statut,extra){
+  var now=new Date().toISOString(), who=(typeof currentUser!=='undefined'&&currentUser)?currentUser.name:'';
+  ids.forEach(function(id){
+    var r=CR.rows.find(function(x){return x._id===id;}); if(!r) return;
+    r.statut=statut; if(statut==='integre'){ r.integre_le=now; r.integre_par=who; } if(extra) Object.keys(extra).forEach(function(k){ r[k]=extra[k]; });
+    delete CR.sel[id];
+    if(window.FB_OK&&window.FB){ var up={statut:statut}; if(statut==='integre'){ up.integre_le=now; up.integre_par=who; } if(extra) Object.keys(extra).forEach(function(k){ up[k]=extra[k]; });
+      window.FB.setDoc(window.FB.doc(window.FB.db,PUB_COL,id),up,{merge:true}).catch(function(e){ console.warn('consoStatus',e&&e.message); }); }
+  });
+  consoSaveCache(); consoBadge();
+}
+window.consoIntegrate=function(ids){
+  if(!can('add')){ notif('⛔ Action non autorisée pour votre rôle','err'); return; }
+  var rows=ids.map(function(id){ return CR.rows.find(function(x){return x._id===id;}); }).filter(function(r){ return r&&r.statut!=='integre'; });
+  if(!rows.length){ notif('Aucune fiche à intégrer','err'); return; }
+  var devs=rows.filter(function(r){return TYPES[r.type].kind==='device';});
+  var others=devs.filter(function(r){return r.direction==='IEPP'||r.direction==='AUTRE';});
+  if(others.length && !confirm(others.length+' fiche(s) concernent une direction sans rubrique dédiée dans le parc (IEPP / autre direction).\n\nOK = les ranger dans la rubrique Centrale (avec la mention de leur Direction)\nAnnuler = les laisser en attente.')){
+    rows=rows.filter(function(r){ return others.indexOf(r)<0; });
+  }
+  // doublons de N° de série
+  var dupRows=[]; devs.forEach(function(r){ if(rows.indexOf(r)<0) return; var s=(r.data.num_serie||'').toUpperCase().trim(); if(!s) return; var tg=dbTarget(r); if((DB[tg]||[]).some(function(x){ return (x.num_serie||'').toUpperCase().trim()===s; })) dupRows.push(r); });
+  var upd=false;
+  if(dupRows.length){ upd=confirm(dupRows.length+' fiche(s) ont un N° de série DÉJÀ présent dans le parc.\n\nOK = mettre à jour la fiche existante avec les nouvelles informations\nAnnuler = ignorer ces doublons (elles restent en attente)'); }
+  var touched={}, nAdd=0, nUpd=0, nSkip=0, nMaint=0, done=[];
+  rows.forEach(function(r){
+    var T=TYPES[r.type];
+    if(T.kind==='maint'){
+      var items=loadMaintItems(T.mt), d=r.data;
+      var rec={date:d.date||'',serie:d.serie||'',marque:d.marque||'',service:d.service||'',bureau:d.bureau||'',panne:d.panne||'',technicien:d.technicien||'',statut:d.statut||'En cours',dateResolution:d.dateResolution||'',pieces:d.pieces||'',obs:d.obs||'',createdAt:new Date().toISOString(),direction:r.direction,direction_nom:r.direction_nom||'',source_collecte:r._id};
+      var ex=items.some(function(x){ return x.source_collecte===r._id || ((x.serie||'')===rec.serie&&x.date===rec.date&&(x.panne||'')===rec.panne); });
+      if(ex){ nSkip++; done.push(r._id); return; }
+      items.push(rec); saveMaintItemsData(T.mt,items); nMaint++; done.push(r._id);
+      try{ renderMaintItems(T.mt); }catch(e){}
+      return;
+    }
+    var tg=dbTarget(r); if(!DB[tg]) DB[tg]=[];
+    var o=toParc(r), s=(o.num_serie||'').toUpperCase().trim(), idx=-1;
+    if(s) DB[tg].forEach(function(x,i){ if(idx<0&&(x.num_serie||'').toUpperCase().trim()===s) idx=i; });
+    if(idx>=0){
+      if(!upd){ nSkip++; return; }
+      var cur=DB[tg][idx]; Object.keys(o).forEach(function(k){ if(o[k]!==''&&o[k]!=null) cur[k]=o[k]; }); nUpd++;
+    } else { DB[tg].unshift(o); nAdd++; }
+    touched[tg]=1; done.push(r._id);
+  });
+  Object.keys(touched).forEach(function(tg){ try{ save(tg); }catch(e){ console.warn('save',tg,e); } });
+  setStatus(done,'integre');
+  try{ refreshUI(); }catch(e){}
+  consoRender();
+  var msg=[]; if(nAdd) msg.push(nAdd+' ajoutée(s)'); if(nUpd) msg.push(nUpd+' mise(s) à jour'); if(nMaint) msg.push(nMaint+' fiche(s) de maintenance'); if(nSkip) msg.push(nSkip+' ignorée(s)');
+  notif('✅ Intégration : '+(msg.join(' · ')||'rien à faire'),'ok');
+};
+window.consoIntegrateSel=function(){ window.consoIntegrate(selIds()); };
+window.consoIntegrateAll=function(){
+  var ids=consoFiltered().filter(function(r){return r.statut==='en_attente';}).map(function(r){return r._id;});
+  if(!ids.length){ notif('Aucune fiche en attente dans ce filtre','err'); return; }
+  if(confirm('Intégrer '+ids.length+' fiche(s) en attente au parc ?')) window.consoIntegrate(ids);
+};
+window.consoReject=function(ids){
+  if(!can('edit')){ notif('⛔ Action non autorisée','err'); return; }
+  var m=prompt('Motif du rejet (facultatif) :',''); if(m===null) return;
+  setStatus(ids,'rejete',{motif:m||''}); consoRender(); notif('⛔ Fiche(s) rejetée(s)','ok');
+};
+window.consoRejectSel=function(){ var i=selIds(); if(i.length) window.consoReject(i); };
+window.consoDelete=function(ids){
+  if(!can('delete')){ notif('⛔ Suppression réservée à l\'administrateur','err'); return; }
+  if(!confirm('Supprimer définitivement '+ids.length+' fiche(s) reçue(s) ?')) return;
+  ids.forEach(function(id){
+    CR.rows=CR.rows.filter(function(x){return x._id!==id;}); delete CR.sel[id];
+    if(window.FB_OK&&window.FB) window.FB.deleteDoc(window.FB.doc(window.FB.db,PUB_COL,id)).catch(function(e){ console.warn('consoDelete',e&&e.message); });
+  });
+  consoSaveCache(); consoBadge(); consoRender(); notif('🗑 Supprimé','ok');
+};
+window.consoDeleteSel=function(){ var i=selIds(); if(i.length) window.consoDelete(i); };
+
+/* ----- détails ----- */
+window.consoCloseModal=function(){ $('cs-modal').classList.remove('on'); };
+window.consoDetail=function(id){
+  var r=CR.rows.find(function(x){return x._id===id;}); if(!r) return; var T=TYPES[r.type];
+  var h='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><h3 style="font-family:Syne,sans-serif;color:var(--txt);margin:0;">'+T.ico+' '+esc(T.label)+'</h3><button class="btn btn-outline btn-sm" onclick="consoCloseModal()">✕</button></div>'
+    +'<table class="cs-table"><tbody><tr><td><b>Direction</b></td><td>'+esc(dirLabel(r))+'</td></tr>'
+    +T.excel.filter(function(k){return k!=='num';}).map(function(k){ return '<tr><td><b>'+esc(xhead(T,k))+'</b></td><td style="white-space:normal;">'+esc(cellVal(T,k,r,0))+'</td></tr>'; }).join('')
+    +'<tr><td><b>Reçu le</b></td><td>'+esc(new Date(r.created).toLocaleString('fr-FR'))+'</td></tr><tr><td><b>Statut</b></td><td>'+esc(r.statut)+(r.motif?' — '+esc(r.motif):'')+'</td></tr><tr><td><b>Référence</b></td><td>'+esc(r._id)+'</td></tr></tbody></table>';
+  if(r.photo_face||r.photo_profil) h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;">'+(r.photo_face?'<img src="'+r.photo_face+'" style="max-width:48%;border-radius:9px;">':'')+(r.photo_profil?'<img src="'+r.photo_profil+'" style="max-width:48%;border-radius:9px;">':'')+'</div>';
+  else if(r.has_photo) h+='<p style="color:var(--txt3);font-size:12px;margin-top:10px;">📷 Photos disponibles après synchronisation en ligne.</p>';
+  $('cs-modal-box').innerHTML=h; $('cs-modal').classList.add('on');
+};
+
+/* ----- export Excel consolidé (entêtes identiques aux fichiers Excel) ----- */
+window.consoExportExcel=function(){
+  if(typeof XLSX==='undefined'){ notif('Bibliothèque Excel non chargée (connexion requise)','err'); return; }
+  var rows=consoFiltered(); if(!rows.length){ notif('Aucune fiche à exporter','err'); return; }
+  var wb=XLSX.utils.book_new();
+  var d=consoMatrixData(rows), head=['Direction'].concat(TYPE_ORDER.map(function(t){ return TYPES[t].short; }),['Total','dont nouvelles machines']);
+  var aoa=[head];
+  d.dirs.forEach(function(dir){ var s=0,nw=0; var line=[dir]; TYPE_ORDER.forEach(function(t){ var c=d.m[dir][t]; s+=c.n; nw+=c.nw; line.push(c.n); }); line.push(s,nw); aoa.push(line); });
+  var tl=['TOTAL']; var gs=0,gn=0; TYPE_ORDER.forEach(function(t){ var s=0; d.dirs.forEach(function(dir){ s+=d.m[dir][t].n; }); gs+=s; tl.push(s); }); d.dirs.forEach(function(dir){ TYPE_ORDER.forEach(function(t){ gn+=d.m[dir][t].nw; }); }); tl.push(gs,gn); aoa.push(tl);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(aoa),'Synthèse');
+  TYPE_ORDER.forEach(function(t){
+    var T=TYPES[t], sub=rows.filter(function(r){return r.type===t;}); if(!sub.length) return;
+    sub.sort(function(a,b){ return dirLabel(a).localeCompare(dirLabel(b))||String(a.data.service||'').localeCompare(String(b.data.service||'')); });
+    var a=[T.excel.map(function(k){ return xhead(T,k); }).concat(['Direction','Reçu le','Statut'])];
+    sub.forEach(function(r,i){ a.push(T.excel.map(function(k){ return cellVal(T,k,r,i); }).concat([dirLabel(r),fmtDate((r.created||'').slice(0,10)),({en_attente:'En attente',integre:'Intégrée',rejete:'Rejetée'}[r.statut]||r.statut)])); });
+    var ws=XLSX.utils.aoa_to_sheet(a); ws['!cols']=a[0].map(function(h){ return {wch:Math.max(12,String(h).length+4)}; });
+    XLSX.utils.book_append_sheet(wb,ws,T.sheet.slice(0,31));
+  });
+  XLSX.writeFile(wb,'DESPS_consolidation_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  notif('📊 Export Excel généré','ok');
+};
+window.consoPrint=function(){
+  var rows=consoFiltered(); if(!rows.length){ notif('Aucune fiche à imprimer','err'); return; }
+  var d=consoMatrixData(rows), w=window.open('','_blank'); if(!w){ notif('Autorisez les fenêtres pop-up','err'); return; }
+  var h='<html><head><meta charset="UTF-8"><title>Consolidation du parc DESPS</title><style>body{font-family:Arial,sans-serif;font-size:11px;}h2{color:#1a3066;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th{background:#1a3066;color:#fff;padding:5px 7px;}td{border:1px solid #ccc;padding:4px 7px;}tr:nth-child(even)td{background:#f5f8ff;}</style></head><body><h2>DESPS — Consolidation du parc informatique par Direction</h2><p>Imprimé le '+new Date().toLocaleDateString('fr-FR')+' — '+rows.length+' fiche(s)</p>'
+    +'<table><thead><tr><th>Direction</th>'+TYPE_ORDER.map(function(t){return '<th>'+esc(TYPES[t].short)+'</th>';}).join('')+'<th>Total</th></tr></thead><tbody>'
+    +d.dirs.map(function(dir){ var s=0; return '<tr><td><b>'+esc(dir)+'</b></td>'+TYPE_ORDER.map(function(t){ var c=d.m[dir][t]; s+=c.n; return '<td style="text-align:center">'+(c.n||'—')+'</td>'; }).join('')+'<td style="text-align:center"><b>'+s+'</b></td></tr>'; }).join('')+'</tbody></table>';
+  TYPE_ORDER.forEach(function(t){ var T=TYPES[t], sub=rows.filter(function(r){return r.type===t;}); if(!sub.length) return;
+    h+='<h3>'+esc(T.label)+' ('+sub.length+')</h3><table><thead><tr><th>Direction</th>'+T.excel.map(function(k){return '<th>'+esc(xhead(T,k))+'</th>';}).join('')+'</tr></thead><tbody>'+sub.map(function(r,i){ return '<tr><td>'+esc(dirLabel(r))+'</td>'+T.excel.map(function(k){return '<td>'+esc(cellVal(T,k,r,i))+'</td>';}).join('')+'</tr>'; }).join('')+'</tbody></table>'; });
+  w.document.write(h+'</body></html>'); w.document.close(); w.print();
+};
+
+/* ----- diagnostic de la collecte publique ----- */
+var RULES='// À ajouter dans Firebase › Firestore Database › Règles (à l\'intérieur de « match /databases/{database}/documents { … } »)\nmatch /parc_collecte/{docId} {\n  // Les agents (sans compte) peuvent SEULEMENT déposer une fiche\n  allow create: if request.resource.data.statut == \'en_attente\'\n                && request.resource.data.type is string\n                && request.resource.data.data is map;\n  // Lecture / modification / suppression : administrateurs connectés uniquement\n  allow read, update, delete: if request.auth != null;\n}';
+window.consoCopyRules=function(){ if(navigator.clipboard) navigator.clipboard.writeText(RULES).then(function(){ notif('📋 Règles copiées','ok'); }); else prompt('Copiez :',RULES); };
+window.consoTest=function(){
+  var m=$('cs-modal-box'); $('cs-modal').classList.add('on');
+  m.innerHTML='<h3 style="font-family:Syne,sans-serif;color:var(--txt);">🩺 Test de la collecte publique</h3><p id="cs-test-res" style="color:var(--txt2);font-size:13px;">Test en cours…</p><div id="cs-test-more"></div>';
+  var res=$('cs-test-res'), id='test'+Date.now().toString(36);
+  pubEnsureFB().then(function(fb){
+    var ref=fb.doc(fb.db,PUB_COL,id);
+    return Promise.race([fb.setDoc(ref,{id:id,type:'__test',statut:'en_attente',data:{},created:new Date().toISOString()}),timeoutP(12000)]).then(function(){
+      res.innerHTML='✅ <b>Écriture publique OK</b> : les agents peuvent envoyer leurs fiches.';
+      return fb.deleteDoc(ref).catch(function(){ $('cs-test-more').innerHTML='<p style="color:var(--txt3);font-size:12px;">Note : la fiche de test n\'a pas pu être supprimée automatiquement (suppression réservée aux comptes connectés) ; elle est ignorée de la consolidation.</p>'; });
+    });
+  }).catch(function(e){
+    var c=(e&&(e.code||e.message))||'erreur';
+    res.innerHTML='❌ <b>Envoi refusé ou impossible</b> ('+esc(c)+').'+(/permission/i.test(c)?' Les <b>règles Firestore</b> n\'autorisent pas encore l\'écriture publique sur « parc_collecte ».':(/hors|delai|network|offline/i.test(c)?' Vérifiez la connexion Internet.':''));
+    $('cs-test-more').innerHTML='<p style="color:var(--txt2);font-size:12.5px;margin:10px 0 6px;">Collez ces règles dans la console Firebase puis cliquez sur « Publier » :</p><pre>'+esc(RULES)+'</pre><button class="btn btn-primary btn-sm" onclick="consoCopyRules()">📋 Copier les règles</button>';
+  });
+  $('cs-modal-box').insertAdjacentHTML('beforeend','<div style="margin-top:14px;text-align:right;"><button class="btn btn-outline btn-sm" onclick="consoCloseModal()">Fermer</button></div>');
+};
+
+/* ---------- Branchements non destructifs sur l'application existante ---------- */
+(function hook(){
+  var _nav=window.nav;
+  if(typeof _nav==='function'){ window.nav=function(page){ var r=_nav.apply(this,arguments); if(page==='consolidation'){ var t=$('page-title'); if(t) t.textContent='📥 Consolidation du parc'; consoRender(); } return r; }; }
+  var _init=window.initApp;
+  if(typeof _init==='function'){ window.initApp=function(){ var r=_init.apply(this,arguments); try{ consoStart(); }catch(e){ console.warn('consoStart',e); } return r; }; }
+  var _out=window.doLogout;
+  if(typeof _out==='function'){ window.doLogout=function(){ try{ consoStop(); }catch(e){} return _out.apply(this,arguments); }; }
+})();
+
+window.__consoTest={TYPES:TYPES,CR:CR,dbTarget:dbTarget,toParc:toParc,consoFiltered:consoFiltered,dirLabel:dirLabel};
+
+/* ---------- Démarrage ---------- */
+function boot(){ if(pubHash().root==='saisie' || /^#saisie/i.test(location.hash||'')){ document.documentElement.classList.add('pub-mode'); pubStart(); } else { window.addEventListener('hashchange',function(){ if(/^#saisie/i.test(location.hash||'')) location.reload(); }); } }
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
 <div class="global-hscroll" id="global-hscroll"><span class="hs-label">&#9664;</span><div class="hs-track" id="hs-track"><div class="hs-thumb" id="hs-thumb"></div></div><span class="hs-label">&#9654;</span></div>
