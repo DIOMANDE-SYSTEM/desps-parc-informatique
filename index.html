@@ -9051,6 +9051,40 @@ function boot(){ if(pubHash().root==='saisie' || /^#saisie/i.test(location.hash|
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
 })();
 </script>
+<script>
+/* ==== IMPORT : Portables remis aux Coordinateurs carte scolaire (SDPP) — 41 DRENAET (v2 : avec contacts) ==== */
+(function(){
+var FLAG='desps26_seed_sdpp_portables_v3';
+var LISTE=[{"n": 1, "sn": "1H84331VN2", "dr": "ABENGOUROU", "nom": "ACHI ROLAND SERGE", "tel": "0709159081"}, {"n": 2, "sn": "1H84331VJH", "dr": "ABIDJAN 1", "nom": "AMARI EGUE JOSEPH I.", "tel": "0545560853"}, {"n": 3, "sn": "1H84331VM7", "dr": "ABIDJAN 2", "nom": "TCHUMUN DEGNY P.", "tel": "0707966497"}, {"n": 4, "sn": "1H84331VZ9", "dr": "ABIDJAN 3", "nom": "DIAVATCHE BLANDINE EPSE K.", "tel": "0101268717"}, {"n": 5, "sn": "1H84331VH7", "dr": "ABIDJAN 4", "nom": "KANGA KANGA GABRIEL", "tel": "0709404782"}, {"n": 6, "sn": "1H84331VY9", "dr": "ABOISSO", "nom": "BAMBA SIAKA TIEMOKO", "tel": "0708735618"}, {"n": 7, "sn": "1H84331VHM", "dr": "ADZOPE", "nom": "AMADOU KOUADIO AMOULAYE", "tel": "0748719004"}, {"n": 8, "sn": "1H84331W1G", "dr": "AGBOVILLE", "nom": "ENIPA ABLAN FELICITE", "tel": "0759153126"}, {"n": 9, "sn": "1H84331VXJ", "dr": "BONDOUKOU", "nom": "DONGO KOBENA HONORE", "tel": "0504727397"}, {"n": 10, "sn": "1H84331VLS", "dr": "BONGOUANOU", "nom": "ASSIE BROU BRUNO", "tel": "0749114061"}, {"n": 11, "sn": "1H84331VLK", "dr": "BOUAFLE", "nom": "OUATTARA ALI", "tel": "0708147156"}, {"n": 12, "sn": "1H84331VGM", "dr": "BOUAKE 1", "nom": "KINAYA KPAMPI SOPHIE", "tel": "0707311165"}, {"n": 13, "sn": "1H84331VLX", "dr": "BOUAKE 2", "nom": "PEDICAL KONE", "tel": "0101878235"}, {"n": 14, "sn": "1H84331W1J", "dr": "BOUNA", "nom": "OUATTARA DRISSA", "tel": "0505517504"}, {"n": 15, "sn": "1H84331VJ4", "dr": "BOUNDIALI", "nom": "DIARRASSOUBA SOUALIHO", "tel": "0747342171"}, {"n": 16, "sn": "1H84331VH0", "dr": "DABOU", "nom": "DIDO KOUAME", "tel": "0748069720"}, {"n": 17, "sn": "1H84331VK4", "dr": "DALOA", "nom": "TRAORE MEMA HUBERSON", "tel": "0708849746"}, {"n": 18, "sn": "1H84331VR3", "dr": "DAOUKRO", "nom": "YOBOUET KONAN JOSEPH", "tel": "0711872815"}, {"n": 19, "sn": "1H84331VXP", "dr": "DANANE", "nom": "ZOUH GUEU HONORE", "tel": "0709848406"}, {"n": 20, "sn": "1H84331VKG", "dr": "GRAND-BASSAM", "nom": "N'GUESSAN NOE OLIVIER", "tel": "0747208050"}, {"n": 21, "sn": "1H84331W0B", "dr": "ISSIA", "nom": "SIRIKI S. NAPOLEON", "tel": "0708047468"}, {"n": 22, "sn": "1H84331VWT", "dr": "SINFRA", "nom": "DJEKE N'GBIN JACQUES", "tel": "0708368978"}, {"n": 23, "sn": "1H84331VZL", "dr": "TIASSALE", "nom": "AHORET KHAKOUH JEAN C.", "tel": "0704002387"}, {"n": 24, "sn": "1H84331VHF", "dr": "DIMBOKRO", "nom": "KOUASSI AMANY AIME C.", "tel": "0747819438"}, {"n": 25, "sn": "1H84331W1B", "dr": "DIVO", "nom": "BROU N'DOLI AUGUSTIN", "tel": "0140480729"}, {"n": 26, "sn": "1H84331W0X", "dr": "DUEKOUE", "nom": "YAO KOFFI JEROME", "tel": "0707818957"}, {"n": 27, "sn": "1H84331VMY", "dr": "FERKE", "nom": "DADIE LEKA MOISE", "tel": "0709812362"}, {"n": 28, "sn": "1H84331VLW", "dr": "GAGNOA", "nom": "GNANDJA GOGO MARCEL", "tel": "0777338365"}, {"n": 29, "sn": "1H84331W0P", "dr": "GUIGLO", "nom": "YAOUE DEFOUE FIDELE", "tel": "0709163990"}, {"n": 30, "sn": "1H84331VY0", "dr": "KATIOLA", "nom": "COULIBALY ALY", "tel": "0707757509"}, {"n": 31, "sn": "1H84331VM3", "dr": "KORHOGO", "nom": "TOURE BAMADOU", "tel": "0709092160"}, {"n": 32, "sn": "1H84331VGR", "dr": "MAN", "nom": "ZRAN KOUAME EVARISTE", "tel": "0506444303"}, {"n": 33, "sn": "1H84331W1M", "dr": "MANKONO", "nom": "N'GUESSAN YAO APPOU", "tel": "0708115676"}, {"n": 34, "sn": "1H84331VLH", "dr": "MINIGNAN", "nom": "YOUAN BI VOLIZIE", "tel": "0707978061"}, {"n": 35, "sn": "1H84331W0C", "dr": "ODIENNE", "nom": "SORY KONATE", "tel": "0709344303"}, {"n": 36, "sn": "1H84331VZS", "dr": "SAN PEDRO", "nom": "SILUE KLOTIOLEMA", "tel": "0103049977"}, {"n": 37, "sn": "1H84331VGN", "dr": "SASSANDRA", "nom": "KOFFI KOUASSI SYLVAIN", "tel": "0748391950"}, {"n": 38, "sn": "1H84331W00", "dr": "SEGUELA", "nom": "COULIBALY YEMIKAN S.", "tel": "0777634274"}, {"n": 39, "sn": "1H84331VXY", "dr": "SOUBRE", "nom": "TCHIMOU KOUASSI BARTH.", "tel": "0707160330"}, {"n": 40, "sn": "1H84331VNR", "dr": "TOUBA", "nom": "FLIN GEORGES", "tel": "0708265715"}, {"n": 41, "sn": "1H84331VVR", "dr": "YAMOUSSOUKRO", "nom": "SANGARE MATENE", "tel": "0140677118"}];
+function seed(){
+  try{
+    if(localStorage.getItem(FLAG)) return;
+    if(typeof DB==='undefined'||!DB.bureau) return;
+    var idx={}; DB.bureau.forEach(function(r,i){ if(r.num_serie) idx[String(r.num_serie).toUpperCase()]=r; });
+    var add=0, upd=0;
+    LISTE.slice().reverse().forEach(function(x){
+      var ex=idx[x.sn.toUpperCase()];
+      if(ex){
+        if(x.tel && ex._source==='DRENAET' && (ex.telephone!==x.tel || ex.contact_a_verifier)){ ex.telephone=x.tel; delete ex.contact_a_verifier; upd++; }
+        return;
+      }
+      var o={nom:x.nom,num_serie:x.sn,marque:'HP Laptop 15-FD013',cpu:'Intel Core i7-1355U – 1,7 GHz',ram:'16 Go',stockage:'SSD 1 To',ecran:'15,6" LED',
+        etat:'Nouvel PC',statut:'● En service',service:'DRENAET '+x.dr,sous_direction:'SDPP',fonction:'Coordinateur carte scolaire DESPS',
+        date_obtention:'19/10/2026',ref_decharge:'0017 du 19/10/2026',num_ordre:String(x.n),_source:'DRENAET'};
+      if(x.tel){ o.telephone=x.tel; if(x.chk) o.contact_a_verifier=true; }
+      if(typeof detectGenre==='function') o.genre=detectGenre(x.nom);
+      DB.bureau.unshift(o); add++;
+    });
+    if(add||upd){ save('bureau'); try{ refreshUI(); }catch(e){} }
+    localStorage.setItem(FLAG,'1');
+    if((add||upd)&&typeof notif==='function') notif('💻 Portables DRENAET (SDPP) : '+add+' ajoutés, '+upd+' contacts complétés','ok');
+  }catch(e){ console.warn('seed SDPP',e); }
+}
+var _i=window.initApp;
+if(typeof _i==='function'){ window.initApp=function(){ var r=_i.apply(this,arguments); setTimeout(seed,400); return r; }; }
+window.__seedSdpp=seed;
+})();
+</script>
 <div class="global-hscroll" id="global-hscroll"><span class="hs-label">&#9664;</span><div class="hs-track" id="hs-track"><div class="hs-thumb" id="hs-thumb"></div></div><span class="hs-label">&#9654;</span></div>
 </body>
 </html>
