@@ -9202,7 +9202,7 @@ window.__seedSdpp=seed;
 'use strict';
 var KEY='desps26_sd_list';
 var DEF=[
- {c:'SDGFNE',n:'Sous-Direction de la Gestion du Fichier National des Élèves'},
+ {c:'SDESP',n:'Sous-Direction des Études, des Statistiques et de la Performance'},
  {c:'SDPP',n:'Sous-Direction de la Prospective et de la Planification'},
  {c:'SD EN ATTENTE 1',n:'Sous-direction en attente (à renommer)',w:1},
  {c:'SD EN ATTENTE 2',n:'Sous-direction en attente (à renommer)',w:1}
@@ -9211,7 +9211,12 @@ var st={sd:'',dr:''};
 function esc(x){return String(x==null?'':x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function isDR(r){ try{ return r&&(r._source==='DRENAET'||(typeof isDrena==='function'&&isDrena(r))); }catch(e){return false;} }
 function baseList(){
-  try{ var l=JSON.parse(localStorage.getItem(KEY)||'null'); if(l&&l.length) return l; }catch(e){}
+  try{ var l=JSON.parse(localStorage.getItem(KEY)||'null'); if(l&&l.length){
+    /* correction : SDGFNE -> SDESP (DRENAET › Portables) */
+    var hasE=l.some(function(x){return x.c==='SDESP';}), ch=false;
+    l=l.filter(function(x){ if(x.c==='SDGFNE'){ ch=true; if(hasE) return false; x.c='SDESP'; x.n='Sous-Direction des Études, des Statistiques et de la Performance'; delete x.w; hasE=true; } return true; });
+    if(ch) localStorage.setItem(KEY,JSON.stringify(l));
+    return l; } }catch(e){}
   return DEF.map(function(x){return {c:x.c,n:x.n,w:x.w};});
 }
 function sdList(){
@@ -9230,11 +9235,15 @@ function migrate(){
   busy=true; var n=0;
   try{
     var cs=codes();
+    /* correction : les portables DRENAET classés SDGFNE passent en SDESP */
+    DB.bureau.forEach(function(r){
+      if(isDR(r)&&r.projet==='SDGFNE'){ r.projet='SDESP'; r.sd_corrige='SDGFNE→SDESP'; n++; }
+    });
     DB.bureau.forEach(function(r){
       if(!isDR(r)||r.sd_migre) return;
       if(cs.indexOf(r.projet)<0){
         if(r.projet) r.projet_precedent=r.projet;
-        r.projet=(r.sous_direction==='SDPP')?'SDPP':'SDGFNE';
+        r.projet=(r.sous_direction==='SDPP')?'SDPP':'SDESP';
       }
       r.sd_migre=true; n++;
     });
